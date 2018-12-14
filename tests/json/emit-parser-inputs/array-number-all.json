@@ -1,0 +1,11 @@
+{
+  "type": "array",
+  "items": {
+    "type": "number",
+    "exclusiveMaximum": 110.1,
+    "exclusiveMinimum": -11.9,
+    "maximum": 110.05,
+    "minimum": -11.05,
+    "multipleOf": 5.5
+  }
+}

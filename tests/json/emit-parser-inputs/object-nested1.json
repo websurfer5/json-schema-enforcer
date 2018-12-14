@@ -1,0 +1,87 @@
+{
+  "type": "object",
+  "properties": {
+    "foo": {
+        "type": "string",
+        "minLength": 20
+    },
+    "bar": {
+        "type": "object",
+        "properties" : {
+          "foo": {
+            "type": "string",
+            "minLength": 30
+          },
+          "bar": {
+            "type": "string"
+          },
+          "foo-num": {
+            "type": "number",
+            "minimum": 2.2
+          },
+          "foo-int": {
+            "type": "integer",
+            "maximum": 20,
+            "multipleOf": 4
+           },
+          "foo-int-foo": {
+            "type": "integer",
+            "maximum": 20,
+            "multipleOf": 4
+           },
+          "foo-int-plain": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": {
+          "type": "string",
+          "maxLength":  40,
+          "minLength":  2
+        },
+        "maxProperties": 5,
+        "patternProperties": {
+          "foo[0-9]+": {
+              "type": "string"
+          },
+          "bar[0-9]+": {
+              "type": "string"
+          }
+        },
+        "propertyNames": {
+          "type": "string",
+          "minLength": 3
+        }
+    },
+    "foo-num": {
+      "type": "number",
+      "minimum": 2.2
+    },
+    "foo-num-plain": {
+      "type": "number"
+    },
+    "foo-int": {
+      "type": "integer",
+      "maximum": 20,
+      "multipleOf": 4
+    },
+    "foo-int-plain": {
+      "type": "integer"
+    },
+    "bar2": {
+      "type": "object",
+      "patternProperties": {
+        "foo[a-z]+": {
+            "type": "string"
+        }
+      },
+      "required": ["foo1"],
+      "required": [],
+      "minProperties": 2,
+      "propertyNames": {
+        "type": "string",
+        "pattern": "foo[a-z]bar"
+      }
+    }
+  },
+  "required": ["foo-num", "foo-int"]
+}

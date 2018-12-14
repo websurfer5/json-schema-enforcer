@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "patternProperties": {
+    "foo[0-9]+": {
+        "type": "string"
+    }
+  }
+}

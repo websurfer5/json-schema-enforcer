@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "properties":{
+        "foo": {
+            "type": "integer",
+            "exclusiveMaximum": 110,
+            "exclusiveMinimum": -11,
+            "maximum": 110,
+            "minimum": -11,
+            "multipleOf": 5
+        }
+    }
+}

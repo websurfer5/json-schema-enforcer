@@ -1,0 +1,9 @@
+{
+  "type": "array",
+  "items": [
+    { "type": "integer" },
+    { "type": "integer" },
+    { "type": "integer" }
+  ],
+  "uniqueItems": false
+}

@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "patternProperties": {
+    "foo[0-9]+": {
+        "type": "string"
+    },
+    "bar[0-9]+": {
+        "type": "string"
+    }
+  },
+  "properties": {
+    "foo": {
+        "type": "string"
+    }
+  }
+}

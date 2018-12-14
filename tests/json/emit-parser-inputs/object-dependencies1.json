@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "foo": {
+        "type": "number",
+        "maximum": 5.5
+    },
+    "bar": {
+        "type": "integer"
+    },
+    "foofoo": {
+        "type": "string"
+    }
+  },
+  "dependencies": {
+    "foo" : ["foo", "bar"]
+  }
+}

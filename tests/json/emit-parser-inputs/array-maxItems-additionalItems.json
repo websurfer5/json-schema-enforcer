@@ -1,0 +1,12 @@
+{
+  "type": "array",
+  "items": [
+    { "type": "integer" },
+    { "type": "integer" },
+    { "type": "integer" }
+  ],
+  "maxItems": 10,
+  "additionalItems": {
+    "type": "string"
+  }
+}

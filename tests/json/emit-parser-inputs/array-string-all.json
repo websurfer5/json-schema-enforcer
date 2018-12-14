@@ -1,0 +1,9 @@
+{
+  "type": "array",
+  "items": {
+    "type": "string",
+    "pattern": "test[123]+",
+    "minLength": 100,
+    "maxLength": 256
+  }
+}

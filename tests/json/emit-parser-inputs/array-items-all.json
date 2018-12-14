@@ -1,0 +1,18 @@
+{
+  "type": "array",
+  "items": [
+    { "type": "integer" },
+    { "type": "number" },
+    { "type": "string" },
+    { "type": "array" },
+    { "type": "object" },
+    { "type": "boolean" },
+    { "type": "null" }
+  ],
+  "additionalItems": {
+    "type": "integer"
+  },
+  "maxItems": 10,
+  "minItems": 8,
+  "uniqueItems": true
+}

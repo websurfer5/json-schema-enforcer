@@ -1,0 +1,14 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "foo-int": {
+          "type": "integer"
+      },
+      "foo-num": {
+          "type": "number"
+      }
+    }  
+  }
+}

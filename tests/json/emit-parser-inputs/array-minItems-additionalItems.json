@@ -1,0 +1,12 @@
+{
+  "type": "array",
+  "items": [
+    { "type": "integer" },
+    { "type": "integer" },
+    { "type": "integer" }
+  ],
+  "minItems": 8,
+  "additionalItems": {
+    "type": "string"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "foo": {
+        "type": "number",
+        "maximum": 5.5
+    },
+    "bar": {
+        "type": "integer"
+    },
+    "foo-str": {
+        "type": "string",
+        "minLength": 10,
+        "maxLength": 256,
+        "pattern" : "test[123]+"
+    }
+  }
+}

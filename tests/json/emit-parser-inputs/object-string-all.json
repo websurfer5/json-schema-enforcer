@@ -1,0 +1,49 @@
+{
+    "type": "object",
+    "properties":{
+        "foo1":{
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 256,
+            "pattern" : "test[123]+"
+        },
+        "foo2": {
+            "type": "string",
+            "minLength": 11,
+            "maxLength": 257
+        },
+        "foo3": {
+            "type": "string",
+            "minLength": 12,
+            "pattern": "test[456]+"
+        },
+        "foo4": {
+            "type": "string",
+            "minLength": 13
+        },
+        "foo5": {
+            "type": "string",
+            "maxLength": 258,
+            "pattern": "test[789]+"
+        },
+        "foo6": {
+            "type": "string",
+            "maxLength": 259
+        },
+        "foo7": {
+            "type": "string",
+            "pattern": "test[680]+"
+        },
+        "foo8": {
+            "type": "string"
+        },
+        "foo9": {
+            "type": "string"
+        },
+        "foo10": {
+            "type": "string",
+            "minLength": 12,
+            "pattern": "test[456]+"
+        }
+    }
+}

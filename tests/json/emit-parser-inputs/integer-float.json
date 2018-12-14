@@ -1,0 +1,8 @@
+{
+  "type": "integer",
+  "multipleOf": 5.1,
+  "maximum": 200.1,
+  "exclusiveMaximum": 201.1,
+  "minimum": -10.1,
+  "exclusiveMinimum": -11.1
+}
