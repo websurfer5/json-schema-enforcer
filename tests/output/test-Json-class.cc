@@ -323,6 +323,7 @@ BOOST_AUTO_TEST_CASE( test_Json_class_1 )
     jitem2.append_array_item(foo::JsonItem(60UL));
     jitem2.append_array_item(foo::JsonItem("bar"));
     jitem2.append_array_item(foo::JsonItem(std::string("barbar")));
+    jitem2.append_array_item(foo::JsonItem().append_array_item(true));
     BOOST_CHECK_NO_THROW(jitem2[0]);
     BOOST_CHECK(jitem2[0].is_string());
     BOOST_CHECK(jitem2[0] == jitem1);
@@ -352,6 +353,11 @@ BOOST_AUTO_TEST_CASE( test_Json_class_1 )
     BOOST_CHECK_NO_THROW(jitem2[8]);
     BOOST_CHECK(jitem2[8].is_string());
     BOOST_CHECK_EQUAL(jitem2[8].string(), "barbar");
+    BOOST_CHECK_NO_THROW(jitem2[9]);
+    BOOST_CHECK(jitem2[9].is_array());
+    BOOST_REQUIRE_NO_THROW(jitem2[9][0]);
+    BOOST_CHECK(jitem2[9][0].is_boolean());
+    BOOST_CHECK_EQUAL(jitem2[9][0].boolean(), true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

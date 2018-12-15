@@ -139,13 +139,14 @@ namespace foo
         throw std::invalid_argument("[] operator is undefined for JSON item type " + item_type_str[item_type]);
     }
 
-    void JsonItem::append_array_item(const JsonItem& jitem)
+    JsonItem& JsonItem::append_array_item(const JsonItem& jitem)
     {
         if (!is_array())
             clear();
 
         child_vector.push_back(jitem);
         item_type = type_Array;
+        return *this;
     }
 
     bool JsonItem::boolean() const
