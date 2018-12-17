@@ -358,6 +358,21 @@ BOOST_AUTO_TEST_CASE( test_Json_class_1 )
     BOOST_REQUIRE_NO_THROW(jitem2[9][0]);
     BOOST_CHECK(jitem2[9][0].is_boolean());
     BOOST_CHECK_EQUAL(jitem2[9][0].boolean(), true);
+    jitem2[9].append_array_item("foo");
+    jitem2[9].append_array_item(std::string("foofoo"));
+    jitem2[9].append_array_item();
+    jitem2[9].append_array_item(7.5);
+    BOOST_REQUIRE_NO_THROW(jitem2[9][1]);
+    BOOST_CHECK(jitem2[9][1].is_string());
+    BOOST_CHECK_EQUAL(jitem2[9][1].string(), "foo");
+    BOOST_REQUIRE_NO_THROW(jitem2[9][2]);
+    BOOST_CHECK(jitem2[9][2].is_string());
+    BOOST_CHECK_EQUAL(jitem2[9][2].string(), "foofoo");
+    BOOST_REQUIRE_NO_THROW(jitem2[9][3]);
+    BOOST_CHECK(jitem2[9][3].is_null());
+    BOOST_REQUIRE_NO_THROW(jitem2[9][4]);
+    BOOST_CHECK(jitem2[9][4].is_number());
+    BOOST_CHECK_EQUAL(jitem2[9][4].number(), 7.5);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
