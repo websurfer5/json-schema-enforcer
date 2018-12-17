@@ -31,7 +31,6 @@
 #    limitations under the License.
 
 
-
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -108,7 +107,8 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = json-schema-tool$(EXEEXT)
 TESTS = tests/unittclasses$(EXEEXT) tests/unittemitparser$(EXEEXT) \
-	tests/unittoutput$(EXEEXT) tests/unittparseschema$(EXEEXT)
+	tests/unittjson$(EXEEXT) tests/unittparseschema$(EXEEXT) \
+	tests/unittparsejson$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -134,10 +134,9 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libdir)"
 am__EXEEXT_1 = tests/unittclasses$(EXEEXT) \
-	tests/unittemitparser$(EXEEXT) tests/unittoutput$(EXEEXT) \
-	tests/unittparseschema$(EXEEXT)
+	tests/unittemitparser$(EXEEXT) tests/unittjson$(EXEEXT) \
+	tests/unittparseschema$(EXEEXT) tests/unittparsejson$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
-LIBRARIES = $(noinst_LIBRARIES)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -185,6 +184,14 @@ am__objects_3 = $(am__objects_1) $(am__objects_1) $(am__objects_1)
 am_tests_liboutputstrings_a_OBJECTS = $(am__objects_3)
 tests_liboutputstrings_a_OBJECTS =  \
 	$(am_tests_liboutputstrings_a_OBJECTS)
+tests_libparseroutput_a_AR = $(AR) $(ARFLAGS)
+tests_libparseroutput_a_DEPENDENCIES =  \
+	$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER) \
+	$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER)
+am_tests_libparseroutput_a_OBJECTS = $(am__objects_1) $(am__objects_1) \
+	$(am__objects_1)
+tests_libparseroutput_a_OBJECTS =  \
+	$(am_tests_libparseroutput_a_OBJECTS)
 libjson_schema_code_gen_la_LIBADD =
 am__objects_4 = src/schema/libjson_schema_code_gen_la-schema-lexer.lo \
 	src/schema/libjson_schema_code_gen_la-schema-parser.lo
@@ -236,15 +243,25 @@ tests_unittemitparser_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(tests_unittemitparser_CXXFLAGS) $(CXXFLAGS) \
 	$(tests_unittemitparser_LDFLAGS) $(LDFLAGS) -o $@
-am_tests_unittoutput_OBJECTS = tests/unittoutput-unittest.$(OBJEXT) \
-	src/templates/tests_unittoutput-json.$(OBJEXT) \
-	tests/output/unittoutput-test-Json-class.$(OBJEXT)
-tests_unittoutput_OBJECTS = $(am_tests_unittoutput_OBJECTS)
-tests_unittoutput_LDADD = $(LDADD)
-tests_unittoutput_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+am_tests_unittjson_OBJECTS = tests/unittjson-unittest.$(OBJEXT) \
+	src/templates/tests_unittjson-json.$(OBJEXT) \
+	tests/output/unittjson-test-Json-class.$(OBJEXT)
+tests_unittjson_OBJECTS = $(am_tests_unittjson_OBJECTS)
+tests_unittjson_LDADD = $(LDADD)
+tests_unittjson_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) \
-	$(tests_unittoutput_LDFLAGS) $(LDFLAGS) -o $@
+	$(tests_unittjson_CXXFLAGS) $(CXXFLAGS) \
+	$(tests_unittjson_LDFLAGS) $(LDFLAGS) -o $@
+am_tests_unittparsejson_OBJECTS =  \
+	tests/unittparsejson-unittest.$(OBJEXT) \
+	tests/parser-gen/unittparsejson-test-parse-json.$(OBJEXT) \
+	src/templates/tests_unittparsejson-json.$(OBJEXT)
+tests_unittparsejson_OBJECTS = $(am_tests_unittparsejson_OBJECTS)
+tests_unittparsejson_DEPENDENCIES = tests/libparseroutput.a
+tests_unittparsejson_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) \
+	$(tests_unittparsejson_LDFLAGS) $(LDFLAGS) -o $@
 am_tests_unittparseschema_OBJECTS =  \
 	tests/unittparseschema-unittest.$(OBJEXT) \
 	tests/parse-schema/unittparseschema-test-parse-schema-integer.$(OBJEXT) \
@@ -284,10 +301,12 @@ am__depfiles_remade =  \
 	src/schema/$(DEPDIR)/libjson_schema_code_gen_la-Token.Plo \
 	src/schema/$(DEPDIR)/libjson_schema_code_gen_la-schema-lexer.Plo \
 	src/schema/$(DEPDIR)/libjson_schema_code_gen_la-schema-parser.Plo \
-	src/templates/$(DEPDIR)/tests_unittoutput-json.Po \
+	src/templates/$(DEPDIR)/tests_unittjson-json.Po \
+	src/templates/$(DEPDIR)/tests_unittparsejson-json.Po \
 	tests/$(DEPDIR)/unittclasses-unittest.Po \
 	tests/$(DEPDIR)/unittemitparser-unittest.Po \
-	tests/$(DEPDIR)/unittoutput-unittest.Po \
+	tests/$(DEPDIR)/unittjson-unittest.Po \
+	tests/$(DEPDIR)/unittparsejson-unittest.Po \
 	tests/$(DEPDIR)/unittparseschema-unittest.Po \
 	tests/classes/$(DEPDIR)/unittclasses-test-FormatType-class.Po \
 	tests/classes/$(DEPDIR)/unittclasses-test-ItemType-class.Po \
@@ -295,11 +314,12 @@ am__depfiles_remade =  \
 	tests/classes/$(DEPDIR)/unittclasses-test-ParsedItemData-class.Po \
 	tests/classes/$(DEPDIR)/unittclasses-test-SchemaItem-class.Po \
 	tests/classes/$(DEPDIR)/unittclasses-test-Token-class.Po \
-	tests/output/$(DEPDIR)/unittoutput-test-Json-class.Po \
+	tests/output/$(DEPDIR)/unittjson-test-Json-class.Po \
 	tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-integer.Po \
 	tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-number.Po \
 	tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-string.Po \
-	tests/parser-gen/$(DEPDIR)/unittemitparser-test-emit-parser.Po
+	tests/parser-gen/$(DEPDIR)/unittemitparser-test-emit-parser.Po \
+	tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -339,15 +359,19 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(tests_json_libsamplejson_a_SOURCES) \
 	$(tests_liboutputstrings_a_SOURCES) \
+	$(tests_libparseroutput_a_SOURCES) \
 	$(libjson_schema_code_gen_la_SOURCES) \
 	$(json_schema_tool_SOURCES) $(tests_unittclasses_SOURCES) \
-	$(tests_unittemitparser_SOURCES) $(tests_unittoutput_SOURCES) \
+	$(tests_unittemitparser_SOURCES) $(tests_unittjson_SOURCES) \
+	$(tests_unittparsejson_SOURCES) \
 	$(tests_unittparseschema_SOURCES)
 DIST_SOURCES = $(tests_json_libsamplejson_a_SOURCES) \
 	$(tests_liboutputstrings_a_SOURCES) \
+	$(tests_libparseroutput_a_SOURCES) \
 	$(libjson_schema_code_gen_la_SOURCES) \
 	$(json_schema_tool_SOURCES) $(tests_unittclasses_SOURCES) \
-	$(tests_unittemitparser_SOURCES) $(tests_unittoutput_SOURCES) \
+	$(tests_unittemitparser_SOURCES) $(tests_unittjson_SOURCES) \
+	$(tests_unittparsejson_SOURCES) \
 	$(tests_unittparseschema_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -769,11 +793,21 @@ EMIT_PARSER_OUTPUT_CC_FILES = $(patsubst \
 	%.hh,$(top_builddir)/tests/emit-parser-output/build/lib/%.cc,$(notdir \
 	$(EMIT_PARSER_OUTPUT_FILES_STYPE)))
 EMIT_PARSER_OUTPUT_O_FILES = $(patsubst %.cc,$(top_builddir)/tests/emit-parser-output/build/lib/%.$(OBJEXT),$(notdir $(EMIT_PARSER_OUTPUT_CC_FILES)))
+EMIT_PARSER_OUTPUT_BUILD_CC_FILES_LEXER = $(patsubst %.ll,$(top_builddir)/tests/emit-parser-output/build/parser/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))
+EMIT_PARSER_OUTPUT_BUILD_HH_FILES_LEXER = $(patsubst %.ll,$(top_builddir)/tests/emit-parser-output/build/parser/%.hh,$(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))
+EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER = $(patsubst %.ll,$(top_builddir)/tests/emit-parser-output/build/parser/%.$(OBJEXT),$(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))
+EMIT_PARSER_OUTPUT_BUILD_CC_FILES_PARSER = $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/parser/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
+EMIT_PARSER_OUTPUT_BUILD_HH_FILES_PARSER = $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/parser/%.hh,$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
+EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER = $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/parser/%.$(OBJECT),$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
 GENERATED_TEST_FILES = $(JSON_INPUT_CC_FILES) \
 						$(EMIT_PARSER_OUTPUT_CC_FILES) \
 						$(top_builddir)/tests/include/json-strings.hh \
 						$(top_builddir)/tests/include/emit-parser-output-strings.hh \
-						$(top_builddir)/tests/include/def-emit-parser-tests.hh
+						$(top_builddir)/tests/include/def-emit-parser-tests.hh \
+						$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_PARSER) \
+						$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_PARSER) \
+						$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_LEXER) \
+						$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_LEXER)
 
 BUILT_SOURCES = \
 				$(GENERATED_FILES) \
@@ -815,15 +849,18 @@ json_schema_tool_SOURCES = src/progs/json-schema-tool.cc \
 libjson_schema_code_gen_la_SOURCES = $(SCHEMA_FILES)
 libjson_schema_code_gen_la_CPPFLAGS = $(AM_CPPFLAGS) $(FLEX_CPPFLAGS)
 CLEANFILES = $(GENERATED_FILES) \
-			 $(GENERATED_TEST_FILES) \
-			 $(JSON_INPUT_O_FILES) \
 			 $(EMIT_PARSER_OUTPUT_O_FILES) \
 			 src/schema/*.*_bak \
-			 src/schema/*.output
+			 src/schema/*.output \
+			 $(top_builddir)/tests/include/json-strings.hh \
+			 $(top_builddir)/tests/include/emit-parser-output-strings.hh \
+			 $(top_builddir)/tests/include/def-emit-parser-tests.hh \
+			 $(top_builddir)/tests/emit-parser-output/build/parser/*
 
-noinst_LIBRARIES = \
+check_LIBRARIES = \
 				tests/json/libsamplejson.a \
-				tests/liboutputstrings.a
+				tests/liboutputstrings.a \
+				tests/libparseroutput.a
 
 TESTS_CPP_FLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/tests/include -I$(top_builddir)/tests/include
 tests_json_libsamplejson_a_LIBADD = $(JSON_INPUT_O_FILES)
@@ -832,12 +869,12 @@ tests_json_libsamplejson_a_SOURCES = $(JSON_INPUT_FILES)
 tests_liboutputstrings_a_LIBADD = $(EMIT_PARSER_OUTPUT_O_FILES)
 tests_liboutputstrings_a_CPPFLAGS = $(TESTS_CPP_FLAGS)
 tests_liboutputstrings_a_SOURCES = $(EMIT_PARSER_OUTPUT_FILES)
-tests_unittoutput_LDFLAGS = $(AM_LDFLAGS) -static
-tests_unittoutput_CPPFLAGS = -I$(top_builddir)/src/templates -I$(top_srcdir)/src/templates $(TESTS_CPP_FLAGS)
-tests_unittoutput_CXXFLAGS = $(AM_CXXFLAGS)
-tests_unittoutput_SOURCES = \
+tests_unittjson_LDFLAGS = $(AM_LDFLAGS) -static
+tests_unittjson_CPPFLAGS = -I$(top_builddir)/src/templates -I$(top_srcdir)/src/templates $(TESTS_CPP_FLAGS)
+tests_unittjson_CXXFLAGS = $(AM_CXXFLAGS)
+tests_unittjson_SOURCES = \
 					tests/unittest.cc \
-					src/templates/json.hh \
+					src/include/json.hh \
 					src/templates/json.cc \
 					tests/output/test-Json-class.cc
 
@@ -882,6 +919,26 @@ tests_unittemitparser_SOURCES = \
 					tests/include/def-emit-parser-tests.hh \
 					tests/include/emit-parser-output-strings.hh \
 					tests/parser-gen/test-emit-parser.cc
+
+tests_libparseroutput_a_LIBADD = \
+					$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER) \
+					$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER)
+
+tests_libparseroutput_a_CPPFLAGS = $(TESTS_CPP_FLAGS) -I$(top_srcdir)/src/templates
+tests_libparseroutput_a_SOURCES = \
+					$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_LEXER) \
+					$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_PARSER) \
+					$(EMIT_PARSER_OUTPUT_FILES_STYPE)
+
+tests_unittparsejson_LDADD = tests/libparseroutput.a
+tests_unittparsejson_LDFLAGS = $(AM_LDFLAGS) -static
+tests_unittparsejson_CPPFLAGS = $(TESTS_CPP_FLAGS) -I$(top_srcdir)/tests/include -I$(top_srcdir)/src/templates
+tests_unittparsejson_CXXFLAGS = $(AM_CXXFLAGS) -Wno-parentheses -Wno-error=parentheses
+tests_unittparsejson_SOURCES = \
+					tests/unittest.cc \
+					tests/parser-gen/test-parse-json.cc \
+					src/templates/json.cc \
+					src/include/json.hh
 
 SED_IN_PLACE_FLAG = '-i.sed_bak'
 JSON_SCHEMA_INPUT_STRING_PREFIX = str_schema_input_json_
@@ -1000,8 +1057,8 @@ clean-checkPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+clean-checkLIBRARIES:
+	-test -z "$(check_LIBRARIES)" || rm -f $(check_LIBRARIES)
 
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -1053,6 +1110,11 @@ tests/liboutputstrings.a: $(tests_liboutputstrings_a_OBJECTS) $(tests_liboutputs
 	$(AM_V_at)-rm -f tests/liboutputstrings.a
 	$(AM_V_AR)$(tests_liboutputstrings_a_AR) tests/liboutputstrings.a $(tests_liboutputstrings_a_OBJECTS) $(tests_liboutputstrings_a_LIBADD)
 	$(AM_V_at)$(RANLIB) tests/liboutputstrings.a
+
+tests/libparseroutput.a: $(tests_libparseroutput_a_OBJECTS) $(tests_libparseroutput_a_DEPENDENCIES) $(EXTRA_tests_libparseroutput_a_DEPENDENCIES) tests/$(am__dirstamp)
+	$(AM_V_at)-rm -f tests/libparseroutput.a
+	$(AM_V_AR)$(tests_libparseroutput_a_AR) tests/libparseroutput.a $(tests_libparseroutput_a_OBJECTS) $(tests_libparseroutput_a_LIBADD)
+	$(AM_V_at)$(RANLIB) tests/libparseroutput.a
 src/schema/$(am__dirstamp):
 	@$(MKDIR_P) src/schema
 	@: > src/schema/$(am__dirstamp)
@@ -1152,7 +1214,7 @@ tests/parser-gen/unittemitparser-test-emit-parser.$(OBJEXT):  \
 tests/unittemitparser$(EXEEXT): $(tests_unittemitparser_OBJECTS) $(tests_unittemitparser_DEPENDENCIES) $(EXTRA_tests_unittemitparser_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/unittemitparser$(EXEEXT)
 	$(AM_V_CXXLD)$(tests_unittemitparser_LINK) $(tests_unittemitparser_OBJECTS) $(tests_unittemitparser_LDADD) $(LIBS)
-tests/unittoutput-unittest.$(OBJEXT): tests/$(am__dirstamp) \
+tests/unittjson-unittest.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 src/templates/$(am__dirstamp):
 	@$(MKDIR_P) src/templates
@@ -1160,7 +1222,7 @@ src/templates/$(am__dirstamp):
 src/templates/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/templates/$(DEPDIR)
 	@: > src/templates/$(DEPDIR)/$(am__dirstamp)
-src/templates/tests_unittoutput-json.$(OBJEXT):  \
+src/templates/tests_unittjson-json.$(OBJEXT):  \
 	src/templates/$(am__dirstamp) \
 	src/templates/$(DEPDIR)/$(am__dirstamp)
 tests/output/$(am__dirstamp):
@@ -1169,13 +1231,25 @@ tests/output/$(am__dirstamp):
 tests/output/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) tests/output/$(DEPDIR)
 	@: > tests/output/$(DEPDIR)/$(am__dirstamp)
-tests/output/unittoutput-test-Json-class.$(OBJEXT):  \
+tests/output/unittjson-test-Json-class.$(OBJEXT):  \
 	tests/output/$(am__dirstamp) \
 	tests/output/$(DEPDIR)/$(am__dirstamp)
 
-tests/unittoutput$(EXEEXT): $(tests_unittoutput_OBJECTS) $(tests_unittoutput_DEPENDENCIES) $(EXTRA_tests_unittoutput_DEPENDENCIES) tests/$(am__dirstamp)
-	@rm -f tests/unittoutput$(EXEEXT)
-	$(AM_V_CXXLD)$(tests_unittoutput_LINK) $(tests_unittoutput_OBJECTS) $(tests_unittoutput_LDADD) $(LIBS)
+tests/unittjson$(EXEEXT): $(tests_unittjson_OBJECTS) $(tests_unittjson_DEPENDENCIES) $(EXTRA_tests_unittjson_DEPENDENCIES) tests/$(am__dirstamp)
+	@rm -f tests/unittjson$(EXEEXT)
+	$(AM_V_CXXLD)$(tests_unittjson_LINK) $(tests_unittjson_OBJECTS) $(tests_unittjson_LDADD) $(LIBS)
+tests/unittparsejson-unittest.$(OBJEXT): tests/$(am__dirstamp) \
+	tests/$(DEPDIR)/$(am__dirstamp)
+tests/parser-gen/unittparsejson-test-parse-json.$(OBJEXT):  \
+	tests/parser-gen/$(am__dirstamp) \
+	tests/parser-gen/$(DEPDIR)/$(am__dirstamp)
+src/templates/tests_unittparsejson-json.$(OBJEXT):  \
+	src/templates/$(am__dirstamp) \
+	src/templates/$(DEPDIR)/$(am__dirstamp)
+
+tests/unittparsejson$(EXEEXT): $(tests_unittparsejson_OBJECTS) $(tests_unittparsejson_DEPENDENCIES) $(EXTRA_tests_unittparsejson_DEPENDENCIES) tests/$(am__dirstamp)
+	@rm -f tests/unittparsejson$(EXEEXT)
+	$(AM_V_CXXLD)$(tests_unittparsejson_LINK) $(tests_unittparsejson_OBJECTS) $(tests_unittparsejson_LDADD) $(LIBS)
 tests/unittparseschema-unittest.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/parse-schema/$(am__dirstamp):
@@ -1224,10 +1298,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/schema/$(DEPDIR)/libjson_schema_code_gen_la-Token.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/schema/$(DEPDIR)/libjson_schema_code_gen_la-schema-lexer.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/schema/$(DEPDIR)/libjson_schema_code_gen_la-schema-parser.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/templates/$(DEPDIR)/tests_unittoutput-json.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/templates/$(DEPDIR)/tests_unittjson-json.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/templates/$(DEPDIR)/tests_unittparsejson-json.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/unittclasses-unittest.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/unittemitparser-unittest.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/unittoutput-unittest.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/unittjson-unittest.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/unittparsejson-unittest.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/unittparseschema-unittest.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/classes/$(DEPDIR)/unittclasses-test-FormatType-class.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/classes/$(DEPDIR)/unittclasses-test-ItemType-class.Po@am__quote@ # am--include-marker
@@ -1235,11 +1311,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@tests/classes/$(DEPDIR)/unittclasses-test-ParsedItemData-class.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/classes/$(DEPDIR)/unittclasses-test-SchemaItem-class.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/classes/$(DEPDIR)/unittclasses-test-Token-class.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@tests/output/$(DEPDIR)/unittoutput-test-Json-class.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@tests/output/$(DEPDIR)/unittjson-test-Json-class.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-integer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-number.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-string.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/parser-gen/$(DEPDIR)/unittemitparser-test-emit-parser.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -1481,47 +1558,89 @@ tests/parser-gen/unittemitparser-test-emit-parser.obj: tests/parser-gen/test-emi
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittemitparser_CPPFLAGS) $(CPPFLAGS) $(tests_unittemitparser_CXXFLAGS) $(CXXFLAGS) -c -o tests/parser-gen/unittemitparser-test-emit-parser.obj `if test -f 'tests/parser-gen/test-emit-parser.cc'; then $(CYGPATH_W) 'tests/parser-gen/test-emit-parser.cc'; else $(CYGPATH_W) '$(srcdir)/tests/parser-gen/test-emit-parser.cc'; fi`
 
-tests/unittoutput-unittest.o: tests/unittest.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -MT tests/unittoutput-unittest.o -MD -MP -MF tests/$(DEPDIR)/unittoutput-unittest.Tpo -c -o tests/unittoutput-unittest.o `test -f 'tests/unittest.cc' || echo '$(srcdir)/'`tests/unittest.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/unittoutput-unittest.Tpo tests/$(DEPDIR)/unittoutput-unittest.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/unittest.cc' object='tests/unittoutput-unittest.o' libtool=no @AMDEPBACKSLASH@
+tests/unittjson-unittest.o: tests/unittest.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -MT tests/unittjson-unittest.o -MD -MP -MF tests/$(DEPDIR)/unittjson-unittest.Tpo -c -o tests/unittjson-unittest.o `test -f 'tests/unittest.cc' || echo '$(srcdir)/'`tests/unittest.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/unittjson-unittest.Tpo tests/$(DEPDIR)/unittjson-unittest.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/unittest.cc' object='tests/unittjson-unittest.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -c -o tests/unittoutput-unittest.o `test -f 'tests/unittest.cc' || echo '$(srcdir)/'`tests/unittest.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -c -o tests/unittjson-unittest.o `test -f 'tests/unittest.cc' || echo '$(srcdir)/'`tests/unittest.cc
 
-tests/unittoutput-unittest.obj: tests/unittest.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -MT tests/unittoutput-unittest.obj -MD -MP -MF tests/$(DEPDIR)/unittoutput-unittest.Tpo -c -o tests/unittoutput-unittest.obj `if test -f 'tests/unittest.cc'; then $(CYGPATH_W) 'tests/unittest.cc'; else $(CYGPATH_W) '$(srcdir)/tests/unittest.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/unittoutput-unittest.Tpo tests/$(DEPDIR)/unittoutput-unittest.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/unittest.cc' object='tests/unittoutput-unittest.obj' libtool=no @AMDEPBACKSLASH@
+tests/unittjson-unittest.obj: tests/unittest.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -MT tests/unittjson-unittest.obj -MD -MP -MF tests/$(DEPDIR)/unittjson-unittest.Tpo -c -o tests/unittjson-unittest.obj `if test -f 'tests/unittest.cc'; then $(CYGPATH_W) 'tests/unittest.cc'; else $(CYGPATH_W) '$(srcdir)/tests/unittest.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/unittjson-unittest.Tpo tests/$(DEPDIR)/unittjson-unittest.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/unittest.cc' object='tests/unittjson-unittest.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -c -o tests/unittoutput-unittest.obj `if test -f 'tests/unittest.cc'; then $(CYGPATH_W) 'tests/unittest.cc'; else $(CYGPATH_W) '$(srcdir)/tests/unittest.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -c -o tests/unittjson-unittest.obj `if test -f 'tests/unittest.cc'; then $(CYGPATH_W) 'tests/unittest.cc'; else $(CYGPATH_W) '$(srcdir)/tests/unittest.cc'; fi`
 
-src/templates/tests_unittoutput-json.o: src/templates/json.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -MT src/templates/tests_unittoutput-json.o -MD -MP -MF src/templates/$(DEPDIR)/tests_unittoutput-json.Tpo -c -o src/templates/tests_unittoutput-json.o `test -f 'src/templates/json.cc' || echo '$(srcdir)/'`src/templates/json.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/templates/$(DEPDIR)/tests_unittoutput-json.Tpo src/templates/$(DEPDIR)/tests_unittoutput-json.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/templates/json.cc' object='src/templates/tests_unittoutput-json.o' libtool=no @AMDEPBACKSLASH@
+src/templates/tests_unittjson-json.o: src/templates/json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -MT src/templates/tests_unittjson-json.o -MD -MP -MF src/templates/$(DEPDIR)/tests_unittjson-json.Tpo -c -o src/templates/tests_unittjson-json.o `test -f 'src/templates/json.cc' || echo '$(srcdir)/'`src/templates/json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/templates/$(DEPDIR)/tests_unittjson-json.Tpo src/templates/$(DEPDIR)/tests_unittjson-json.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/templates/json.cc' object='src/templates/tests_unittjson-json.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -c -o src/templates/tests_unittoutput-json.o `test -f 'src/templates/json.cc' || echo '$(srcdir)/'`src/templates/json.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -c -o src/templates/tests_unittjson-json.o `test -f 'src/templates/json.cc' || echo '$(srcdir)/'`src/templates/json.cc
 
-src/templates/tests_unittoutput-json.obj: src/templates/json.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -MT src/templates/tests_unittoutput-json.obj -MD -MP -MF src/templates/$(DEPDIR)/tests_unittoutput-json.Tpo -c -o src/templates/tests_unittoutput-json.obj `if test -f 'src/templates/json.cc'; then $(CYGPATH_W) 'src/templates/json.cc'; else $(CYGPATH_W) '$(srcdir)/src/templates/json.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/templates/$(DEPDIR)/tests_unittoutput-json.Tpo src/templates/$(DEPDIR)/tests_unittoutput-json.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/templates/json.cc' object='src/templates/tests_unittoutput-json.obj' libtool=no @AMDEPBACKSLASH@
+src/templates/tests_unittjson-json.obj: src/templates/json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -MT src/templates/tests_unittjson-json.obj -MD -MP -MF src/templates/$(DEPDIR)/tests_unittjson-json.Tpo -c -o src/templates/tests_unittjson-json.obj `if test -f 'src/templates/json.cc'; then $(CYGPATH_W) 'src/templates/json.cc'; else $(CYGPATH_W) '$(srcdir)/src/templates/json.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/templates/$(DEPDIR)/tests_unittjson-json.Tpo src/templates/$(DEPDIR)/tests_unittjson-json.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/templates/json.cc' object='src/templates/tests_unittjson-json.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -c -o src/templates/tests_unittoutput-json.obj `if test -f 'src/templates/json.cc'; then $(CYGPATH_W) 'src/templates/json.cc'; else $(CYGPATH_W) '$(srcdir)/src/templates/json.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -c -o src/templates/tests_unittjson-json.obj `if test -f 'src/templates/json.cc'; then $(CYGPATH_W) 'src/templates/json.cc'; else $(CYGPATH_W) '$(srcdir)/src/templates/json.cc'; fi`
 
-tests/output/unittoutput-test-Json-class.o: tests/output/test-Json-class.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -MT tests/output/unittoutput-test-Json-class.o -MD -MP -MF tests/output/$(DEPDIR)/unittoutput-test-Json-class.Tpo -c -o tests/output/unittoutput-test-Json-class.o `test -f 'tests/output/test-Json-class.cc' || echo '$(srcdir)/'`tests/output/test-Json-class.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/output/$(DEPDIR)/unittoutput-test-Json-class.Tpo tests/output/$(DEPDIR)/unittoutput-test-Json-class.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/output/test-Json-class.cc' object='tests/output/unittoutput-test-Json-class.o' libtool=no @AMDEPBACKSLASH@
+tests/output/unittjson-test-Json-class.o: tests/output/test-Json-class.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -MT tests/output/unittjson-test-Json-class.o -MD -MP -MF tests/output/$(DEPDIR)/unittjson-test-Json-class.Tpo -c -o tests/output/unittjson-test-Json-class.o `test -f 'tests/output/test-Json-class.cc' || echo '$(srcdir)/'`tests/output/test-Json-class.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/output/$(DEPDIR)/unittjson-test-Json-class.Tpo tests/output/$(DEPDIR)/unittjson-test-Json-class.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/output/test-Json-class.cc' object='tests/output/unittjson-test-Json-class.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -c -o tests/output/unittoutput-test-Json-class.o `test -f 'tests/output/test-Json-class.cc' || echo '$(srcdir)/'`tests/output/test-Json-class.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -c -o tests/output/unittjson-test-Json-class.o `test -f 'tests/output/test-Json-class.cc' || echo '$(srcdir)/'`tests/output/test-Json-class.cc
 
-tests/output/unittoutput-test-Json-class.obj: tests/output/test-Json-class.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -MT tests/output/unittoutput-test-Json-class.obj -MD -MP -MF tests/output/$(DEPDIR)/unittoutput-test-Json-class.Tpo -c -o tests/output/unittoutput-test-Json-class.obj `if test -f 'tests/output/test-Json-class.cc'; then $(CYGPATH_W) 'tests/output/test-Json-class.cc'; else $(CYGPATH_W) '$(srcdir)/tests/output/test-Json-class.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/output/$(DEPDIR)/unittoutput-test-Json-class.Tpo tests/output/$(DEPDIR)/unittoutput-test-Json-class.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/output/test-Json-class.cc' object='tests/output/unittoutput-test-Json-class.obj' libtool=no @AMDEPBACKSLASH@
+tests/output/unittjson-test-Json-class.obj: tests/output/test-Json-class.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -MT tests/output/unittjson-test-Json-class.obj -MD -MP -MF tests/output/$(DEPDIR)/unittjson-test-Json-class.Tpo -c -o tests/output/unittjson-test-Json-class.obj `if test -f 'tests/output/test-Json-class.cc'; then $(CYGPATH_W) 'tests/output/test-Json-class.cc'; else $(CYGPATH_W) '$(srcdir)/tests/output/test-Json-class.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/output/$(DEPDIR)/unittjson-test-Json-class.Tpo tests/output/$(DEPDIR)/unittjson-test-Json-class.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/output/test-Json-class.cc' object='tests/output/unittjson-test-Json-class.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittoutput_CPPFLAGS) $(CPPFLAGS) $(tests_unittoutput_CXXFLAGS) $(CXXFLAGS) -c -o tests/output/unittoutput-test-Json-class.obj `if test -f 'tests/output/test-Json-class.cc'; then $(CYGPATH_W) 'tests/output/test-Json-class.cc'; else $(CYGPATH_W) '$(srcdir)/tests/output/test-Json-class.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittjson_CPPFLAGS) $(CPPFLAGS) $(tests_unittjson_CXXFLAGS) $(CXXFLAGS) -c -o tests/output/unittjson-test-Json-class.obj `if test -f 'tests/output/test-Json-class.cc'; then $(CYGPATH_W) 'tests/output/test-Json-class.cc'; else $(CYGPATH_W) '$(srcdir)/tests/output/test-Json-class.cc'; fi`
+
+tests/unittparsejson-unittest.o: tests/unittest.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -MT tests/unittparsejson-unittest.o -MD -MP -MF tests/$(DEPDIR)/unittparsejson-unittest.Tpo -c -o tests/unittparsejson-unittest.o `test -f 'tests/unittest.cc' || echo '$(srcdir)/'`tests/unittest.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/unittparsejson-unittest.Tpo tests/$(DEPDIR)/unittparsejson-unittest.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/unittest.cc' object='tests/unittparsejson-unittest.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -c -o tests/unittparsejson-unittest.o `test -f 'tests/unittest.cc' || echo '$(srcdir)/'`tests/unittest.cc
+
+tests/unittparsejson-unittest.obj: tests/unittest.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -MT tests/unittparsejson-unittest.obj -MD -MP -MF tests/$(DEPDIR)/unittparsejson-unittest.Tpo -c -o tests/unittparsejson-unittest.obj `if test -f 'tests/unittest.cc'; then $(CYGPATH_W) 'tests/unittest.cc'; else $(CYGPATH_W) '$(srcdir)/tests/unittest.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/unittparsejson-unittest.Tpo tests/$(DEPDIR)/unittparsejson-unittest.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/unittest.cc' object='tests/unittparsejson-unittest.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -c -o tests/unittparsejson-unittest.obj `if test -f 'tests/unittest.cc'; then $(CYGPATH_W) 'tests/unittest.cc'; else $(CYGPATH_W) '$(srcdir)/tests/unittest.cc'; fi`
+
+tests/parser-gen/unittparsejson-test-parse-json.o: tests/parser-gen/test-parse-json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -MT tests/parser-gen/unittparsejson-test-parse-json.o -MD -MP -MF tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Tpo -c -o tests/parser-gen/unittparsejson-test-parse-json.o `test -f 'tests/parser-gen/test-parse-json.cc' || echo '$(srcdir)/'`tests/parser-gen/test-parse-json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Tpo tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/parser-gen/test-parse-json.cc' object='tests/parser-gen/unittparsejson-test-parse-json.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -c -o tests/parser-gen/unittparsejson-test-parse-json.o `test -f 'tests/parser-gen/test-parse-json.cc' || echo '$(srcdir)/'`tests/parser-gen/test-parse-json.cc
+
+tests/parser-gen/unittparsejson-test-parse-json.obj: tests/parser-gen/test-parse-json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -MT tests/parser-gen/unittparsejson-test-parse-json.obj -MD -MP -MF tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Tpo -c -o tests/parser-gen/unittparsejson-test-parse-json.obj `if test -f 'tests/parser-gen/test-parse-json.cc'; then $(CYGPATH_W) 'tests/parser-gen/test-parse-json.cc'; else $(CYGPATH_W) '$(srcdir)/tests/parser-gen/test-parse-json.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Tpo tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/parser-gen/test-parse-json.cc' object='tests/parser-gen/unittparsejson-test-parse-json.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -c -o tests/parser-gen/unittparsejson-test-parse-json.obj `if test -f 'tests/parser-gen/test-parse-json.cc'; then $(CYGPATH_W) 'tests/parser-gen/test-parse-json.cc'; else $(CYGPATH_W) '$(srcdir)/tests/parser-gen/test-parse-json.cc'; fi`
+
+src/templates/tests_unittparsejson-json.o: src/templates/json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -MT src/templates/tests_unittparsejson-json.o -MD -MP -MF src/templates/$(DEPDIR)/tests_unittparsejson-json.Tpo -c -o src/templates/tests_unittparsejson-json.o `test -f 'src/templates/json.cc' || echo '$(srcdir)/'`src/templates/json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/templates/$(DEPDIR)/tests_unittparsejson-json.Tpo src/templates/$(DEPDIR)/tests_unittparsejson-json.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/templates/json.cc' object='src/templates/tests_unittparsejson-json.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -c -o src/templates/tests_unittparsejson-json.o `test -f 'src/templates/json.cc' || echo '$(srcdir)/'`src/templates/json.cc
+
+src/templates/tests_unittparsejson-json.obj: src/templates/json.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -MT src/templates/tests_unittparsejson-json.obj -MD -MP -MF src/templates/$(DEPDIR)/tests_unittparsejson-json.Tpo -c -o src/templates/tests_unittparsejson-json.obj `if test -f 'src/templates/json.cc'; then $(CYGPATH_W) 'src/templates/json.cc'; else $(CYGPATH_W) '$(srcdir)/src/templates/json.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/templates/$(DEPDIR)/tests_unittparsejson-json.Tpo src/templates/$(DEPDIR)/tests_unittparsejson-json.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/templates/json.cc' object='src/templates/tests_unittparsejson-json.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparsejson_CPPFLAGS) $(CPPFLAGS) $(tests_unittparsejson_CXXFLAGS) $(CXXFLAGS) -c -o src/templates/tests_unittparsejson-json.obj `if test -f 'src/templates/json.cc'; then $(CYGPATH_W) 'src/templates/json.cc'; else $(CYGPATH_W) '$(srcdir)/src/templates/json.cc'; fi`
 
 tests/unittparseschema-unittest.o: tests/unittest.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_unittparseschema_CPPFLAGS) $(CPPFLAGS) $(tests_unittparseschema_CXXFLAGS) $(CXXFLAGS) -MT tests/unittparseschema-unittest.o -MD -MP -MF tests/$(DEPDIR)/unittparseschema-unittest.Tpo -c -o tests/unittparseschema-unittest.o `test -f 'tests/unittest.cc' || echo '$(srcdir)/'`tests/unittest.cc
@@ -1769,7 +1888,7 @@ $(TEST_SUITE_LOG): $(TEST_LOGS)
 	fi;								\
 	$$success || exit 1
 
-check-TESTS: $(check_PROGRAMS)
+check-TESTS: $(check_PROGRAMS) $(check_LIBRARIES)
 	@list='$(RECHECK_LOGS)';           test -z "$$list" || rm -f $$list
 	@list='$(RECHECK_LOGS:.log=.trs)'; test -z "$$list" || rm -f $$list
 	@test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
@@ -1779,7 +1898,7 @@ check-TESTS: $(check_PROGRAMS)
 	log_list=`echo $$log_list`; trs_list=`echo $$trs_list`; \
 	$(MAKE) $(AM_MAKEFLAGS) $(TEST_SUITE_LOG) TEST_LOGS="$$log_list"; \
 	exit $$?;
-recheck: all $(check_PROGRAMS)
+recheck: all $(check_PROGRAMS) $(check_LIBRARIES)
 	@test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
 	@set +e; $(am__set_TESTS_bases); \
 	bases=`for i in $$bases; do echo $$i; done \
@@ -1804,9 +1923,9 @@ tests/unittemitparser.log: tests/unittemitparser$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-tests/unittoutput.log: tests/unittoutput$(EXEEXT)
-	@p='tests/unittoutput$(EXEEXT)'; \
-	b='tests/unittoutput'; \
+tests/unittjson.log: tests/unittjson$(EXEEXT)
+	@p='tests/unittjson$(EXEEXT)'; \
+	b='tests/unittjson'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -1814,6 +1933,13 @@ tests/unittoutput.log: tests/unittoutput$(EXEEXT)
 tests/unittparseschema.log: tests/unittparseschema$(EXEEXT)
 	@p='tests/unittparseschema$(EXEEXT)'; \
 	b='tests/unittparseschema'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+tests/unittparsejson.log: tests/unittparsejson$(EXEEXT)
+	@p='tests/unittparsejson$(EXEEXT)'; \
+	b='tests/unittparsejson'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -2000,11 +2126,11 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS) $(check_LIBRARIES)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(PROGRAMS) $(LIBRARIES) $(LTLIBRARIES) config.h
+all-am: Makefile $(PROGRAMS) $(LTLIBRARIES) config.h
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
@@ -2066,9 +2192,9 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-local \
-	clean-noinstLIBRARIES mostlyclean-am
+clean-am: clean-binPROGRAMS clean-checkLIBRARIES clean-checkPROGRAMS \
+	clean-generic clean-libLTLIBRARIES clean-libtool clean-local \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -2083,10 +2209,12 @@ distclean: distclean-am
 	-rm -f src/schema/$(DEPDIR)/libjson_schema_code_gen_la-Token.Plo
 	-rm -f src/schema/$(DEPDIR)/libjson_schema_code_gen_la-schema-lexer.Plo
 	-rm -f src/schema/$(DEPDIR)/libjson_schema_code_gen_la-schema-parser.Plo
-	-rm -f src/templates/$(DEPDIR)/tests_unittoutput-json.Po
+	-rm -f src/templates/$(DEPDIR)/tests_unittjson-json.Po
+	-rm -f src/templates/$(DEPDIR)/tests_unittparsejson-json.Po
 	-rm -f tests/$(DEPDIR)/unittclasses-unittest.Po
 	-rm -f tests/$(DEPDIR)/unittemitparser-unittest.Po
-	-rm -f tests/$(DEPDIR)/unittoutput-unittest.Po
+	-rm -f tests/$(DEPDIR)/unittjson-unittest.Po
+	-rm -f tests/$(DEPDIR)/unittparsejson-unittest.Po
 	-rm -f tests/$(DEPDIR)/unittparseschema-unittest.Po
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-FormatType-class.Po
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-ItemType-class.Po
@@ -2094,11 +2222,12 @@ distclean: distclean-am
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-ParsedItemData-class.Po
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-SchemaItem-class.Po
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-Token-class.Po
-	-rm -f tests/output/$(DEPDIR)/unittoutput-test-Json-class.Po
+	-rm -f tests/output/$(DEPDIR)/unittjson-test-Json-class.Po
 	-rm -f tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-integer.Po
 	-rm -f tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-number.Po
 	-rm -f tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-string.Po
 	-rm -f tests/parser-gen/$(DEPDIR)/unittemitparser-test-emit-parser.Po
+	-rm -f tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-libtool distclean-tags
@@ -2157,10 +2286,12 @@ maintainer-clean: maintainer-clean-am
 	-rm -f src/schema/$(DEPDIR)/libjson_schema_code_gen_la-Token.Plo
 	-rm -f src/schema/$(DEPDIR)/libjson_schema_code_gen_la-schema-lexer.Plo
 	-rm -f src/schema/$(DEPDIR)/libjson_schema_code_gen_la-schema-parser.Plo
-	-rm -f src/templates/$(DEPDIR)/tests_unittoutput-json.Po
+	-rm -f src/templates/$(DEPDIR)/tests_unittjson-json.Po
+	-rm -f src/templates/$(DEPDIR)/tests_unittparsejson-json.Po
 	-rm -f tests/$(DEPDIR)/unittclasses-unittest.Po
 	-rm -f tests/$(DEPDIR)/unittemitparser-unittest.Po
-	-rm -f tests/$(DEPDIR)/unittoutput-unittest.Po
+	-rm -f tests/$(DEPDIR)/unittjson-unittest.Po
+	-rm -f tests/$(DEPDIR)/unittparsejson-unittest.Po
 	-rm -f tests/$(DEPDIR)/unittparseschema-unittest.Po
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-FormatType-class.Po
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-ItemType-class.Po
@@ -2168,11 +2299,12 @@ maintainer-clean: maintainer-clean-am
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-ParsedItemData-class.Po
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-SchemaItem-class.Po
 	-rm -f tests/classes/$(DEPDIR)/unittclasses-test-Token-class.Po
-	-rm -f tests/output/$(DEPDIR)/unittoutput-test-Json-class.Po
+	-rm -f tests/output/$(DEPDIR)/unittjson-test-Json-class.Po
 	-rm -f tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-integer.Po
 	-rm -f tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-number.Po
 	-rm -f tests/parse-schema/$(DEPDIR)/unittparseschema-test-parse-schema-string.Po
 	-rm -f tests/parser-gen/$(DEPDIR)/unittemitparser-test-emit-parser.Po
+	-rm -f tests/parser-gen/$(DEPDIR)/unittparsejson-test-parse-json.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -2195,20 +2327,19 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES
 
 .PHONY: CTAGS GTAGS TAGS all all-am am--depfiles am--refresh check \
 	check-TESTS check-am clean clean-binPROGRAMS \
-	clean-checkPROGRAMS clean-cscope clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-local \
-	clean-noinstLIBRARIES cscope cscopelist-am ctags ctags-am dist \
-	dist-all dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ \
-	dist-xz dist-zip distcheck distclean distclean-compile \
-	distclean-generic distclean-hdr distclean-libtool \
-	distclean-tags distcleancheck distdir distuninstallcheck dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-binPROGRAMS install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	clean-checkLIBRARIES clean-checkPROGRAMS clean-cscope \
+	clean-generic clean-libLTLIBRARIES clean-libtool clean-local \
+	cscope cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
+	dist-gzip dist-lzip dist-shar dist-tarZ dist-xz dist-zip \
+	distcheck distclean distclean-compile distclean-generic \
+	distclean-hdr distclean-libtool distclean-tags distcleancheck \
+	distdir distuninstallcheck dvi dvi-am html html-am info \
+	info-am install install-am install-binPROGRAMS install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-libLTLIBRARIES install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	recheck tags tags-am uninstall uninstall-am \
@@ -2222,10 +2353,15 @@ clean-local:	clean-local-check
 .PHONY:	clean-local-check
 
 clean-local-check:
-	rm -rf $(top_builddir)/$(JSON_PARSER_INPUT_DIR)/$(DEPDIR)
-	rm -rf $(top_builddir)/$(JSON_SCHEMA_INPUT_DIR)/$(DEPDIR)
-	rm -rf $(top_builddir)/tests/emit-parser-output/build/lib/$(DEPDIR)
-	rm -rf $(top_builddir)/tests/*.dSYM
+	$(RM) -r $(top_builddir)/$(JSON_PARSER_INPUT_DIR)/$(DEPDIR)
+	$(RM) -r $(top_builddir)/$(JSON_SCHEMA_INPUT_DIR)/$(DEPDIR)
+	$(RM) -r $(top_builddir)/tests/emit-parser-output/build/lib/$(DEPDIR)
+	$(RM) -r $(top_builddir)/tests/*.dSYM
+	$(RM) $(JSON_INPUT_CC_FILES)
+	$(RM) $(EMIT_PARSER_OUTPUT_CC_FILES)
+	$(RM) $(JSON_INPUT_O_FILES)
+	$(RM) $(EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER)
+	$(RM) $(EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER)
 
 src/schema/schema-parser.hh:	src/schema/schema-parser.cc Makefile
 
@@ -2335,6 +2471,16 @@ tests/include/def-emit-parser-tests.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefile
 	echo "//" >> $@
 	echo "// ** generated file - do not edit! **" >> $@
 	for i in $(subst lexer-,,$(filter lexer-%,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER))))) ; do _NAME=$$(echo "$${i}" | sed 's/-/_/g') ; echo "DEF_TEXT_TEST($${i}, $${_NAME})" >> $@ ; done
+
+tests/emit-parser-output/build/parser/parser-%.cc tests/emit-parser-output/build/parser/parser-%.hh:	$(top_srcdir)/tests/emit-parser-output/parser-%.yy
+	$(YACC) $(AM_YFLAGS) --defines=$(basename $@).hh -o $@ $<
+
+tests/emit-parser-output/build/parser/parser-%.o:	$(top_builddir)/tests/emit-parser-output/build/parser/parser-%.cc
+
+tests/emit-parser-output/build/parser/lexer-%.cc tests/emit-parser-output/build/parser/lexer-%.hh:	$(top_srcdir)/tests/emit-parser-output/lexer-%.ll
+	$(LEX) -o $@ --header-file=$(basename $@).hh --never-interactive $<
+
+# tests/emit-parser-output/build/parser/lexer-%.o:	$(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.cc
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
