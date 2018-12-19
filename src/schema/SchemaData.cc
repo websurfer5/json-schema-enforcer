@@ -162,7 +162,7 @@ namespace jsonschemaenforcer
         parser_type_list.push_back(
                 "};\n"
                 "\n"
-                "typedef struct " + upper_func_prefix + " " + upper_func_prefix + ";\n"
+                "typedef struct " + upper_func_prefix + " YYSTYPE;\n"
                 "#endif  // " + guard_macro + "\n");
     }
 
@@ -619,5 +619,17 @@ namespace jsonschemaenforcer
         }
 
         return upper;
+    }
+
+    std::string SchemaData::unput_string_func_name()
+    {
+        return helper_func_name("void",
+                                "unput_string",
+                                "yyscan_t yyscanner, const std::string& str",
+                                "struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;\n"
+                                "\n"
+                                "for (std::string::const_reverse_iterator it=str.rbegin(); it != str.rend(); it++)\n"
+                                "    unput(*it);\n",
+                                false);
     }
 }

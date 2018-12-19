@@ -13,9 +13,7 @@ namespace foo
 #include "stype-array-minItems.hh"
 #include "parser-array-minItems.hh"
 
-   static void foo_foo_append_utf16_escaped_char_0(std::string& str, const char *esc_seq);
-   extern void foo_foo_set_item_array_start_state_0();
-   static void foo_foo_unput_string_0(const std::string& str);
+   extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
 %}
 
 %x ITEM_ARRAY
@@ -70,7 +68,7 @@ namespace foo
                   	}
 <ITEM_OBJECT>"\""  	{
                    	    yy_push_state(ITEM_VALUE, yyextra->scaninfo);
-                   	    unput(*text);
+                   	    unput(*yytext);
                    	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                    	}
 <ITEM_OBJECT>"}"  	{
@@ -169,7 +167,26 @@ namespace foo
                	    yyextra->quoted->str += '\t';
                	}
 <QUOTED>\\u[0-9a-fA-F]{4}  	{
-                           	    foo_foo_append_utf16_escaped_char_0(yyextra->quoted_str, yytext);
+                           	    uint16_t uval;
+                           	    
+                           	    uval = ((yytext[2] <= '9') ? (yytext[2] - '0') : ((yytext[2] & 0x07) + 9)) << 12;
+                           	    uval += ((yytext[3] <= '9') ? (yytext[3] - '0') : ((yytext[3] & 0x07) + 9)) << 8;
+                           	    uval += ((yytext[4] <= '9') ? (yytext[4] - '0') : ((yytext[4] & 0x07) + 9)) << 4;
+                           	    uval += ((yytext[5] <= '9') ? (yytext[5] - '0') : ((yytext[5] & 0x07) + 9));
+                           	    
+                           	    if (uval < 0x0080)
+                           	        str += uval & 0xff;
+                           	    else if (uval < 0x0800)
+                           	    {
+                           	        str += (uval >> 6) | 0xc0;
+                           	        str += (uval & 0x3f) | 0x80;
+                           	    }
+                           	    else
+                           	    {
+                           	        str += (uval >> 12) | 0xe0;
+                           	        str += ((uval >> 6) & 0x3f) | 0x80;
+                           	        str += (uval & 0x3f) | 0x80;
+                           	    }
                            	}
 <SSTATE_0>","  	{
                	    return COMMA;
@@ -188,38 +205,9 @@ namespace foo
 
 %%
 
-static void foo_foo_append_utf16_escaped_char_0(std::string& str, const char *esc_seq)
+void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner)
 {
-	    uint16_t uval;
-	    
-	    uval = ((esc_seq[2] <= '9') ? (esc_seq[2] - '0') : ((esc_seq[2] & 0x07) + 9)) << 12;
-	    uval += ((esc_seq[3] <= '9') ? (esc_seq[3] - '0') : ((esc_seq[3] & 0x07) + 9)) << 8;
-	    uval += ((esc_seq[4] <= '9') ? (esc_seq[4] - '0') : ((esc_seq[4] & 0x07) + 9)) << 4;
-	    uval += ((esc_seq[5] <= '9') ? (esc_seq[5] - '0') : ((esc_seq[5] & 0x07) + 9));
-	    
-	    if (uval < 0x0080)
-	        str += uval & 0xff;
-	    else if (uval < 0x0800)
-	    {
-	        str += (uval >> 6) | 0xc0;
-	        str += (uval & 0x3f) | 0x80;
-	    }
-	    else
-	    {
-	        str += (uval >> 12) | 0xe0;
-	        str += ((uval >> 6) & 0x3f) | 0x80;
-	        str += (uval & 0x3f) | 0x80;
-	    }
-}
-
-void foo_foo_set_item_array_start_state_0()
-{
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    BEGIN ITEM_ARRAY;
-}
-
-static void foo_foo_unput_string_0(const std::string& str)
-{
-	    for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)
-	        unput(*it);
 }
 

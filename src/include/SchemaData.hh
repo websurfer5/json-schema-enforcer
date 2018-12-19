@@ -158,6 +158,7 @@ namespace jsonschemaenforcer
                            const std::string& header_file,
                            bool is_system_header = false);
         std::string toupper(const std::string lower, bool b_safe) const;
+        std::string unput_string_func_name();
 
     protected:
         std::string indent_block(const std::string& prefix, const std::string& block) const;

@@ -13,7 +13,6 @@ namespace foo
 #include "stype-string.hh"
 #include "parser-string.hh"
 
-   static void foo_foo_unput_string_0(const std::string& str);
 %}
 
 %x QUOTED
@@ -30,10 +29,4 @@ namespace foo
               	}
 
 %%
-
-static void foo_foo_unput_string_0(const std::string& str)
-{
-	    for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)
-	        unput(*it);
-}
 

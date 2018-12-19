@@ -16,7 +16,7 @@ namespace foo
 #include "Bar.hh"
 #include <string>
 
-extern void foo_foo_set_item_array_start_state_0();
+extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
 %}
 
 %token B_FALSE
@@ -37,7 +37,7 @@ extern void foo_foo_set_item_array_start_state_0();
 %type <foo__JsonItem_type> array
 %type <foo__JsonItem_type> array_0
 %type <foo__JsonItem_type> array_item
-%type <foo__JsonItemList_type> array_items
+%type <foo__JsonItemVector_type> array_items
 %type <bool_type> boolean
 %type <long_type> integer
 %type <foo__JsonItem_type> integer_0
@@ -47,8 +47,8 @@ extern void foo_foo_set_item_array_start_state_0();
 %type <foo__JsonItemMap_type> object_items
 
 %destructor { $$.clear(); } <foo__JsonItem_type>;
-%destructor { $$.clear(); } <foo__JsonItemList_type>;
 %destructor { $$.clear(); } <foo__JsonItemMap_type>;
+%destructor { $$.clear(); } <foo__JsonItemVector_type>;
 %destructor { $$.clear(); } <std__string_type>;
 
 %start array_0

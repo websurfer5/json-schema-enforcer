@@ -13,7 +13,7 @@ namespace foo
 #include "stype-string-minLength.hh"
 #include "parser-string-minLength.hh"
 
-   static void foo_foo_unput_string_0(const std::string& str);
+   static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
 %}
 
 %x ITEM_VALUE
@@ -24,7 +24,7 @@ namespace foo
 %%
 "\""  	{
       	    yy_push_state(SSTATE_1, yyextra->scaninfo);
-      	    foo_foo_unput_string_0(yytext);
+      	    foo_foo_unput_string_0(yyscanner, yytext);
       	    return TOKEN_0;
       	}
 <QUOTED>"\""  	{
@@ -34,18 +34,20 @@ namespace foo
               	}
 <SSTATE_0>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"])*\""  	{
                                                                                                 	    BEGIN ITEM_VALUE;
-                                                                                                	    foo_foo_unput_string_0(yytext);
+                                                                                                	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                                                 	}
 <SSTATE_1>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){100,}\""  	{
                                                                                                      	    BEGIN SSTATE_0;
-                                                                                                     	    foo_foo_unput_string_0(yytext);
+                                                                                                     	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                                                      	}
 
 %%
 
-static void foo_foo_unput_string_0(const std::string& str)
+static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
 {
-	    for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
+	    for (std::string::const_reverse_iterator it=str.rbegin(); it != str.rend(); it++)
 	        unput(*it);
 }
 

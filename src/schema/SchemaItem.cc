@@ -627,7 +627,7 @@ namespace jsonschemaenforcer
                            "    ;\n"
                            "\n",
                            false);
-        sd.set_rule_type("array_items", sd.get_namespace() + "::JsonItemList", true);
+        sd.set_rule_type("array_items", sd.get_namespace() + "::JsonItemVector", true);
         sd.add_parser_rule("array_item",
                            "    boolean\n"
                            "        {\n"
@@ -748,31 +748,30 @@ namespace jsonschemaenforcer
         sd.add_lexer_rule("\"\\\\n\"", "QUOTED", "", false, "yyextra->quoted->str += '\\n';\n");
         sd.add_lexer_rule("\"\\\\r\"", "QUOTED", "", false, "yyextra->quoted->str += '\\r';\n");
         sd.add_lexer_rule("\"\\\\t\"", "QUOTED", "", false, "yyextra->quoted->str += '\\t';\n");
-        func_name = sd.helper_func_name("void",
-                                        "append_utf16_escaped_char",
-                                        "std::string& str, const char *esc_seq",
-                                        "uint16_t uval;\n"
-                                        "\n"
-                                        "uval = ((esc_seq[2] <= '9') ? (esc_seq[2] - '0') : ((esc_seq[2] & 0x07) + 9)) << 12;\n"
-                                        "uval += ((esc_seq[3] <= '9') ? (esc_seq[3] - '0') : ((esc_seq[3] & 0x07) + 9)) << 8;\n"
-                                        "uval += ((esc_seq[4] <= '9') ? (esc_seq[4] - '0') : ((esc_seq[4] & 0x07) + 9)) << 4;\n"
-                                        "uval += ((esc_seq[5] <= '9') ? (esc_seq[5] - '0') : ((esc_seq[5] & 0x07) + 9));\n"
-                                        "\n"
-                                        "if (uval < 0x0080)\n"
-                                        "    str += uval & 0xff;\n"
-                                        "else if (uval < 0x0800)\n"
-                                        "{\n"
-                                        "    str += (uval >> 6) | 0xc0;\n"
-                                        "    str += (uval & 0x3f) | 0x80;\n"
-                                        "}\n"
-                                        "else\n"
-                                        "{\n"
-                                        "    str += (uval >> 12) | 0xe0;\n"
-                                        "    str += ((uval >> 6) & 0x3f) | 0x80;\n"
-                                        "    str += (uval & 0x3f) | 0x80;\n"
-                                        "}\n",
-                                        false);
-        sd.add_lexer_rule("\\\\u[0-9a-fA-F]{4}", "QUOTED", "", false, func_name + "(yyextra->quoted_str, yytext);\n");
+        sd.add_lexer_rule("\\\\u[0-9a-fA-F]{4}",
+                          "QUOTED",
+                          "",
+                          false,
+                          "uint16_t uval;\n"
+                          "\n"
+                          "uval = ((yytext[2] <= '9') ? (yytext[2] - '0') : ((yytext[2] & 0x07) + 9)) << 12;\n"
+                          "uval += ((yytext[3] <= '9') ? (yytext[3] - '0') : ((yytext[3] & 0x07) + 9)) << 8;\n"
+                          "uval += ((yytext[4] <= '9') ? (yytext[4] - '0') : ((yytext[4] & 0x07) + 9)) << 4;\n"
+                          "uval += ((yytext[5] <= '9') ? (yytext[5] - '0') : ((yytext[5] & 0x07) + 9));\n"
+                          "\n"
+                          "if (uval < 0x0080)\n"
+                          "    str += uval & 0xff;\n"
+                          "else if (uval < 0x0800)\n"
+                          "{\n"
+                          "    str += (uval >> 6) | 0xc0;\n"
+                          "    str += (uval & 0x3f) | 0x80;\n"
+                          "}\n"
+                          "else\n"
+                          "{\n"
+                          "    str += (uval >> 12) | 0xe0;\n"
+                          "    str += ((uval >> 6) & 0x3f) | 0x80;\n"
+                          "    str += (uval & 0x3f) | 0x80;\n"
+                          "}\n");
         sd.add_token("QUOTED_STRING", "std::string", true, "string", true, "\"\\\"\"", "yyextra->quoted_str", "QUOTED", "", true);
         sd.add_lexer_rule("\"\\\"\"", "PARSE_ITEM_KEY", "QUOTED", false, "");
         sd.add_token("COLON",
@@ -804,7 +803,7 @@ namespace jsonschemaenforcer
                           "ITEM_OBJECT",
                           "ITEM_VALUE",
                           false,
-                          "unput(*text);\n"
+                          "unput(*yytext);\n"
                           "yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);\n");
         sd.add_token("COLON", "", false, "\":\"", "", "ITEM_OBJECT", "ITEM_VALUE", false);
         sd.add_parser_rule("number",
@@ -902,19 +901,12 @@ namespace jsonschemaenforcer
                     rule_body,
                     rule_str,
                     rule_tag,
-                    unput_string_func,
                     validation_rule_str;
         unsigned array_tag_number = 0;
 
         array_state = get_array_properties().empty()
                         ? "ITEM_ARRAY"
                         : sd.new_start_state();
-        unput_string_func = sd.helper_func_name("void",
-                                                "unput_string",
-                                                "const std::string& str",
-                                                "for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)\n"
-                                                "    unput(*it);\n",
-                                                false);
 
         if (sd.is_initial_start_state(start_state))
         {
@@ -946,7 +938,7 @@ namespace jsonschemaenforcer
                                      start_state,
                                      array_state,
                                      false,
-                                     unput_string_func + "(yytext);\n"
+                                     sd.unput_string_func_name() + "(yyscanner, yytext);\n"
                                      "yy_push_state(" + key_validation_state + ", yyextra->scaninfo);\n");
         }
 
@@ -1071,7 +1063,8 @@ namespace jsonschemaenforcer
                         std::string set_item_array_start_state_func =
                                         sd.helper_func_name("void",
                                                             "set_item_array_start_state",
-                                                            "",
+                                                            "yyscan_t yyscanner",
+                                                            "struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;\n"
                                                             "BEGIN ITEM_ARRAY;\n",
                                                             true);
                         rule_str += "        {\n"
@@ -1151,7 +1144,7 @@ namespace jsonschemaenforcer
                                     "\n");
                 sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
                 std::string items_tag = sd.new_symbol("array_items");
-                sd.set_rule_type(items_tag, sd.get_namespace() + "::JsonItemList", true);
+                sd.set_rule_type(items_tag, sd.get_namespace() + "::JsonItemVector", true);
                 rule_tag = sd.add_parser_rule(items_tag,
                             "    %empty\n"
                             "        {\n"
@@ -1210,7 +1203,7 @@ namespace jsonschemaenforcer
         if (!(has_array_n_max_items() && get_array_max_items() == 1))
         {   
             std::string items_tag = sd.new_symbol("array_items");
-            sd.set_rule_type(items_tag, sd.get_namespace() + "::JsonItemList", true);
+            sd.set_rule_type(items_tag, sd.get_namespace() + "::JsonItemVector", true);
             rule_tag = sd.add_parser_rule(items_tag,
                             "    " + rule_tag + "\n"
                             "         {\n"
@@ -1319,13 +1312,6 @@ namespace jsonschemaenforcer
         else
             obj_state = sd.new_start_state();
 
-        unput_string_func = sd.helper_func_name("void",
-                                                "unput_string",
-                                                "const std::string& str",
-                                                "for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)\n"
-                                                "    unput(*it);\n",
-                                                false);
-
         if (sd.is_initial_start_state(start_state))
         {
             sd.add_token("LEFT_BRACE",
@@ -1356,7 +1342,7 @@ namespace jsonschemaenforcer
                                    start_state,
                                    obj_state,
                                    false,
-                                   unput_string_func + "(yytext);\n"
+                                   sd.unput_string_func_name()+ "(yyscanner, yytext);\n"
                                    "yy_push_state(" + key_validation_state + ", yyextra->scaninfo);\n");
         }
         else
@@ -1589,13 +1575,6 @@ namespace jsonschemaenforcer
         //      maxLength = get_string_max_length(),
         //      minLength = get_string_min_length();
 
-        unput_string_func = sd.helper_func_name("void",
-                                                "unput_string",
-                                                "const std::string& str",
-                                                "for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)\n"
-                                                "    unput(*it);\n",
-                                                false);
-
         sd.add_token("QUOTED_STRING", "std::string", true, "string", true, "\"\\\"\"", "yyextra->quoted_str", "QUOTED", "", true);
 
         if (!(has_str_n_max_length()
@@ -1640,7 +1619,7 @@ namespace jsonschemaenforcer
                                          start_state,
                                          "ITEM_VALUE",
                                          false,
-                                         unput_string_func + "(yytext);\n"
+                                         sd.unput_string_func_name()+ "(yyscanner, yytext);\n"
                                          "yy_push_state(" + key_validation_state + ", yyextra->scaninfo);\n");
                 rule_tag = sd.add_parser_rule("string",
                                 "    " + key_token + " QUOTED_STRING QUOTED_STRING\n"
@@ -1715,7 +1694,7 @@ namespace jsonschemaenforcer
                               minmax_state,
                               pattern_state,
                               true,
-                              unput_string_func + "(yytext);\n");
+                              sd.unput_string_func_name() + "(yyscanner, yytext);\n");
         }
 
         if (!get_key().empty())
@@ -1730,7 +1709,7 @@ namespace jsonschemaenforcer
                                         ? pattern_state
                                         : minmax_state,
                                      false,
-                                     unput_string_func + "(yytext);\n"
+                                     sd.unput_string_func_name() + "(yyscanner, yytext);\n"
                                      "yy_push_state(" + key_validation_state + ", yyextra->scaninfo);\n");
         }
         else if (is_additional_property())
@@ -1754,17 +1733,17 @@ namespace jsonschemaenforcer
                               pattern_state,
                               "PARSE_ITEM_KEY",
                               true,
-                              unput_string_func + "(*yytext);\n");
+                              sd.unput_string_func_name() + "(yyscanner, *yytext);\n");
             sd.add_lexer_rule(regex + "[[:space:]]*:[[:space:]]*\"{\"",
                               pattern_state,
                               "PARSE_OBJECT_KEY",
                               true,
-                              unput_string_func + "(*yytext);\n");
+                              sd.unput_string_func_name() + "(yyscanner, *yytext);\n");
             sd.add_lexer_rule(regex + "[[:space:]]*:[[:space:]]*\"[\"",
                               pattern_state,
                               "PARSE_ARRAY_KEY",
                               true,
-                              unput_string_func + "(*yytext);\n");
+                              sd.unput_string_func_name() + "(yyscanner, *yytext);\n");
         }
 
         if (!is_property_names_schema())
@@ -1784,14 +1763,14 @@ namespace jsonschemaenforcer
                              has_format_type()
                                 && !is_first_array_item()
                                 && !is_additional_item(),
-                             unput_string_func + "(yytext);\n");
+                             sd.unput_string_func_name() + "(yyscanner, yytext);\n");
             }
 
             sd.add_lexer_rule(regex,
                               pattern_state,
                               "ITEM_VALUE",
                               true,
-                              unput_string_func + "(yytext);\n");
+                              sd.unput_string_func_name() + "(yyscanner, yytext);\n");
             rule_tag = sd.add_parser_rule("string",
                                 "    " + key_token + ((get_key().empty() && !is_additional_property())
                                                         ? ""
@@ -1875,13 +1854,6 @@ namespace jsonschemaenforcer
             sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
             return rule_tag;
         }
-
-        unput_string_func = sd.helper_func_name("void",
-                                                "unput_string",
-                                                "const std::string& str",
-                                                "for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)\n"
-                                                "    unput(*it);\n",
-                                                false);
 
         if (has_enum_list())
         {
@@ -1984,7 +1956,7 @@ namespace jsonschemaenforcer
                                      start_state,
                                      new_start_state,
                                      false,
-                                     unput_string_func + "(yytext);\n"
+                                     sd.unput_string_func_name() + "(yyscanner, yytext);\n"
                                      "yy_push_state(" + key_validation_state + ", yyextra->scaninfo);\n");
             rule_tag = sd.add_parser_rule("integer",
                                "    " + key_token + (has_validation_rule
@@ -2012,7 +1984,7 @@ namespace jsonschemaenforcer
                          start_state,
                          new_start_state,
                          false,
-                         unput_string_func + "(yytext);\n");
+                         sd.unput_string_func_name() + "(yyscanner, yytext);\n");
             rule_tag = sd.add_parser_rule("integer",
                                "    " + key_token +  " " + int_tag + "\n"
                                "        {\n"
@@ -2087,13 +2059,6 @@ namespace jsonschemaenforcer
             sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
             return rule_tag;
         }
-
-        unput_string_func = sd.helper_func_name("void",
-                                                "unput_string",
-                                                "const std::string& str",
-                                                "for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)\n"
-                                                "    unput(*it);\n",
-                                                false);
 
         if (has_enum_list())
         {
@@ -2194,7 +2159,7 @@ namespace jsonschemaenforcer
                                      start_state,
                                      new_start_state,
                                      false,
-                                     unput_string_func + "(yytext);\n"
+                                     sd.unput_string_func_name() + "(yyscanner, yytext);\n"
                                      "yy_push_state(" + key_validation_state + ", yyextra->scaninfo);\n");
             rule_tag = sd.add_parser_rule("number",
                                "    " + key_token + " QUOTED_STRING"
@@ -2224,7 +2189,7 @@ namespace jsonschemaenforcer
                          start_state,
                          new_start_state,
                          false,
-                         unput_string_func + "(yytext);\n");
+                         sd.unput_string_func_name() + "(yyscanner, yytext);\n");
             rule_tag = sd.add_parser_rule("number",
                                "    " +  key_token + " " + num_tag + "\n"
                                "        {\n"

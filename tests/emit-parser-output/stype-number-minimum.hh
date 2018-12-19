@@ -10,5 +10,5 @@ struct FOO_FOO_STYPE
     foo::JsonItem foo__JsonItem_type;
 };
 
-typedef struct FOO_FOO_STYPE FOO_FOO_STYPE;
+typedef struct FOO_FOO_STYPE YYSTYPE;
 #endif  // __STYPE_NUMBER_MINIMUM_HH

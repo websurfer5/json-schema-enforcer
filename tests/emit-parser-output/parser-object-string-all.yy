@@ -45,7 +45,7 @@ namespace foo
 
 %type <foo__JsonItem_type> array
 %type <foo__JsonItem_type> array_item
-%type <foo__JsonItemList_type> array_items
+%type <foo__JsonItemVector_type> array_items
 %type <bool_type> boolean
 %type <double_type> number
 %type <foo__JsonItem_type> object
@@ -66,8 +66,8 @@ namespace foo
 %type <foo__JsonItem_type> string_9
 
 %destructor { $$.clear(); } <foo__JsonItem_type>;
-%destructor { $$.clear(); } <foo__JsonItemList_type>;
 %destructor { $$.clear(); } <foo__JsonItemMap_type>;
+%destructor { $$.clear(); } <foo__JsonItemVector_type>;
 %destructor { $$.clear(); } <std__string_type>;
 
 %start object_0

@@ -14,7 +14,7 @@ namespace foo
 #include "parser-integer-minimum.hh"
 
    static bool foo_foo_value_meets_constraints_0(long value);
-   static void foo_foo_unput_string_0(const std::string& str);
+   static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
 %}
 
 %x SSTATE_0
@@ -32,7 +32,7 @@ namespace foo
             	}
 [-+]?[0-9]+[[:space:]]*:[[:space:]]*  	{
                                       	    yy_push_state(SSTATE_0, yyextra->scaninfo);
-                                      	    foo_foo_unput_string_0(yytext);
+                                      	    foo_foo_unput_string_0(yyscanner, yytext);
                                       	    return TOKEN_0;
                                       	}
 
@@ -49,9 +49,11 @@ static bool foo_foo_value_meets_constraints_0(long value)
 	    return true;
 }
 
-static void foo_foo_unput_string_0(const std::string& str)
+static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
 {
-	    for (std::string::reverse_iterator it=str.rbegin(); it != str.rend(); it++)
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
+	    for (std::string::const_reverse_iterator it=str.rbegin(); it != str.rend(); it++)
 	        unput(*it);
 }
 

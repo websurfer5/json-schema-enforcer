@@ -23,7 +23,7 @@ extern void foo_foo_push_format_start_state_6();
 extern void foo_foo_push_format_start_state_1();
 extern void foo_foo_push_format_start_state_2();
 extern void foo_foo_push_format_start_state_3();
-extern void foo_foo_set_item_array_start_state_0();
+extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
 %}
 
 %token B_FALSE
@@ -51,7 +51,7 @@ extern void foo_foo_set_item_array_start_state_0();
 %type <foo__JsonItem_type> array
 %type <foo__JsonItem_type> array_0
 %type <foo__JsonItem_type> array_item
-%type <foo__JsonItemList_type> array_items
+%type <foo__JsonItemVector_type> array_items
 %type <bool_type> boolean
 %type <double_type> number
 %type <foo__JsonItem_type> object
@@ -66,8 +66,8 @@ extern void foo_foo_set_item_array_start_state_0();
 %type <foo__JsonItem_type> string_6
 
 %destructor { $$.clear(); } <foo__JsonItem_type>;
-%destructor { $$.clear(); } <foo__JsonItemList_type>;
 %destructor { $$.clear(); } <foo__JsonItemMap_type>;
+%destructor { $$.clear(); } <foo__JsonItemVector_type>;
 %destructor { $$.clear(); } <std__string_type>;
 
 %start array_0

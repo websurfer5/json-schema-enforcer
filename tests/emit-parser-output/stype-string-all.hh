@@ -10,5 +10,5 @@ struct FOO_FOO_STYPE
     std::string std__string_type;
 };
 
-typedef struct FOO_FOO_STYPE FOO_FOO_STYPE;
+typedef struct FOO_FOO_STYPE YYSTYPE;
 #endif  // __STYPE_STRING_ALL_HH
