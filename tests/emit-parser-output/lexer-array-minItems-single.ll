@@ -25,6 +25,16 @@ namespace foo
 %x SSTATE_0
 
 %%
+-[0-9]+  	{
+         	    yy_pop_state(yyextra->scaninfo);
+         	    yylval->long_type = std::stol(yytext);
+         	    return NEG_INTEGER;
+         	}
+[+]?[0-9]+  	{
+            	    yy_pop_state(yyextra->scaninfo);
+            	    yylval->long_type = std::stol(yytext);
+            	    return NON_NEG_INTEGER;
+            	}
 "["  	{
      	    yy_push_state(SSTATE_0, yyextra->scaninfo);
      	    return LEFT_BRACKET;

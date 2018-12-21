@@ -17,6 +17,16 @@ namespace foo
 
 
 %%
+-[0-9]+  	{
+         	    yy_pop_state(yyextra->scaninfo);
+         	    yylval->long_type = std::stol(yytext);
+         	    return NEG_INTEGER;
+         	}
+[+]?[0-9]+  	{
+            	    yy_pop_state(yyextra->scaninfo);
+            	    yylval->long_type = std::stol(yytext);
+            	    return NON_NEG_INTEGER;
+            	}
 
 %%
 

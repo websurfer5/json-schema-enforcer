@@ -1851,6 +1851,8 @@ namespace jsonschemaenforcer
                             "    ;\n"
                             "\n");
             sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
+            sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, "");
+            sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, "");
             return rule_tag;
         }
 
@@ -1945,9 +1947,10 @@ namespace jsonschemaenforcer
                           "if (!" + helper_func + "(yyextra->scaninfo, yylval->long_type))\n"
                           "    return false;\n"
                           "\n";
-            sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
-            sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
         }
+
+        sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
+        sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
 
         if (!get_key().empty())
         {
@@ -2015,7 +2018,8 @@ namespace jsonschemaenforcer
                     helper_body,
                     helper_func,
                     key_token,
-                    lexer_body,
+                    lexer_body_long,
+                    lexer_body_double,
                     maximum = std::to_string(get_num_maximum()),
                     minimum = std::to_string(get_num_minimum()),
                     multipleOf = std::to_string(get_num_multiple_of()),
@@ -2059,6 +2063,9 @@ namespace jsonschemaenforcer
                             "    ;\n"
                             "\n");
             sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
+            sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, "");
+            sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, "");
+            sd.add_token("FLOATING_POINT", "double", false, "[-+]?[0-9]+\\.[0-9]*", "std::stod(yytext)", new_start_state, "", true, "");
             return rule_tag;
         }
 
@@ -2091,6 +2098,9 @@ namespace jsonschemaenforcer
         new_start_state = has_validation_rule
                             ? sd.new_start_state()
                             : "";
+        lexer_body_double = "";
+        lexer_body_long = "";
+
         if (has_validation_rule)
         {
             helper_body = "struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;\n"
@@ -2143,18 +2153,19 @@ namespace jsonschemaenforcer
             sd.add_lexer_include("iostream", true);
             helper_body += "return true;\n";
             helper_func = sd.helper_func_name("bool", "value_meets_constraints", "yyscan_t yyscanner, double value", helper_body, false);
-            lexer_body = "\n"
-                         "if (!" + helper_func + "(yyextra->scaninfo, yylval->long_type))\n"
-                         "    return 0;\n"
-                         "\n";
-            sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
-            sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
-            lexer_body = "\n"
-                         "if (!" + helper_func + "(yyextra->scaninfo, yylval->double_type))\n"
-                         "    return 0;\n"
-                         "\n";
-            sd.add_token("FLOATING_POINT", "double", false, "[-+]?[0-9]+\\.[0-9]*", "std::stod(yytext)", new_start_state, "", true, lexer_body);
+            lexer_body_long = "\n"
+                              "if (!" + helper_func + "(yyextra->scaninfo, yylval->long_type))\n"
+                              "    return 0;\n"
+                              "\n";
+            lexer_body_double = "\n"
+                                "if (!" + helper_func + "(yyextra->scaninfo, yylval->double_type))\n"
+                                "    return 0;\n"
+                                "\n";
         }
+
+        sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body_long);
+        sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body_long);
+        sd.add_token("FLOATING_POINT", "double", false, "[-+]?[0-9]+\\.[0-9]*", "std::stod(yytext)", new_start_state, "", true, lexer_body_double);
 
         if (!get_key().empty())
         {

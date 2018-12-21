@@ -18,6 +18,9 @@ namespace foo
 
 %}
 
+%token <double_type> FLOATING_POINT
+%token <long_type> NEG_INTEGER
+%token <long_type> NON_NEG_INTEGER
 
 %type <double_type> number
 %type <foo__JsonItem_type> number_0
