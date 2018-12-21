@@ -1008,15 +1008,19 @@ namespace jsonschemaenforcer
                                         p_sitem->is_additional_item()
                                             ? sd.helper_func_name("void",
                                                                   "set_format_start_state",
-                                                                  "",
+                                                                  "yyscan_t yyscanner",
+                                                                  "struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;\n"
+                                                                  "\n"
                                                                   "BEGIN " + format_state + ";\n",
                                                                   true)
                                             : sd.helper_func_name("void",
                                                                   "push_format_start_state",
-                                                                  "",
+                                                                  "yyscan_t yyscanner",
+                                                                  "struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;\n"
+                                                                  "\n"
                                                                   "yy_push_state(" + format_state + ", yyextra->scaninfo);\n",
                                                                   true);
-                            format_rule_str = "            " + format_start_state_func + "();\n";
+                            format_rule_str = "            " + format_start_state_func + "(sd->scaninfo);\n";
                             sd.add_token("COMMA", "", false, "\",\"", "", format_state);
                             sd.add_lexer_rule("[[:space:]]", format_state, "", false, "");
 
@@ -1069,7 +1073,7 @@ namespace jsonschemaenforcer
                                                             "BEGIN ITEM_ARRAY;\n",
                                                             true);
                         rule_str += "        {\n"
-                                    "            " + set_item_array_start_state_func + "();\n"
+                                    "            " + set_item_array_start_state_func + "(sd->scaninfo);\n"
                                     "        }\n";
                         array_tag_number++;
                     }

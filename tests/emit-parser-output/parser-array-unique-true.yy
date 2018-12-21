@@ -101,7 +101,7 @@ array_0:
     COMMA TOKEN_0 integer_0
     COMMA TOKEN_0 integer_0
         {
-            foo_foo_set_item_array_start_state_0();
+            foo_foo_set_item_array_start_state_0(sd->scaninfo);
         }
     array_items RIGHT_BRACKET
         {

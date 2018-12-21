@@ -94,7 +94,7 @@ empty_object:
 array_0:
     LEFT_BRACKET  string_0
         {
-            foo_foo_set_item_array_start_state_0();
+            foo_foo_set_item_array_start_state_0(sd->scaninfo);
         }
     array_items RIGHT_BRACKET
         {

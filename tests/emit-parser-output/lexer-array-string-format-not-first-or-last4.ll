@@ -14,8 +14,8 @@ namespace foo
 #include "parser-array-string-format-not-first-or-last4.hh"
 
    extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
-   extern void foo_foo_push_format_start_state_0();
-   extern void foo_foo_push_format_start_state_1();
+   extern void foo_foo_push_format_start_state_0(yyscan_t yyscanner);
+   extern void foo_foo_push_format_start_state_1(yyscan_t yyscanner);
    extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
    static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str);
 %}
@@ -236,13 +236,17 @@ void foo_foo_error(foo::Bar *sd, const char *s, ...)
 {
 }
 
-void foo_foo_push_format_start_state_0()
+void foo_foo_push_format_start_state_0(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_1, yyextra->scaninfo);
 }
 
-void foo_foo_push_format_start_state_1()
+void foo_foo_push_format_start_state_1(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_3, yyextra->scaninfo);
 }
 

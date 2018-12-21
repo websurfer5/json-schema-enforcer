@@ -14,13 +14,13 @@ namespace foo
 #include "parser-array-string-format-all.hh"
 
    extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
-   extern void foo_foo_push_format_start_state_0();
-   extern void foo_foo_push_format_start_state_4();
-   extern void foo_foo_push_format_start_state_5();
-   extern void foo_foo_push_format_start_state_6();
-   extern void foo_foo_push_format_start_state_1();
-   extern void foo_foo_push_format_start_state_2();
-   extern void foo_foo_push_format_start_state_3();
+   extern void foo_foo_push_format_start_state_0(yyscan_t yyscanner);
+   extern void foo_foo_push_format_start_state_4(yyscan_t yyscanner);
+   extern void foo_foo_push_format_start_state_5(yyscan_t yyscanner);
+   extern void foo_foo_push_format_start_state_6(yyscan_t yyscanner);
+   extern void foo_foo_push_format_start_state_1(yyscan_t yyscanner);
+   extern void foo_foo_push_format_start_state_2(yyscan_t yyscanner);
+   extern void foo_foo_push_format_start_state_3(yyscan_t yyscanner);
    extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
    static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str);
 %}
@@ -326,38 +326,52 @@ void foo_foo_error(foo::Bar *sd, const char *s, ...)
 {
 }
 
-void foo_foo_push_format_start_state_0()
+void foo_foo_push_format_start_state_0(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_1, yyextra->scaninfo);
 }
 
-void foo_foo_push_format_start_state_4()
+void foo_foo_push_format_start_state_4(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_10, yyextra->scaninfo);
 }
 
-void foo_foo_push_format_start_state_5()
+void foo_foo_push_format_start_state_5(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_12, yyextra->scaninfo);
 }
 
-void foo_foo_push_format_start_state_6()
+void foo_foo_push_format_start_state_6(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_14, yyextra->scaninfo);
 }
 
-void foo_foo_push_format_start_state_1()
+void foo_foo_push_format_start_state_1(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_3, yyextra->scaninfo);
 }
 
-void foo_foo_push_format_start_state_2()
+void foo_foo_push_format_start_state_2(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_6, yyextra->scaninfo);
 }
 
-void foo_foo_push_format_start_state_3()
+void foo_foo_push_format_start_state_3(yyscan_t yyscanner)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    yy_push_state(SSTATE_8, yyextra->scaninfo);
 }
 

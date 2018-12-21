@@ -17,13 +17,13 @@ namespace foo
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
-extern void foo_foo_push_format_start_state_0();
-extern void foo_foo_push_format_start_state_4();
-extern void foo_foo_push_format_start_state_5();
-extern void foo_foo_push_format_start_state_6();
-extern void foo_foo_push_format_start_state_1();
-extern void foo_foo_push_format_start_state_2();
-extern void foo_foo_push_format_start_state_3();
+extern void foo_foo_push_format_start_state_0(yyscan_t yyscanner);
+extern void foo_foo_push_format_start_state_4(yyscan_t yyscanner);
+extern void foo_foo_push_format_start_state_5(yyscan_t yyscanner);
+extern void foo_foo_push_format_start_state_6(yyscan_t yyscanner);
+extern void foo_foo_push_format_start_state_1(yyscan_t yyscanner);
+extern void foo_foo_push_format_start_state_2(yyscan_t yyscanner);
+extern void foo_foo_push_format_start_state_3(yyscan_t yyscanner);
 extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
 
 #define FOO_FOO_PARAM sd->scaninfo
@@ -124,7 +124,7 @@ array_0:
     COMMA  string_5
     COMMA  string_6
         {
-            foo_foo_set_item_array_start_state_0();
+            foo_foo_set_item_array_start_state_0(sd->scaninfo);
         }
     array_items RIGHT_BRACKET
         {
