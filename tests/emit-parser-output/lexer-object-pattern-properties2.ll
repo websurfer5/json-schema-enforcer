@@ -14,7 +14,7 @@ namespace foo
 #include "parser-object-pattern-properties2.hh"
 
    extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
-   static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
+   static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str);
 %}
 
 %x ITEM_ARRAY
@@ -191,19 +191,19 @@ namespace foo
                 	}
 <SSTATE_0>"\"bar[0-9]+\""  	{
                            	    yy_push_state(ITEM_VALUE, yyextra->scaninfo);
-                           	    foo_foo_unput_string_0(yyscanner, yytext);
+                           	    foo_foo_unput_string(yyscanner, yytext);
                            	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                            	    return TOKEN_2;
                            	}
 <SSTATE_0>"\"foo[0-9]+\""  	{
                            	    yy_push_state(ITEM_VALUE, yyextra->scaninfo);
-                           	    foo_foo_unput_string_0(yyscanner, yytext);
+                           	    foo_foo_unput_string(yyscanner, yytext);
                            	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                            	    return TOKEN_1;
                            	}
 <SSTATE_0>"\"foo\""  	{
                      	    yy_push_state(ITEM_VALUE, yyextra->scaninfo);
-                     	    foo_foo_unput_string_0(yyscanner, yytext);
+                     	    foo_foo_unput_string(yyscanner, yytext);
                      	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                      	    return TOKEN_0;
                      	}
@@ -220,7 +220,7 @@ void foo_foo_error(foo::Bar *sd, const char *s, ...)
 {
 }
 
-static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
+static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str)
 {
 	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    

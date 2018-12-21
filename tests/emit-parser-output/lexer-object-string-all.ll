@@ -14,7 +14,7 @@ namespace foo
 #include "parser-object-string-all.hh"
 
    extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
-   static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
+   static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str);
 %}
 
 %x ITEM_ARRAY
@@ -206,61 +206,61 @@ namespace foo
                 	}
 <SSTATE_0>"\"foo10\""[[:space:]]*:[[:space:]]*  	{
                                                 	    yy_push_state(SSTATE_15, yyextra->scaninfo);
-                                                	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                	    foo_foo_unput_string(yyscanner, yytext);
                                                 	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                                 	    return TOKEN_9;
                                                 	}
 <SSTATE_0>"\"foo1\""[[:space:]]*:[[:space:]]*  	{
                                                	    yy_push_state(SSTATE_2, yyextra->scaninfo);
-                                               	    foo_foo_unput_string_0(yyscanner, yytext);
+                                               	    foo_foo_unput_string(yyscanner, yytext);
                                                	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                                	    return TOKEN_0;
                                                	}
 <SSTATE_0>"\"foo2\""[[:space:]]*:[[:space:]]*  	{
                                                	    yy_push_state(SSTATE_4, yyextra->scaninfo);
-                                               	    foo_foo_unput_string_0(yyscanner, yytext);
+                                               	    foo_foo_unput_string(yyscanner, yytext);
                                                	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                                	    return TOKEN_1;
                                                	}
 <SSTATE_0>"\"foo3\""[[:space:]]*:[[:space:]]*  	{
                                                	    yy_push_state(SSTATE_6, yyextra->scaninfo);
-                                               	    foo_foo_unput_string_0(yyscanner, yytext);
+                                               	    foo_foo_unput_string(yyscanner, yytext);
                                                	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                                	    return TOKEN_2;
                                                	}
 <SSTATE_0>"\"foo4\""[[:space:]]*:[[:space:]]*  	{
                                                	    yy_push_state(SSTATE_8, yyextra->scaninfo);
-                                               	    foo_foo_unput_string_0(yyscanner, yytext);
+                                               	    foo_foo_unput_string(yyscanner, yytext);
                                                	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                                	    return TOKEN_3;
                                                	}
 <SSTATE_0>"\"foo5\""[[:space:]]*:[[:space:]]*  	{
                                                	    yy_push_state(SSTATE_10, yyextra->scaninfo);
-                                               	    foo_foo_unput_string_0(yyscanner, yytext);
+                                               	    foo_foo_unput_string(yyscanner, yytext);
                                                	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                                	    return TOKEN_4;
                                                	}
 <SSTATE_0>"\"foo6\""[[:space:]]*:[[:space:]]*  	{
                                                	    yy_push_state(SSTATE_12, yyextra->scaninfo);
-                                               	    foo_foo_unput_string_0(yyscanner, yytext);
+                                               	    foo_foo_unput_string(yyscanner, yytext);
                                                	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                                	    return TOKEN_5;
                                                	}
 <SSTATE_0>"\"foo7\""[[:space:]]*:[[:space:]]*  	{
                                                	    yy_push_state(SSTATE_13, yyextra->scaninfo);
-                                               	    foo_foo_unput_string_0(yyscanner, yytext);
+                                               	    foo_foo_unput_string(yyscanner, yytext);
                                                	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                                	    return TOKEN_6;
                                                	}
 <SSTATE_0>"\"foo8\""  	{
                       	    yy_push_state(ITEM_VALUE, yyextra->scaninfo);
-                      	    foo_foo_unput_string_0(yyscanner, yytext);
+                      	    foo_foo_unput_string(yyscanner, yytext);
                       	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                       	    return TOKEN_7;
                       	}
 <SSTATE_0>"\"foo9\""  	{
                       	    yy_push_state(ITEM_VALUE, yyextra->scaninfo);
-                      	    foo_foo_unput_string_0(yyscanner, yytext);
+                      	    foo_foo_unput_string(yyscanner, yytext);
                       	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                       	    return TOKEN_8;
                       	}
@@ -272,63 +272,63 @@ namespace foo
                        	}
 <SSTATE_1>"\"[^\"]*test[123]+[^\"]*\""  	{
                                         	    BEGIN ITEM_VALUE;
-                                        	    foo_foo_unput_string_0(yyscanner, yytext);
+                                        	    foo_foo_unput_string(yyscanner, yytext);
                                         	}
 <SSTATE_10>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){0,258}\""  	{
                                                                                                        	    BEGIN SSTATE_9;
-                                                                                                       	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                       	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                        	}
 <SSTATE_11>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"])*\""  	{
                                                                                                  	    BEGIN ITEM_VALUE;
-                                                                                                 	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                 	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                  	}
 <SSTATE_12>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){0,259}\""  	{
                                                                                                        	    BEGIN SSTATE_11;
-                                                                                                       	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                       	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                        	}
 <SSTATE_13>"\"[^\"]*test[680]+[^\"]*\""  	{
                                          	    BEGIN ITEM_VALUE;
-                                         	    foo_foo_unput_string_0(yyscanner, yytext);
+                                         	    foo_foo_unput_string(yyscanner, yytext);
                                          	}
 <SSTATE_14>"\"[^\"]*test[456]+[^\"]*\""  	{
                                          	    BEGIN ITEM_VALUE;
-                                         	    foo_foo_unput_string_0(yyscanner, yytext);
+                                         	    foo_foo_unput_string(yyscanner, yytext);
                                          	}
 <SSTATE_15>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){12,}\""  	{
                                                                                                      	    BEGIN SSTATE_14;
-                                                                                                     	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                     	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                      	}
 <SSTATE_2>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){10,256}\""  	{
                                                                                                        	    BEGIN SSTATE_1;
-                                                                                                       	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                       	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                        	}
 <SSTATE_3>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"])*\""  	{
                                                                                                 	    BEGIN ITEM_VALUE;
-                                                                                                	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                 	}
 <SSTATE_4>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){11,257}\""  	{
                                                                                                        	    BEGIN SSTATE_3;
-                                                                                                       	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                       	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                        	}
 <SSTATE_5>"\"[^\"]*test[456]+[^\"]*\""  	{
                                         	    BEGIN ITEM_VALUE;
-                                        	    foo_foo_unput_string_0(yyscanner, yytext);
+                                        	    foo_foo_unput_string(yyscanner, yytext);
                                         	}
 <SSTATE_6>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){12,}\""  	{
                                                                                                     	    BEGIN SSTATE_5;
-                                                                                                    	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                    	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                     	}
 <SSTATE_7>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"])*\""  	{
                                                                                                 	    BEGIN ITEM_VALUE;
-                                                                                                	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                 	}
 <SSTATE_8>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){13,}\""  	{
                                                                                                     	    BEGIN SSTATE_7;
-                                                                                                    	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                    	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                     	}
 <SSTATE_9>"\"[^\"]*test[789]+[^\"]*\""  	{
                                         	    BEGIN ITEM_VALUE;
-                                        	    foo_foo_unput_string_0(yyscanner, yytext);
+                                        	    foo_foo_unput_string(yyscanner, yytext);
                                         	}
 
 %%
@@ -337,7 +337,7 @@ void foo_foo_error(foo::Bar *sd, const char *s, ...)
 {
 }
 
-static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
+static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str)
 {
 	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    

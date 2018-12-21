@@ -16,7 +16,7 @@ namespace foo
    extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
    extern void foo_foo_push_format_start_state_0();
    extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
-   static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
+   static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str);
 %}
 
 %x ITEM_ARRAY
@@ -218,14 +218,14 @@ namespace foo
                	}
 <SSTATE_1>"\""  	{
                 	    BEGIN SSTATE_2;
-                	    foo_foo_unput_string_0(yyscanner, yytext);
+                	    foo_foo_unput_string(yyscanner, yytext);
                 	    return TOKEN_1;
                 	}
 <SSTATE_1>[[:space:]]  	{
                        	}
 <SSTATE_2>"\"((([02468][048]|[13579][26])00|[0-9][0-9](0[48]|[2468][048]|[13579][26]))-02-29)|([0-9]{4}-(0[13578]|1[02])-31)|([0-9]{4}-(0[13456789]|1[012])-(0[1-9]|[12][0-9]|30))|([0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-8]))\"\""  	{
                                                                                                                                                                                                                                            	    BEGIN ITEM_VALUE;
-                                                                                                                                                                                                                                           	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                                                                                                                                                           	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                                                                                                                                                            	}
 
 %%
@@ -245,7 +245,7 @@ void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner)
 	    BEGIN ITEM_ARRAY;
 }
 
-static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
+static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str)
 {
 	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    

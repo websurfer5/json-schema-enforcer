@@ -669,6 +669,7 @@ namespace jsonschemaenforcer
                                 "\n"
                                 "for (std::string::const_reverse_iterator it=str.rbegin(); it != str.rend(); it++)\n"
                                 "    unput(*it);\n",
-                                false);
+                                false,
+                                true);
     }
 }

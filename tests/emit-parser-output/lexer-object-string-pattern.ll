@@ -14,7 +14,7 @@ namespace foo
 #include "parser-object-string-pattern.hh"
 
    extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
-   static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
+   static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str);
 %}
 
 %x ITEM_ARRAY
@@ -192,7 +192,7 @@ namespace foo
                 	}
 <SSTATE_0>"\"foo\""[[:space:]]*:[[:space:]]*  	{
                                               	    yy_push_state(SSTATE_1, yyextra->scaninfo);
-                                              	    foo_foo_unput_string_0(yyscanner, yytext);
+                                              	    foo_foo_unput_string(yyscanner, yytext);
                                               	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                                               	    return TOKEN_0;
                                               	}
@@ -204,7 +204,7 @@ namespace foo
                        	}
 <SSTATE_1>"\"[^\"]*test[123]+[^\"]*\""  	{
                                         	    BEGIN ITEM_VALUE;
-                                        	    foo_foo_unput_string_0(yyscanner, yytext);
+                                        	    foo_foo_unput_string(yyscanner, yytext);
                                         	}
 
 %%
@@ -213,7 +213,7 @@ void foo_foo_error(foo::Bar *sd, const char *s, ...)
 {
 }
 
-static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
+static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str)
 {
 	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    

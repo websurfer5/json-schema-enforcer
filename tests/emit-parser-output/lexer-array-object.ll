@@ -14,7 +14,7 @@ namespace foo
 #include "parser-array-object.hh"
 
    extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
-   static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
+   static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str);
 %}
 
 %x ITEM_ARRAY
@@ -224,12 +224,12 @@ namespace foo
                 	    return TOKEN_3;
                 	}
 <SSTATE_1>"\"foo-int\""  	{
-                         	    foo_foo_unput_string_0(yyscanner, yytext);
+                         	    foo_foo_unput_string(yyscanner, yytext);
                          	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                          	    return TOKEN_1;
                          	}
 <SSTATE_1>"\"foo-num\""  	{
-                         	    foo_foo_unput_string_0(yyscanner, yytext);
+                         	    foo_foo_unput_string(yyscanner, yytext);
                          	    yy_push_state(PARSE_ITEM_KEY, yyextra->scaninfo);
                          	    return TOKEN_2;
                          	}
@@ -246,7 +246,7 @@ void foo_foo_error(foo::Bar *sd, const char *s, ...)
 {
 }
 
-static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
+static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str)
 {
 	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    

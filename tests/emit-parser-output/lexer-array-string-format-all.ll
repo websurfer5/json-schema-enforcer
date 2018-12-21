@@ -22,7 +22,7 @@ namespace foo
    extern void foo_foo_push_format_start_state_2();
    extern void foo_foo_push_format_start_state_3();
    extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
-   static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
+   static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str);
 %}
 
 %x ITEM_ARRAY
@@ -222,7 +222,7 @@ namespace foo
                	}
 <SSTATE_1>"\""  	{
                 	    BEGIN SSTATE_2;
-                	    foo_foo_unput_string_0(yyscanner, yytext);
+                	    foo_foo_unput_string(yyscanner, yytext);
                 	    return TOKEN_1;
                 	}
 <SSTATE_1>[[:space:]]  	{
@@ -232,92 +232,92 @@ namespace foo
                 	}
 <SSTATE_10>"\""  	{
                  	    BEGIN SSTATE_11;
-                 	    foo_foo_unput_string_0(yyscanner, yytext);
+                 	    foo_foo_unput_string(yyscanner, yytext);
                  	    return TOKEN_5;
                  	}
 <SSTATE_10>[[:space:]]  	{
                         	}
 <SSTATE_11>"\"(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\""  	{
                                                                                                                               	    BEGIN ITEM_VALUE;
-                                                                                                                              	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                                              	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                                               	}
 <SSTATE_12>","  	{
                 	    return COMMA;
                 	}
 <SSTATE_12>"\""  	{
                  	    BEGIN SSTATE_13;
-                 	    foo_foo_unput_string_0(yyscanner, yytext);
+                 	    foo_foo_unput_string(yyscanner, yytext);
                  	    return TOKEN_6;
                  	}
 <SSTATE_12>[[:space:]]  	{
                         	}
 <SSTATE_13>"\"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\""  	{
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   	    BEGIN ITEM_VALUE;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   	}
 <SSTATE_14>","  	{
                 	    return COMMA;
                 	}
 <SSTATE_14>"\""  	{
                  	    BEGIN SSTATE_15;
-                 	    foo_foo_unput_string_0(yyscanner, yytext);
+                 	    foo_foo_unput_string(yyscanner, yytext);
                  	    return TOKEN_7;
                  	}
 <SSTATE_14>[[:space:]]  	{
                         	}
 <SSTATE_15>"\"((?>[a-zA-Z\d!#$%&'*+\-/=?^_`{|}~]+ *|\"((?=[-])[^\"\]|\[-])*\" *)*(?<angle><))?((?!\.)(?>\.?[a-zA-Z\d!#$%&'*+\-/=?^_`{|}~]+)+|\"((?=[-])[^\"\]|\[-])*\")@(((?!-)[a-zA-Z\d\-]+(?<!-)\.)+[a-zA-Z]{2,}|\[(((?(?<!\[)\.)(25[0-5]|2[0-4]\d|[01]?\d?\d)){4}|[a-zA-Z\d\-]*[a-zA-Z\d]:((?=[-])[^\\[\]]|\[-])+)\])(?(angle)>)\""  	{
                                                                                                                                                                                                                                                                                                                                                     	    BEGIN ITEM_VALUE;
-                                                                                                                                                                                                                                                                                                                                                    	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                                                                                                                                                                                                                                                                    	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                                                                                                                                                                                                                                                                     	}
 <SSTATE_2>"\"((([02468][048]|[13579][26])00|[0-9][0-9](0[48]|[2468][048]|[13579][26]))-02-29)|([0-9]{4}-(0[13578]|1[02])-31)|([0-9]{4}-(0[13456789]|1[012])-(0[1-9]|[12][0-9]|30))|([0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-8]))\"\""  	{
                                                                                                                                                                                                                                            	    BEGIN ITEM_VALUE;
-                                                                                                                                                                                                                                           	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                                                                                                                                                           	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                                                                                                                                                            	}
 <SSTATE_3>","  	{
                	    return COMMA;
                	}
 <SSTATE_3>"\""  	{
                 	    BEGIN SSTATE_5;
-                	    foo_foo_unput_string_0(yyscanner, yytext);
+                	    foo_foo_unput_string(yyscanner, yytext);
                 	    return TOKEN_2;
                 	}
 <SSTATE_3>[[:space:]]  	{
                        	}
 <SSTATE_4>"\"((([02468][048]|[13579][26])00|[0-9][0-9](0[48]|[2468][048]|[13579][26]))-02-29)|([0-9]{4}-(0[13578]|1[02])-31)|([0-9]{4}-(0[13456789]|1[012])-(0[1-9]|[12][0-9]|30))|([0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-8]))\"\""  	{
                                                                                                                                                                                                                                            	    BEGIN ITEM_VALUE;
-                                                                                                                                                                                                                                           	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                                                                                                                                                           	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                                                                                                                                                            	}
 <SSTATE_5>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"]){10,10}\""  	{
                                                                                                       	    BEGIN SSTATE_4;
-                                                                                                      	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                      	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                       	}
 <SSTATE_6>","  	{
                	    return COMMA;
                	}
 <SSTATE_6>"\""  	{
                 	    BEGIN SSTATE_7;
-                	    foo_foo_unput_string_0(yyscanner, yytext);
+                	    foo_foo_unput_string(yyscanner, yytext);
                 	    return TOKEN_3;
                 	}
 <SSTATE_6>[[:space:]]  	{
                        	}
 <SSTATE_7>"\"(([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9])?([zZ]|[+-]([01][0-9]|2[0-3]):[0-5][0-9]))\""  	{
                                                                                                                    	    BEGIN ITEM_VALUE;
-                                                                                                                   	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                                   	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                                    	}
 <SSTATE_8>","  	{
                	    return COMMA;
                	}
 <SSTATE_8>"\""  	{
                 	    BEGIN SSTATE_9;
-                	    foo_foo_unput_string_0(yyscanner, yytext);
+                	    foo_foo_unput_string(yyscanner, yytext);
                 	    return TOKEN_4;
                 	}
 <SSTATE_8>[[:space:]]  	{
                        	}
 <SSTATE_9>"\"(((([02468][048]|[13579][26])00|[0-9][0-9](0[48]|[2468][048]|[13579][26]))-02-29)|([0-9]{4}-(0[13578]|1[02])-31)|([0-9]{4}-(0[13456789]|1[012])-(0[1-9]|[12][0-9]|30))|([0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-8])))[tT](([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9])?([zZ]|[+-]([01][0-9]|2[0-3]):[0-5][0-9]))\""  	{
                                                                                                                                                                                                                                                                                                                                                 	    BEGIN ITEM_VALUE;
-                                                                                                                                                                                                                                                                                                                                                	    foo_foo_unput_string_0(yyscanner, yytext);
+                                                                                                                                                                                                                                                                                                                                                	    foo_foo_unput_string(yyscanner, yytext);
                                                                                                                                                                                                                                                                                                                                                 	}
 
 %%
@@ -367,7 +367,7 @@ void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner)
 	    BEGIN ITEM_ARRAY;
 }
 
-static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
+static void foo_foo_unput_string(yyscan_t yyscanner, const std::string& str)
 {
 	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    
