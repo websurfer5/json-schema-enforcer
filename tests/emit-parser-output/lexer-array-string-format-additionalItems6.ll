@@ -13,6 +13,7 @@ namespace foo
 #include "stype-array-string-format-additionalItems6.hh"
 #include "parser-array-string-format-additionalItems6.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
    static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
 %}
 
@@ -220,6 +221,10 @@ namespace foo
                                                                                                                                                                                                                                            	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 
 static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
 {

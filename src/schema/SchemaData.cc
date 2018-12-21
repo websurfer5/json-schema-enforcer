@@ -325,6 +325,12 @@ namespace jsonschemaenforcer
         set_namespace(name_space);
         add_stype_include(class_name + ".hh", false);
         start_rule = root_item.emit_parser(*this, "INITIAL");
+        helper_func_name("void",
+                         "error",
+                         name_space + "::" + class_name + " *sd, const char *s, ...",
+                         "",
+                         true,
+                         true);
         emit_type_definitions(parser_type_list, func_prefix, stype_header_fname);
         emit_lexer(lexer_list,
                    name_space,
@@ -405,6 +411,9 @@ namespace jsonschemaenforcer
             if (std::get<4>(tm_it->first))
                 parser_list.push_back("extern " + std::get<0>(tm_it->first) + " " + tm_it->second + "(" + std::get<2>(tm_it->first) + ");\n");
         }
+
+        if (!helper_func_map.empty())
+            parser_list.push_back("\n");
 
         parser_list.push_back("#define "+ upper_func_prefix + "PARAM sd->scaninfo\n");
         parser_list.push_back("%}\n"
@@ -565,7 +574,8 @@ namespace jsonschemaenforcer
                                              const std::string& name_prefix,
                                              const std::string& params,
                                              const std::string& body,
-                                             bool parser_prototype)
+                                             bool parser_prototype,
+                                             bool singleton)
     {
         std::string name;
         StdStringTuple5 key(return_type, function_prefix + name_prefix, params, body, parser_prototype);
@@ -576,7 +586,11 @@ namespace jsonschemaenforcer
         if (c_it != helper_func_map.end())
             return c_it->second;
 
-        name = new_symbol(function_prefix + name_prefix);
+        if (singleton)
+            name = function_prefix + name_prefix;
+        else
+            name = new_symbol(function_prefix + name_prefix);
+
         helper_func_map[key] = name;
         return name;
     }

@@ -13,6 +13,7 @@ namespace foo
 #include "stype-object-pattern-properties1.hh"
 #include "parser-object-pattern-properties1.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
    static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
 %}
 
@@ -202,6 +203,10 @@ namespace foo
                        	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 
 static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
 {

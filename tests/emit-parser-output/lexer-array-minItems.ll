@@ -13,6 +13,7 @@ namespace foo
 #include "stype-array-minItems.hh"
 #include "parser-array-minItems.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
    extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
 %}
 
@@ -205,6 +206,10 @@ namespace foo
                        	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 
 void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner)
 {

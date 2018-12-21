@@ -16,6 +16,7 @@ namespace foo
 
    static bool foo_foo_value_meets_constraints_0(yyscan_t yyscanner, double value);
    static bool foo_foo_value_meets_constraints_1(yyscan_t yyscanner, long value);
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
    static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
 %}
 
@@ -543,6 +544,10 @@ static bool foo_foo_value_meets_constraints_1(yyscan_t yyscanner, long value)
 	            }
 	            
 	    return true;
+}
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
 }
 
 static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)

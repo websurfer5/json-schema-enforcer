@@ -13,6 +13,7 @@ namespace foo
 #include "stype-array-string-format-last.hh"
 #include "parser-array-string-format-last.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
    extern void foo_foo_push_format_start_state_0();
    extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
    static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
@@ -213,6 +214,10 @@ namespace foo
                                                                                                                                                                                                                                            	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 
 void foo_foo_push_format_start_state_0()
 {

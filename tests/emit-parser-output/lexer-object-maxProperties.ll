@@ -13,6 +13,7 @@ namespace foo
 #include "stype-object-maxProperties.hh"
 #include "parser-object-maxProperties.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
 %}
 
 %x ITEM_ARRAY
@@ -195,4 +196,8 @@ namespace foo
                        	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 

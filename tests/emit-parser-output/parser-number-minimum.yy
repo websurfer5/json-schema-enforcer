@@ -16,6 +16,8 @@ namespace foo
 #include "Bar.hh"
 #include <string>
 
+extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
+
 #define FOO_FOO_PARAM sd->scaninfo
 %}
 

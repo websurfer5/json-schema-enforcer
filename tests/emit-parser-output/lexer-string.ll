@@ -13,6 +13,7 @@ namespace foo
 #include "stype-string.hh"
 #include "parser-string.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
 %}
 
 %x QUOTED
@@ -29,4 +30,8 @@ namespace foo
               	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 

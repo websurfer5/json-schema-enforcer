@@ -13,6 +13,7 @@ namespace foo
 #include "stype-array-string-format-all.hh"
 #include "parser-array-string-format-all.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
    extern void foo_foo_push_format_start_state_0();
    extern void foo_foo_push_format_start_state_4();
    extern void foo_foo_push_format_start_state_5();
@@ -320,6 +321,10 @@ namespace foo
                                                                                                                                                                                                                                                                                                                                                 	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 
 void foo_foo_push_format_start_state_0()
 {

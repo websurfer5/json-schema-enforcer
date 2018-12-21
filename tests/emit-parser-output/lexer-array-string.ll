@@ -13,6 +13,7 @@ namespace foo
 #include "stype-array-string.hh"
 #include "parser-array-string.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
 %}
 
 %x ITEM_ARRAY
@@ -194,4 +195,8 @@ namespace foo
                        	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 

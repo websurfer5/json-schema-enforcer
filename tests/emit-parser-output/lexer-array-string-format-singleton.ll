@@ -13,6 +13,7 @@ namespace foo
 #include "stype-array-string-format-singleton.hh"
 #include "parser-array-string-format-singleton.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
    static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
 %}
 
@@ -205,6 +206,10 @@ namespace foo
                                                                                                                                                                                                                                            	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 
 static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str)
 {

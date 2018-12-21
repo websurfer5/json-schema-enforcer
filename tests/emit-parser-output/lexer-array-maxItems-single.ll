@@ -13,6 +13,7 @@ namespace foo
 #include "stype-array-maxItems-single.hh"
 #include "parser-array-maxItems-single.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
 %}
 
 %x ITEM_ARRAY
@@ -204,4 +205,8 @@ namespace foo
                        	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 

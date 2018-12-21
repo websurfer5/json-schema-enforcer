@@ -13,6 +13,7 @@ namespace foo
 #include "stype-array-number.hh"
 #include "parser-array-number.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
 %}
 
 %x ITEM_ARRAY
@@ -209,4 +210,8 @@ namespace foo
                        	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 

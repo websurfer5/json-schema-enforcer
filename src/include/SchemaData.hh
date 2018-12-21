@@ -134,7 +134,8 @@ namespace jsonschemaenforcer
                                      const std::string& name_prefix,
                                      const std::string& params,
                                      const std::string& body,
-                                     bool parser_prototype);
+                                     bool parser_prototype,
+                                     bool singleton = false);
         inline bool is_initial_start_state(const std::string& state) const { return (state.empty() || state == "INITIAL"); };
         // inline unsigned new_helper_func_number() { return next_helper_func_number++; };
         inline std::string new_parse_key_state() { std::string t = new_symbol("PARSE_KEY"); add_start_state(t); return t; };

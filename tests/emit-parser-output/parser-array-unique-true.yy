@@ -17,7 +17,9 @@ namespace foo
 #include <set>
 #include <string>
 
+extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
 extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
+
 #define FOO_FOO_PARAM sd->scaninfo
 %}
 

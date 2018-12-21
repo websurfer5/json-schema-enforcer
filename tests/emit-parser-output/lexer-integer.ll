@@ -13,6 +13,7 @@ namespace foo
 #include "stype-integer.hh"
 #include "parser-integer.hh"
 
+   extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
 %}
 
 
@@ -29,4 +30,8 @@ namespace foo
             	}
 
 %%
+
+void foo_foo_error(foo::Bar *sd, const char *s, ...)
+{
+}
 
