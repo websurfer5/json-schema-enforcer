@@ -8,11 +8,11 @@ namespace foo
     class Bar;
 }
 
-#include <iostream>
 #include <string>
 #include "Bar.hh"
 #include "stype-object-nested1.hh"
 #include "parser-object-nested1.hh"
+#include <iostream>
 
    static bool foo_foo_value_meets_constraints_0(yyscan_t yyscanner, double value);
    static bool foo_foo_value_meets_constraints_1(yyscan_t yyscanner, long value);

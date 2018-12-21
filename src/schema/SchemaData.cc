@@ -228,6 +228,11 @@ namespace jsonschemaenforcer
             lexer_list.push_back("}\n"
                                  "\n");
 
+        lexer_list.push_back("#include <string>\n"
+                             "#include \"" + class_name + ".hh\"\n"
+                             "#include \"" + stype_header_fname + "\"\n"
+                             "#include \"" + parser_header_fname + "\"\n");
+
         for (csb_it = lexer_include_map.begin(); csb_it != lexer_include_map.end(); csb_it++)
         {
             close_quote = csb_it->second ? '>' : '\"';
@@ -235,11 +240,8 @@ namespace jsonschemaenforcer
             lexer_list.push_back("#include " + open_quote + csb_it->first + close_quote + "\n");
         }
 
-        lexer_list.push_back("#include <string>\n"
-                             "#include \"" + class_name + ".hh\"\n"
-                             "#include \"" + stype_header_fname + "\"\n"
-                             "#include \"" + parser_header_fname + "\"\n"
-                             "\n");
+        lexer_list.push_back("\n");
+
         for (tm_it = helper_func_map.begin(); tm_it != helper_func_map.end(); tm_it++) 
             lexer_list.push_back((std::get<4>(tm_it->first)
                                             ? "   extern "

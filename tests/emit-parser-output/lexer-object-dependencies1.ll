@@ -8,11 +8,11 @@ namespace foo
     class Bar;
 }
 
-#include <iostream>
 #include <string>
 #include "Bar.hh"
 #include "stype-object-dependencies1.hh"
 #include "parser-object-dependencies1.hh"
+#include <iostream>
 
    static bool foo_foo_value_meets_constraints_0(yyscan_t yyscanner, double value);
    static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
