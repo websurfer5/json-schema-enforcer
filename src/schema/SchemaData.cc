@@ -106,6 +106,7 @@ namespace jsonschemaenforcer
         class_namespace.clear();
         function_prefix.clear();
         helper_func_map.clear();
+        lexer_include_map.clear();
         next_symbol_number_map.clear();
         obj_type_map.clear();
         parser_include_map.clear();
@@ -194,9 +195,12 @@ namespace jsonschemaenforcer
                                 const std::string& parser_header_fname,
                                 const std::string& stype_header_fname)
     {
-        std::string pattern,
+        std::string close_quote,
+                    open_quote,
+                    pattern,
                     rule,
                     spaces;
+        StdStringBoolMap::const_iterator csb_it;
         StdStringSet::const_iterator s_it;
         StdStringTokenMap::const_iterator t_it;
         StdStringTuple5StringMap::const_iterator tm_it;
@@ -223,6 +227,13 @@ namespace jsonschemaenforcer
         if (!name_space.empty())
             lexer_list.push_back("}\n"
                                  "\n");
+
+        for (csb_it = lexer_include_map.begin(); csb_it != lexer_include_map.end(); csb_it++)
+        {
+            close_quote = csb_it->second ? '>' : '\"';
+            open_quote = csb_it->second ? '<' : '\"';
+            lexer_list.push_back("#include " + open_quote + csb_it->first + close_quote + "\n");
+        }
 
         lexer_list.push_back("#include <string>\n"
                              "#include \"" + class_name + ".hh\"\n"
@@ -583,6 +594,12 @@ namespace jsonschemaenforcer
     std::string SchemaData::new_symbol(const std::string& prefix)
     {
         return (prefix + "_" + std::to_string(next_symbol_number_map[prefix]++));
+    }
+
+    void SchemaData::add_lexer_include(const std::string& header,
+                                       bool b_system)
+    {
+        lexer_include_map[header] = b_system;
     }
 
     void SchemaData::add_parser_include(const std::string& header,

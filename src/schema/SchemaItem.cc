@@ -740,19 +740,20 @@ namespace jsonschemaenforcer
         sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", "ITEM_VALUE", "", true);
         sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", "ITEM_VALUE", "", true);
         sd.add_token("FLOATING_POINT", "double", false, "[-+]?[0-9]+\\.[0-9]*", "std::stod(yytext)", "ITEM_VALUE", "", true);
-        sd.add_lexer_rule("\"\\\\\\\"\"", "QUOTED", "", false, "yyextra->quoted->str += '\\\"';\n");
-        sd.add_lexer_rule("\"\\\\\\\\\"", "QUOTED", "", false, "yyextra->quoted->str += '\\\\';\n");
-        sd.add_lexer_rule("\"\\\\/\"", "QUOTED", "", false, "yyextra->quoted->str += '/';\n");
-        sd.add_lexer_rule("\"\\\\b\"", "QUOTED", "", false, "yyextra->quoted->str += '\\b';\n");
-        sd.add_lexer_rule("\"\\\\f\"", "QUOTED", "", false, "yyextra->quoted->str += '\\f';\n");
-        sd.add_lexer_rule("\"\\\\n\"", "QUOTED", "", false, "yyextra->quoted->str += '\\n';\n");
-        sd.add_lexer_rule("\"\\\\r\"", "QUOTED", "", false, "yyextra->quoted->str += '\\r';\n");
-        sd.add_lexer_rule("\"\\\\t\"", "QUOTED", "", false, "yyextra->quoted->str += '\\t';\n");
+        sd.add_lexer_rule("\"\\\\\\\"\"", "QUOTED", "", false, "yyextra->quoted_str += '\\\"';\n");
+        sd.add_lexer_rule("\"\\\\\\\\\"", "QUOTED", "", false, "yyextra->quoted_str += '\\\\';\n");
+        sd.add_lexer_rule("\"\\\\/\"", "QUOTED", "", false, "yyextra->quoted_str += '/';\n");
+        sd.add_lexer_rule("\"\\\\b\"", "QUOTED", "", false, "yyextra->quoted_str += '\\b';\n");
+        sd.add_lexer_rule("\"\\\\f\"", "QUOTED", "", false, "yyextra->quoted_str += '\\f';\n");
+        sd.add_lexer_rule("\"\\\\n\"", "QUOTED", "", false, "yyextra->quoted_str += '\\n';\n");
+        sd.add_lexer_rule("\"\\\\r\"", "QUOTED", "", false, "yyextra->quoted_str += '\\r';\n");
+        sd.add_lexer_rule("\"\\\\t\"", "QUOTED", "", false, "yyextra->quoted_str += '\\t';\n");
         sd.add_lexer_rule("\\\\u[0-9a-fA-F]{4}",
                           "QUOTED",
                           "",
                           false,
                           "uint16_t uval;\n"
+                          "yyextra->quoted_str = \"\";\n"
                           "\n"
                           "uval = ((yytext[2] <= '9') ? (yytext[2] - '0') : ((yytext[2] & 0x07) + 9)) << 12;\n"
                           "uval += ((yytext[3] <= '9') ? (yytext[3] - '0') : ((yytext[3] & 0x07) + 9)) << 8;\n"
@@ -760,17 +761,17 @@ namespace jsonschemaenforcer
                           "uval += ((yytext[5] <= '9') ? (yytext[5] - '0') : ((yytext[5] & 0x07) + 9));\n"
                           "\n"
                           "if (uval < 0x0080)\n"
-                          "    str += uval & 0xff;\n"
+                          "    yyextra->quoted_str += uval & 0xff;\n"
                           "else if (uval < 0x0800)\n"
                           "{\n"
-                          "    str += (uval >> 6) | 0xc0;\n"
-                          "    str += (uval & 0x3f) | 0x80;\n"
+                          "    yyextra->quoted_str += (uval >> 6) | 0xc0;\n"
+                          "    yyextra->quoted_str += (uval & 0x3f) | 0x80;\n"
                           "}\n"
                           "else\n"
                           "{\n"
-                          "    str += (uval >> 12) | 0xe0;\n"
-                          "    str += ((uval >> 6) & 0x3f) | 0x80;\n"
-                          "    str += (uval & 0x3f) | 0x80;\n"
+                          "    yyextra->quoted_str += (uval >> 12) | 0xe0;\n"
+                          "    yyextra->quoted_str += ((uval >> 6) & 0x3f) | 0x80;\n"
+                          "    yyextra->quoted_str += (uval & 0x3f) | 0x80;\n"
                           "}\n");
         sd.add_token("QUOTED_STRING", "std::string", true, "string", true, "\"\\\"\"", "yyextra->quoted_str", "QUOTED", "", true);
         sd.add_lexer_rule("\"\\\"\"", "PARSE_ITEM_KEY", "QUOTED", false, "");
@@ -1733,17 +1734,17 @@ namespace jsonschemaenforcer
                               pattern_state,
                               "PARSE_ITEM_KEY",
                               true,
-                              sd.unput_string_func_name() + "(yyscanner, *yytext);\n");
+                              sd.unput_string_func_name() + "(yyscanner, yytext);\n");
             sd.add_lexer_rule(regex + "[[:space:]]*:[[:space:]]*\"{\"",
                               pattern_state,
                               "PARSE_OBJECT_KEY",
                               true,
-                              sd.unput_string_func_name() + "(yyscanner, *yytext);\n");
+                              sd.unput_string_func_name() + "(yyscanner, yytext);\n");
             sd.add_lexer_rule(regex + "[[:space:]]*:[[:space:]]*\"[\"",
                               pattern_state,
                               "PARSE_ARRAY_KEY",
                               true,
-                              sd.unput_string_func_name() + "(yyscanner, *yytext);\n");
+                              sd.unput_string_func_name() + "(yyscanner, yytext);\n");
         }
 
         if (!is_property_names_schema())
@@ -1811,8 +1812,6 @@ namespace jsonschemaenforcer
                     rule_tag,
                     unput_string_func;
 
-        sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
-        sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
         int_tag = sd.add_parser_rule("integer",
                             "    NEG_INTEGER\n"
                             "        {\n"
@@ -1888,11 +1887,14 @@ namespace jsonschemaenforcer
 
         if (has_validation_rule)
         {
+            helper_body = "struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;\n"
+                          "\n";
+
             if (has_int_multiple_of())
                 helper_body += "if ((((long)((value/" + multipleOf + ")) * " + multipleOf + ") != value)\n"
                                "    {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not a multiple of " + multipleOf + "\" << std::endl;\n"
-                               "            return 0;\n"
+                               "            return false;\n"
                                "        }\n"
                                "        \n";
 
@@ -1900,7 +1902,7 @@ namespace jsonschemaenforcer
                 helper_body += "if (value > " + maximum + ")\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is greater than " + maximum + "\" << std::endl;\n"
-                               "            return 0;\n"
+                               "            return false;\n"
                                "        }\n"
                                "        \n";
 
@@ -1908,7 +1910,7 @@ namespace jsonschemaenforcer
                 helper_body += "if (value < " + minimum + ")\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is less than " + minimum + "\" << std::endl;\n"
-                               "            return 0;\n"
+                               "            return false;\n"
                                "        }\n"
                                "        \n";
 
@@ -1916,7 +1918,7 @@ namespace jsonschemaenforcer
                 helper_body += "if (value >= " + exclusiveMaximum + ")\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not less than " + exclusiveMaximum + "\" << std::endl;\n"
-                               "            return 0;\n"
+                               "            return false;\n"
                                "        }\n"
                                "        \n";
 
@@ -1924,7 +1926,7 @@ namespace jsonschemaenforcer
                 helper_body += "if (value <= " + exclusiveMinimum + ")\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not greater than " + exclusiveMinimum + "\" << std::endl;\n"
-                               "            return 0;\n"
+                               "            return false;\n"
                                "        }\n"
                                "        \n";
 
@@ -1932,16 +1934,19 @@ namespace jsonschemaenforcer
                 helper_body += "if (!(" + enum_if_str + "))\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not one of " + enum_str + "\" << std::endl;\n"
-                               "            return 0;\n"
+                               "            return false;\n"
                                "        }\n"
                                "        \n";
 
+            sd.add_lexer_include("iostream", true);
             helper_body += "return true;\n";
-            helper_func = sd.helper_func_name("bool", "value_meets_constraints", "long value", helper_body, false);
-            lexer_body = "\n"
-                         "if (!" + helper_func + "(yylval->int_type))\n"
-                         "    return false;\n"
-                         "\n";
+            helper_func = sd.helper_func_name("bool", "value_meets_constraints", "yyscan_t yyscanner, long value", helper_body, false);
+            lexer_body += "\n"
+                          "if (!" + helper_func + "(yyextra->scaninfo, yylval->long_type))\n"
+                          "    return false;\n"
+                          "\n";
+            sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
+            sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
         }
 
         if (!get_key().empty())
@@ -2019,9 +2024,6 @@ namespace jsonschemaenforcer
                     rule_tag,
                     unput_string_func;
 
-        sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
-        sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
-        sd.add_token("FLOATING_POINT", "double", false, "[-+]?[0-9]+\\.[0-9]*", "std::stod(yytext)", new_start_state, "", true, lexer_body);
         num_tag = sd.add_parser_rule("number",
                             "    FLOATING_POINT\n"
                             "        {\n"
@@ -2089,17 +2091,16 @@ namespace jsonschemaenforcer
         new_start_state = has_validation_rule
                             ? sd.new_start_state()
                             : "";
-        lexer_body = "";
-
         if (has_validation_rule)
         {
-            lexer_body = "\n";
+            helper_body = "struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;\n"
+                          "\n";
 
             if (has_num_multiple_of())
                 helper_body += "if ((double)((long)(value/" + multipleOf + ")) != (value/" + multipleOf + "))\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is not a multiple of " + multipleOf + "\" << std::endl;\n"
-                               "    return 0;\n"
+                               "    return false;\n"
                                "}\n"
                                "\n";
 
@@ -2107,44 +2108,52 @@ namespace jsonschemaenforcer
                 helper_body += "if (value > " + maximum + ")\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is greater than " + maximum + "\" << std::endl;\n"
-                               "    return 0;\n"
+                               "    return false;\n"
                                "}\n"
                                "\n";
             if (has_num_minimum())
                 helper_body += "if (value < " + minimum + ")\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is less than " + minimum + "\" << std::endl;\n"
-                               "    return 0;\n"
+                               "    return false;\n"
                                "}\n"
                                "\n";
             if (has_num_exclusive_maximum())
                 helper_body += "if (value >= " + exclusiveMaximum + ")\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is not less than " + exclusiveMaximum + "\" << std::endl;\n"
-                               "    return 0;\n"
+                               "    return false;\n"
                                "}\n"
                                "\n";
             if (has_num_exclusive_minimum())
                 helper_body += "if (value <= " + exclusiveMinimum + ")\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is not greater than " + exclusiveMinimum + "\" << std::endl;\n"
-                               "    return 0;\n"
+                               "    return false;\n"
                                "}\n"
                                "\n";
             if (!enum_if_str.empty())
                 helper_body += "if (!(" + enum_if_str + "))\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is not one of " + enum_str + "\" << std::endl;\n"
-                               "    return 0;\n"
+                               "    return false;\n"
                                "}\n"
                                "\n";
 
+            sd.add_lexer_include("iostream", true);
             helper_body += "return true;\n";
-            helper_func = sd.helper_func_name("bool", "value_meets_constraints", "double value", helper_body, false);
+            helper_func = sd.helper_func_name("bool", "value_meets_constraints", "yyscan_t yyscanner, double value", helper_body, false);
             lexer_body = "\n"
-                         "if (!" + helper_func + "(yylval->int_type))\n"
+                         "if (!" + helper_func + "(yyextra->scaninfo, yylval->long_type))\n"
                          "    return 0;\n"
                          "\n";
+            sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
+            sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
+            lexer_body = "\n"
+                         "if (!" + helper_func + "(yyextra->scaninfo, yylval->double_type))\n"
+                         "    return 0;\n"
+                         "\n";
+            sd.add_token("FLOATING_POINT", "double", false, "[-+]?[0-9]+\\.[0-9]*", "std::stod(yytext)", new_start_state, "", true, lexer_body);
         }
 
         if (!get_key().empty())

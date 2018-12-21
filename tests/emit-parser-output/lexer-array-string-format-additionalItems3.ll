@@ -134,31 +134,32 @@ namespace foo
               	    return QUOTED_STRING;
               	}
 <QUOTED>"\\/"  	{
-               	    yyextra->quoted->str += '/';
+               	    yyextra->quoted_str += '/';
                	}
 <QUOTED>"\\\""  	{
-                	    yyextra->quoted->str += '\"';
+                	    yyextra->quoted_str += '\"';
                 	}
 <QUOTED>"\\\\"  	{
-                	    yyextra->quoted->str += '\\';
+                	    yyextra->quoted_str += '\\';
                 	}
 <QUOTED>"\\b"  	{
-               	    yyextra->quoted->str += '\b';
+               	    yyextra->quoted_str += '\b';
                	}
 <QUOTED>"\\f"  	{
-               	    yyextra->quoted->str += '\f';
+               	    yyextra->quoted_str += '\f';
                	}
 <QUOTED>"\\n"  	{
-               	    yyextra->quoted->str += '\n';
+               	    yyextra->quoted_str += '\n';
                	}
 <QUOTED>"\\r"  	{
-               	    yyextra->quoted->str += '\r';
+               	    yyextra->quoted_str += '\r';
                	}
 <QUOTED>"\\t"  	{
-               	    yyextra->quoted->str += '\t';
+               	    yyextra->quoted_str += '\t';
                	}
 <QUOTED>\\u[0-9a-fA-F]{4}  	{
                            	    uint16_t uval;
+                           	    yyextra->quoted_str = "";
                            	    
                            	    uval = ((yytext[2] <= '9') ? (yytext[2] - '0') : ((yytext[2] & 0x07) + 9)) << 12;
                            	    uval += ((yytext[3] <= '9') ? (yytext[3] - '0') : ((yytext[3] & 0x07) + 9)) << 8;
@@ -166,17 +167,17 @@ namespace foo
                            	    uval += ((yytext[5] <= '9') ? (yytext[5] - '0') : ((yytext[5] & 0x07) + 9));
                            	    
                            	    if (uval < 0x0080)
-                           	        str += uval & 0xff;
+                           	        yyextra->quoted_str += uval & 0xff;
                            	    else if (uval < 0x0800)
                            	    {
-                           	        str += (uval >> 6) | 0xc0;
-                           	        str += (uval & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval >> 6) | 0xc0;
+                           	        yyextra->quoted_str += (uval & 0x3f) | 0x80;
                            	    }
                            	    else
                            	    {
-                           	        str += (uval >> 12) | 0xe0;
-                           	        str += ((uval >> 6) & 0x3f) | 0x80;
-                           	        str += (uval & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval >> 12) | 0xe0;
+                           	        yyextra->quoted_str += ((uval >> 6) & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval & 0x3f) | 0x80;
                            	    }
                            	}
 <SSTATE_0>","  	{

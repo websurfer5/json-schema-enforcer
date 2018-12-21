@@ -8,13 +8,14 @@ namespace foo
     class Bar;
 }
 
+#include <iostream>
 #include <string>
 #include "Bar.hh"
 #include "stype-object-nested1.hh"
 #include "parser-object-nested1.hh"
 
-   static bool foo_foo_value_meets_constraints_0(double value);
-   static bool foo_foo_value_meets_constraints_1(long value);
+   static bool foo_foo_value_meets_constraints_0(yyscan_t yyscanner, double value);
+   static bool foo_foo_value_meets_constraints_1(yyscan_t yyscanner, long value);
    static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
 %}
 
@@ -44,21 +45,6 @@ namespace foo
 %x SSTATE_9
 
 %%
--[0-9]+  	{
-         	    yy_pop_state(yyextra->scaninfo);
-         	    yylval->long_type = std::stol(yytext);
-         	    return NEG_INTEGER;
-         	}
-[+]?[0-9]+  	{
-            	    yy_pop_state(yyextra->scaninfo);
-            	    yylval->long_type = std::stol(yytext);
-            	    return NON_NEG_INTEGER;
-            	}
-[-+]?[0-9]+\.[0-9]*  	{
-                     	    yy_pop_state(yyextra->scaninfo);
-                     	    yylval->double_type = std::stod(yytext);
-                     	    return FLOATING_POINT;
-                     	}
 "{"  	{
      	    yy_push_state(SSTATE_0, yyextra->scaninfo);
      	    return LEFT_BRACE;
@@ -156,27 +142,27 @@ namespace foo
                                           	}
 <PARSE_KEY_0>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"])*\""[[:space:]]*:[[:space:]]*  	{
                                                                                                                             	    BEGIN PARSE_ITEM_KEY;
-                                                                                                                            	    foo_foo_unput_string_0(yyscanner, *yytext);
+                                                                                                                            	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                                                                             	}
 <PARSE_KEY_0>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"])*\""[[:space:]]*:[[:space:]]*"["  	{
                                                                                                                                	    BEGIN PARSE_ARRAY_KEY;
-                                                                                                                               	    foo_foo_unput_string_0(yyscanner, *yytext);
+                                                                                                                               	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                                                                                	}
 <PARSE_KEY_0>"\"((\\b)|(\\\\)|(\\/)|(\\f)|(\\n)|(\\r)|(\\t)|(\\\")|(\\u[0-9a-fA-F]{4})|[^\"])*\""[[:space:]]*:[[:space:]]*"{"  	{
                                                                                                                                	    BEGIN PARSE_OBJECT_KEY;
-                                                                                                                               	    foo_foo_unput_string_0(yyscanner, *yytext);
+                                                                                                                               	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                                                                                	}
 <PARSE_KEY_1>"\"[^\"]*foo[a-z]bar[^\"]*\""[[:space:]]*:[[:space:]]*  	{
                                                                      	    BEGIN PARSE_ITEM_KEY;
-                                                                     	    foo_foo_unput_string_0(yyscanner, *yytext);
+                                                                     	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                      	}
 <PARSE_KEY_1>"\"[^\"]*foo[a-z]bar[^\"]*\""[[:space:]]*:[[:space:]]*"["  	{
                                                                         	    BEGIN PARSE_ARRAY_KEY;
-                                                                        	    foo_foo_unput_string_0(yyscanner, *yytext);
+                                                                        	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                         	}
 <PARSE_KEY_1>"\"[^\"]*foo[a-z]bar[^\"]*\""[[:space:]]*:[[:space:]]*"{"  	{
                                                                         	    BEGIN PARSE_OBJECT_KEY;
-                                                                        	    foo_foo_unput_string_0(yyscanner, *yytext);
+                                                                        	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                         	}
 <PARSE_OBJECT_KEY>"\""  	{
                         	    yy_push_state(QUOTED, yyextra->scaninfo);
@@ -190,31 +176,32 @@ namespace foo
               	    return QUOTED_STRING;
               	}
 <QUOTED>"\\/"  	{
-               	    yyextra->quoted->str += '/';
+               	    yyextra->quoted_str += '/';
                	}
 <QUOTED>"\\\""  	{
-                	    yyextra->quoted->str += '\"';
+                	    yyextra->quoted_str += '\"';
                 	}
 <QUOTED>"\\\\"  	{
-                	    yyextra->quoted->str += '\\';
+                	    yyextra->quoted_str += '\\';
                 	}
 <QUOTED>"\\b"  	{
-               	    yyextra->quoted->str += '\b';
+               	    yyextra->quoted_str += '\b';
                	}
 <QUOTED>"\\f"  	{
-               	    yyextra->quoted->str += '\f';
+               	    yyextra->quoted_str += '\f';
                	}
 <QUOTED>"\\n"  	{
-               	    yyextra->quoted->str += '\n';
+               	    yyextra->quoted_str += '\n';
                	}
 <QUOTED>"\\r"  	{
-               	    yyextra->quoted->str += '\r';
+               	    yyextra->quoted_str += '\r';
                	}
 <QUOTED>"\\t"  	{
-               	    yyextra->quoted->str += '\t';
+               	    yyextra->quoted_str += '\t';
                	}
 <QUOTED>\\u[0-9a-fA-F]{4}  	{
                            	    uint16_t uval;
+                           	    yyextra->quoted_str = "";
                            	    
                            	    uval = ((yytext[2] <= '9') ? (yytext[2] - '0') : ((yytext[2] & 0x07) + 9)) << 12;
                            	    uval += ((yytext[3] <= '9') ? (yytext[3] - '0') : ((yytext[3] & 0x07) + 9)) << 8;
@@ -222,17 +209,17 @@ namespace foo
                            	    uval += ((yytext[5] <= '9') ? (yytext[5] - '0') : ((yytext[5] & 0x07) + 9));
                            	    
                            	    if (uval < 0x0080)
-                           	        str += uval & 0xff;
+                           	        yyextra->quoted_str += uval & 0xff;
                            	    else if (uval < 0x0800)
                            	    {
-                           	        str += (uval >> 6) | 0xc0;
-                           	        str += (uval & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval >> 6) | 0xc0;
+                           	        yyextra->quoted_str += (uval & 0x3f) | 0x80;
                            	    }
                            	    else
                            	    {
-                           	        str += (uval >> 12) | 0xe0;
-                           	        str += ((uval >> 6) & 0x3f) | 0x80;
-                           	        str += (uval & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval >> 12) | 0xe0;
+                           	        yyextra->quoted_str += ((uval >> 6) & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval & 0x3f) | 0x80;
                            	    }
                            	}
 <SSTATE_0>","  	{
@@ -302,6 +289,51 @@ namespace foo
                                                                                                       	    BEGIN SSTATE_10;
                                                                                                       	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                                                       	}
+<SSTATE_12>-[0-9]+  	{
+                    	    yy_pop_state(yyextra->scaninfo);
+                    	    yylval->long_type = std::stol(yytext);
+                    	    
+                    	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->long_type))
+                    	        return 0;
+                    	    
+                    	    return NEG_INTEGER;
+                    	}
+<SSTATE_12>[+]?[0-9]+  	{
+                       	    yy_pop_state(yyextra->scaninfo);
+                       	    yylval->long_type = std::stol(yytext);
+                       	    
+                       	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->long_type))
+                       	        return 0;
+                       	    
+                       	    return NON_NEG_INTEGER;
+                       	}
+<SSTATE_12>[-+]?[0-9]+\.[0-9]*  	{
+                                	    yy_pop_state(yyextra->scaninfo);
+                                	    yylval->double_type = std::stod(yytext);
+                                	    
+                                	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->double_type))
+                                	        return 0;
+                                	    
+                                	    return FLOATING_POINT;
+                                	}
+<SSTATE_13>-[0-9]+  	{
+                    	    yy_pop_state(yyextra->scaninfo);
+                    	    yylval->long_type = std::stol(yytext);
+                    	    
+                    	    if (!foo_foo_value_meets_constraints_1(yyextra->scaninfo, yylval->long_type))
+                    	        return false;
+                    	    
+                    	    return NEG_INTEGER;
+                    	}
+<SSTATE_13>[+]?[0-9]+  	{
+                       	    yy_pop_state(yyextra->scaninfo);
+                       	    yylval->long_type = std::stol(yytext);
+                       	    
+                       	    if (!foo_foo_value_meets_constraints_1(yyextra->scaninfo, yylval->long_type))
+                       	        return false;
+                       	    
+                       	    return NON_NEG_INTEGER;
+                       	}
 <SSTATE_14>","  	{
                 	    return COMMA;
                 	}
@@ -400,32 +432,99 @@ namespace foo
                                                                                                     	    BEGIN SSTATE_5;
                                                                                                     	    foo_foo_unput_string_0(yyscanner, yytext);
                                                                                                     	}
+<SSTATE_7>-[0-9]+  	{
+                   	    yy_pop_state(yyextra->scaninfo);
+                   	    yylval->long_type = std::stol(yytext);
+                   	    
+                   	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->long_type))
+                   	        return 0;
+                   	    
+                   	    return NEG_INTEGER;
+                   	}
+<SSTATE_7>[+]?[0-9]+  	{
+                      	    yy_pop_state(yyextra->scaninfo);
+                      	    yylval->long_type = std::stol(yytext);
+                      	    
+                      	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->long_type))
+                      	        return 0;
+                      	    
+                      	    return NON_NEG_INTEGER;
+                      	}
+<SSTATE_7>[-+]?[0-9]+\.[0-9]*  	{
+                               	    yy_pop_state(yyextra->scaninfo);
+                               	    yylval->double_type = std::stod(yytext);
+                               	    
+                               	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->double_type))
+                               	        return 0;
+                               	    
+                               	    return FLOATING_POINT;
+                               	}
+<SSTATE_8>-[0-9]+  	{
+                   	    yy_pop_state(yyextra->scaninfo);
+                   	    yylval->long_type = std::stol(yytext);
+                   	    
+                   	    if (!foo_foo_value_meets_constraints_1(yyextra->scaninfo, yylval->long_type))
+                   	        return false;
+                   	    
+                   	    return NEG_INTEGER;
+                   	}
+<SSTATE_8>[+]?[0-9]+  	{
+                      	    yy_pop_state(yyextra->scaninfo);
+                      	    yylval->long_type = std::stol(yytext);
+                      	    
+                      	    if (!foo_foo_value_meets_constraints_1(yyextra->scaninfo, yylval->long_type))
+                      	        return false;
+                      	    
+                      	    return NON_NEG_INTEGER;
+                      	}
+<SSTATE_9>-[0-9]+  	{
+                   	    yy_pop_state(yyextra->scaninfo);
+                   	    yylval->long_type = std::stol(yytext);
+                   	    
+                   	    if (!foo_foo_value_meets_constraints_1(yyextra->scaninfo, yylval->long_type))
+                   	        return false;
+                   	    
+                   	    return NEG_INTEGER;
+                   	}
+<SSTATE_9>[+]?[0-9]+  	{
+                      	    yy_pop_state(yyextra->scaninfo);
+                      	    yylval->long_type = std::stol(yytext);
+                      	    
+                      	    if (!foo_foo_value_meets_constraints_1(yyextra->scaninfo, yylval->long_type))
+                      	        return false;
+                      	    
+                      	    return NON_NEG_INTEGER;
+                      	}
 
 %%
 
-static bool foo_foo_value_meets_constraints_0(double value)
+static bool foo_foo_value_meets_constraints_0(yyscan_t yyscanner, double value)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    if (value < 2.200000)
 	    {
 	        std::cerr << "validation error: " << yytext << " is less than 2.200000" << std::endl;
-	        return 0;
+	        return false;
 	    }
 	    
 	    return true;
 }
 
-static bool foo_foo_value_meets_constraints_1(long value)
+static bool foo_foo_value_meets_constraints_1(yyscan_t yyscanner, long value)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    if ((((long)((value/4)) * 4) != value)
 	        {
 	                std::cerr << "validation error: " << yytext << " is not a multiple of 4" << std::endl;
-	                return 0;
+	                return false;
 	            }
 	            
 	    if (value > 20)
 	            {
 	                std::cerr << "validation error: " << yytext << " is greater than 20" << std::endl;
-	                return 0;
+	                return false;
 	            }
 	            
 	    return true;

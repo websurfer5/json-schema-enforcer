@@ -45,6 +45,8 @@ namespace jsonschemaenforcer
                             const std::string& new_start_state,
                             bool pop_state,
                             const std::string& body);
+        void add_lexer_include(const std::string& header,
+                               bool b_system);
         void add_parser_include(const std::string& header,
                                 bool b_system);
         void add_stype_include(const std::string& header,
@@ -169,7 +171,8 @@ namespace jsonschemaenforcer
                    string_item;
         std::string class_namespace,
                     function_prefix;
-        StdStringBoolMap parser_include_map,
+        StdStringBoolMap lexer_include_map,
+                         parser_include_map,
                          stype_include_map;
         StdStringUnsignedMap next_symbol_number_map;
         StdStringMap obj_type_map,

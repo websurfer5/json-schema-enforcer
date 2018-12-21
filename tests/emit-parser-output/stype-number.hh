@@ -6,7 +6,6 @@
 struct FOO_FOO_STYPE
 {
     double double_type;
-    long long_type;
     foo::JsonItem foo__JsonItem_type;
 };
 

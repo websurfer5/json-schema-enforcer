@@ -8,12 +8,13 @@ namespace foo
     class Bar;
 }
 
+#include <iostream>
 #include <string>
 #include "Bar.hh"
 #include "stype-object-number-all.hh"
 #include "parser-object-number-all.hh"
 
-   static bool foo_foo_value_meets_constraints_0(double value);
+   static bool foo_foo_value_meets_constraints_0(yyscan_t yyscanner, double value);
    static void foo_foo_unput_string_0(yyscan_t yyscanner, const std::string& str);
 %}
 
@@ -28,21 +29,6 @@ namespace foo
 %x SSTATE_1
 
 %%
--[0-9]+  	{
-         	    yy_pop_state(yyextra->scaninfo);
-         	    yylval->long_type = std::stol(yytext);
-         	    return NEG_INTEGER;
-         	}
-[+]?[0-9]+  	{
-            	    yy_pop_state(yyextra->scaninfo);
-            	    yylval->long_type = std::stol(yytext);
-            	    return NON_NEG_INTEGER;
-            	}
-[-+]?[0-9]+\.[0-9]*  	{
-                     	    yy_pop_state(yyextra->scaninfo);
-                     	    yylval->double_type = std::stod(yytext);
-                     	    return FLOATING_POINT;
-                     	}
 "{"  	{
      	    yy_push_state(SSTATE_0, yyextra->scaninfo);
      	    return LEFT_BRACE;
@@ -150,31 +136,32 @@ namespace foo
               	    return QUOTED_STRING;
               	}
 <QUOTED>"\\/"  	{
-               	    yyextra->quoted->str += '/';
+               	    yyextra->quoted_str += '/';
                	}
 <QUOTED>"\\\""  	{
-                	    yyextra->quoted->str += '\"';
+                	    yyextra->quoted_str += '\"';
                 	}
 <QUOTED>"\\\\"  	{
-                	    yyextra->quoted->str += '\\';
+                	    yyextra->quoted_str += '\\';
                 	}
 <QUOTED>"\\b"  	{
-               	    yyextra->quoted->str += '\b';
+               	    yyextra->quoted_str += '\b';
                	}
 <QUOTED>"\\f"  	{
-               	    yyextra->quoted->str += '\f';
+               	    yyextra->quoted_str += '\f';
                	}
 <QUOTED>"\\n"  	{
-               	    yyextra->quoted->str += '\n';
+               	    yyextra->quoted_str += '\n';
                	}
 <QUOTED>"\\r"  	{
-               	    yyextra->quoted->str += '\r';
+               	    yyextra->quoted_str += '\r';
                	}
 <QUOTED>"\\t"  	{
-               	    yyextra->quoted->str += '\t';
+               	    yyextra->quoted_str += '\t';
                	}
 <QUOTED>\\u[0-9a-fA-F]{4}  	{
                            	    uint16_t uval;
+                           	    yyextra->quoted_str = "";
                            	    
                            	    uval = ((yytext[2] <= '9') ? (yytext[2] - '0') : ((yytext[2] & 0x07) + 9)) << 12;
                            	    uval += ((yytext[3] <= '9') ? (yytext[3] - '0') : ((yytext[3] & 0x07) + 9)) << 8;
@@ -182,17 +169,17 @@ namespace foo
                            	    uval += ((yytext[5] <= '9') ? (yytext[5] - '0') : ((yytext[5] & 0x07) + 9));
                            	    
                            	    if (uval < 0x0080)
-                           	        str += uval & 0xff;
+                           	        yyextra->quoted_str += uval & 0xff;
                            	    else if (uval < 0x0800)
                            	    {
-                           	        str += (uval >> 6) | 0xc0;
-                           	        str += (uval & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval >> 6) | 0xc0;
+                           	        yyextra->quoted_str += (uval & 0x3f) | 0x80;
                            	    }
                            	    else
                            	    {
-                           	        str += (uval >> 12) | 0xe0;
-                           	        str += ((uval >> 6) & 0x3f) | 0x80;
-                           	        str += (uval & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval >> 12) | 0xe0;
+                           	        yyextra->quoted_str += ((uval >> 6) & 0x3f) | 0x80;
+                           	        yyextra->quoted_str += (uval & 0x3f) | 0x80;
                            	    }
                            	}
 <SSTATE_0>","  	{
@@ -216,39 +203,68 @@ namespace foo
                	}
 <SSTATE_0>[[:space:]]  	{
                        	}
+<SSTATE_1>-[0-9]+  	{
+                   	    yy_pop_state(yyextra->scaninfo);
+                   	    yylval->long_type = std::stol(yytext);
+                   	    
+                   	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->long_type))
+                   	        return 0;
+                   	    
+                   	    return NEG_INTEGER;
+                   	}
+<SSTATE_1>[+]?[0-9]+  	{
+                      	    yy_pop_state(yyextra->scaninfo);
+                      	    yylval->long_type = std::stol(yytext);
+                      	    
+                      	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->long_type))
+                      	        return 0;
+                      	    
+                      	    return NON_NEG_INTEGER;
+                      	}
+<SSTATE_1>[-+]?[0-9]+\.[0-9]*  	{
+                               	    yy_pop_state(yyextra->scaninfo);
+                               	    yylval->double_type = std::stod(yytext);
+                               	    
+                               	    if (!foo_foo_value_meets_constraints_0(yyextra->scaninfo, yylval->double_type))
+                               	        return 0;
+                               	    
+                               	    return FLOATING_POINT;
+                               	}
 
 %%
 
-static bool foo_foo_value_meets_constraints_0(double value)
+static bool foo_foo_value_meets_constraints_0(yyscan_t yyscanner, double value)
 {
+	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+	    
 	    if ((double)((long)(value/5.500000)) != (value/5.500000))
 	    {
 	        std::cerr << "validation error: " << yytext << " is not a multiple of 5.500000" << std::endl;
-	        return 0;
+	        return false;
 	    }
 	    
 	    if (value > 110.050000)
 	    {
 	        std::cerr << "validation error: " << yytext << " is greater than 110.050000" << std::endl;
-	        return 0;
+	        return false;
 	    }
 	    
 	    if (value < -11.050000)
 	    {
 	        std::cerr << "validation error: " << yytext << " is less than -11.050000" << std::endl;
-	        return 0;
+	        return false;
 	    }
 	    
 	    if (value >= 110.000000)
 	    {
 	        std::cerr << "validation error: " << yytext << " is not less than 110.000000" << std::endl;
-	        return 0;
+	        return false;
 	    }
 	    
 	    if (value <= -11.000000)
 	    {
 	        std::cerr << "validation error: " << yytext << " is not greater than -11.000000" << std::endl;
-	        return 0;
+	        return false;
 	    }
 	    
 	    return true;

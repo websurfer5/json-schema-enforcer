@@ -18,8 +18,6 @@ namespace foo
 
 %}
 
-%token <long_type> NEG_INTEGER
-%token <long_type> NON_NEG_INTEGER
 
 %type <long_type> integer
 %type <foo__JsonItem_type> integer_0
