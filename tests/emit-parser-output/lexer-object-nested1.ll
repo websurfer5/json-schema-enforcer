@@ -531,7 +531,7 @@ static bool foo_foo_value_meets_constraints_1(yyscan_t yyscanner, long value)
 {
 	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    
-	    if ((((long)((value/4)) * 4) != value)
+	    if (((long)((value/4)) * 4) != value)
 	        {
 	                std::cerr << "validation error: " << yytext << " is not a multiple of 4" << std::endl;
 	                return false;

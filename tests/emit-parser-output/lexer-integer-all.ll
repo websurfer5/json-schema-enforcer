@@ -52,7 +52,7 @@ static bool foo_foo_value_meets_constraints_0(yyscan_t yyscanner, long value)
 {
 	    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
 	    
-	    if ((((long)((value/5)) * 5) != value)
+	    if (((long)((value/5)) * 5) != value)
 	        {
 	                std::cerr << "validation error: " << yytext << " is not a multiple of 5" << std::endl;
 	                return false;

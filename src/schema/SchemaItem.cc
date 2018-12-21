@@ -1897,7 +1897,7 @@ namespace jsonschemaenforcer
                           "\n";
 
             if (has_int_multiple_of())
-                helper_body += "if ((((long)((value/" + multipleOf + ")) * " + multipleOf + ") != value)\n"
+                helper_body += "if (((long)((value/" + multipleOf + ")) * " + multipleOf + ") != value)\n"
                                "    {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not a multiple of " + multipleOf + "\" << std::endl;\n"
                                "            return false;\n"
