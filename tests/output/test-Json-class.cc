@@ -17,6 +17,7 @@
 #include <boost/test/unit_test.hpp>
 #include "json.hh"
 #include <stdexcept>
+#include <iostream>
 
 BOOST_AUTO_TEST_SUITE( Json_class_test_suite )
 
@@ -353,7 +354,7 @@ BOOST_AUTO_TEST_CASE( test_Json_class_1 )
     BOOST_CHECK_NO_THROW(jitem2[8]);
     BOOST_CHECK(jitem2[8].is_string());
     BOOST_CHECK_EQUAL(jitem2[8].string(), "barbar");
-    BOOST_CHECK_NO_THROW(jitem2[9]);
+    BOOST_REQUIRE_NO_THROW(jitem2[9]);
     BOOST_CHECK(jitem2[9].is_array());
     BOOST_REQUIRE_NO_THROW(jitem2[9][0]);
     BOOST_CHECK(jitem2[9][0].is_boolean());
@@ -373,6 +374,44 @@ BOOST_AUTO_TEST_CASE( test_Json_class_1 )
     BOOST_REQUIRE_NO_THROW(jitem2[9][4]);
     BOOST_CHECK(jitem2[9][4].is_number());
     BOOST_CHECK_EQUAL(jitem2[9][4].number(), 7.5);
+
+    foo::JsonItemVector jvect;
+
+    jvect = jitem2[9].array();
+    BOOST_REQUIRE_EQUAL(jvect.size(), 5U);
+
+    BOOST_REQUIRE_NO_THROW(jitem2.append_array(jitem2[9].array()));
+    BOOST_REQUIRE_NO_THROW(jitem2[10]);
+    BOOST_CHECK(jitem2[10].is_boolean());
+    BOOST_CHECK_EQUAL(jitem2[10].boolean(), true);
+    BOOST_REQUIRE_NO_THROW(jitem2[11]);
+    BOOST_CHECK(jitem2[11].is_string());
+    BOOST_CHECK_EQUAL(jitem2[11].string(), "foo");
+    BOOST_REQUIRE_NO_THROW(jitem2[12]);
+    BOOST_CHECK(jitem2[12].is_string());
+    BOOST_CHECK_EQUAL(jitem2[12].string(), "foofoo");
+    BOOST_REQUIRE_NO_THROW(jitem2[13]);
+    BOOST_CHECK(jitem2[13].is_null());
+    BOOST_REQUIRE_NO_THROW(jitem2[14]);
+    BOOST_CHECK(jitem2[14].is_number());
+    BOOST_CHECK_EQUAL(jitem2[14].number(), 7.5);
+
+    BOOST_REQUIRE_NO_THROW(jitem2.append_array_item(jitem2[9]));
+    BOOST_CHECK(jitem2[15].is_array());
+    BOOST_REQUIRE_NO_THROW(jitem2[15][0]);
+    BOOST_CHECK(jitem2[15][0].is_boolean());
+    BOOST_CHECK_EQUAL(jitem2[15][0].boolean(), true);
+    BOOST_REQUIRE_NO_THROW(jitem2[15][1]);
+    BOOST_CHECK(jitem2[15][1].is_string());
+    BOOST_CHECK_EQUAL(jitem2[15][1].string(), "foo");
+    BOOST_REQUIRE_NO_THROW(jitem2[15][2]);
+    BOOST_CHECK(jitem2[15][2].is_string());
+    BOOST_CHECK_EQUAL(jitem2[15][2].string(), "foofoo");
+    BOOST_REQUIRE_NO_THROW(jitem2[15][3]);
+    BOOST_CHECK(jitem2[15][3].is_null());
+    BOOST_REQUIRE_NO_THROW(jitem2[15][4]);
+    BOOST_CHECK(jitem2[15][4].is_number());
+    BOOST_CHECK_EQUAL(jitem2[15][4].number(), 7.5);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

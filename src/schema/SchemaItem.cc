@@ -872,7 +872,7 @@ namespace jsonschemaenforcer
 
         if (prop_tag == "QUOTED_STRING")
             rule_str += "        {\n"
-                        "            JsonItem jitem;\n"
+                        "            " + sd.get_namespace() + "::JsonItem jitem;\n"
                         "            jitem.set_string(" + (array_item_tag.empty()
                                                             ? std::string("$1")
                                                             : std::string("$2")) +");\n"
@@ -972,7 +972,7 @@ namespace jsonschemaenforcer
                 emit_array_rule(sd, rule_str, first, *c_it, array_state, item_tag);
             }
             else
-            {            
+            {
                 for (; c_it != get_array_properties().end(); c_it++)
                 {
                     const std::string& array_item_tag = c_it->is_vanilla()
@@ -1054,13 +1054,7 @@ namespace jsonschemaenforcer
                     }
 
                     array_tag = "$" + std::to_string(array_tag_number);
-
-                    if (prop_tag == "QUOTED_STRING")
-                        rule_body += "            JsonItem jitem;\n"
-                                     "            jitem.set_string(" + array_tag + ");\n"
-                                     "            $$.append_array_item(jitem);\n";
-                    else
-                        rule_body += "            $$.append_array_item(" + array_tag + ");\n";
+                    rule_body += "            $$.append_array_item(" + array_tag + ");\n";
 
                     if (!has_p_array_additional_items()
                         && c_it == (--get_array_properties().end()))

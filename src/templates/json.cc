@@ -139,6 +139,16 @@ namespace foo
         throw std::invalid_argument("[] operator is undefined for JSON item type " + item_type_str[item_type]);
     }
 
+    JsonItem& JsonItem::append_array(const JsonItemVector& jvect)
+    {
+        if (!is_array())
+            clear();
+
+        child_vector.insert(child_vector.end(), jvect.begin(), jvect.end());
+        item_type = type_Array;
+        return *this;
+    }
+
     JsonItem& JsonItem::append_array_item()
     {
         if (!is_array())
@@ -157,6 +167,14 @@ namespace foo
         child_vector.push_back(jitem);
         item_type = type_Array;
         return *this;
+    }
+
+    JsonItemVector& JsonItem::array()
+    {
+        if (!is_array())
+            throw std::invalid_argument("cannot return array for JSON item type " + item_type_str[item_type]);
+
+        return child_vector;
     }
 
     bool JsonItem::boolean() const

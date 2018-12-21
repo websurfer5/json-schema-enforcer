@@ -49,8 +49,10 @@ namespace foo
         // inline JsonItem& operator [](const char *s) { return this->operator [](std::string(s)); };
         JsonItem& operator [](const std::string& _key);
 
+        JsonItem& append_array(const JsonItemVector& jvect);
         JsonItem& append_array_item();
         JsonItem& append_array_item(const JsonItem& jitem);
+        JsonItemVector& array();
         bool boolean() const;
         void clear();
         bool empty() const;
