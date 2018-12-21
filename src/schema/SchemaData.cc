@@ -350,13 +350,15 @@ namespace jsonschemaenforcer
                                  const std::string& stype_header_fname,
                                  const std::string& start_rule)
     {
-        std::string rule_type;
+        std::string rule_type,
+                    upper_func_prefix;
         StdStringBoolMap::const_iterator sbm_it;
         StdStringMap::const_iterator c_it;
         StdStringTuple5StringMap::const_iterator tm_it;
 
         // emit_class_header();
 
+        upper_func_prefix = toupper(func_prefix, false);
         add_parser_include("string", true);
         parser_list.push_back("%{\n");
 
@@ -404,8 +406,12 @@ namespace jsonschemaenforcer
                 parser_list.push_back("extern " + std::get<0>(tm_it->first) + " " + tm_it->second + "(" + std::get<2>(tm_it->first) + ");\n");
         }
 
+        parser_list.push_back("#define "+ upper_func_prefix + "PARAM sd->scaninfo\n");
         parser_list.push_back("%}\n"
                              "\n");
+        parser_list.push_back("%lex-param { yyscan_t " + upper_func_prefix + "PARAM }\n"
+                              "%parse-param { " + name_space + "::" + class_name + " *sd }\n"
+                              "\n");
 
         for (c_it = token_type_map.begin(); c_it != token_type_map.end(); c_it++)
         {

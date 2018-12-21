@@ -18,7 +18,11 @@ namespace foo
 
 extern void foo_foo_push_format_start_state_0();
 extern void foo_foo_set_item_array_start_state_0(yyscan_t yyscanner);
+#define FOO_FOO_PARAM sd->scaninfo
 %}
+
+%lex-param { yyscan_t FOO_FOO_PARAM }
+%parse-param { foo::Bar *sd }
 
 %token B_FALSE
 %token B_TRUE

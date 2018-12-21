@@ -16,7 +16,11 @@ namespace foo
 #include "Bar.hh"
 #include <string>
 
+#define FOO_FOO_PARAM sd->scaninfo
 %}
+
+%lex-param { yyscan_t FOO_FOO_PARAM }
+%parse-param { foo::Bar *sd }
 
 %token <std__string_type> QUOTED_STRING
 %token TOKEN_0
