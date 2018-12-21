@@ -125,9 +125,7 @@ array_0:
     LEFT_BRACKET TOKEN_0 QUOTED_STRING
     array_items_0 RIGHT_BRACKET
         {
-            JsonItem jitem;
-            jitem.set_string($3);
-            $$.append_array_item(jitem);
+            $$.append_array_item($3);
             $$.append_array($4);
         }
     ;

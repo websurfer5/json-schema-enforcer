@@ -176,7 +176,7 @@ object_item:
 array_item_0:
     TOKEN_0 QUOTED_STRING
         {
-            JsonItem jitem;
+            foo::JsonItem jitem;
             jitem.set_string($2);
             $$.append_array_item(jitem);
         }

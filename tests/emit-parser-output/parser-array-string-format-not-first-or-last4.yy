@@ -109,14 +109,10 @@ array_0:
         }
     array_items RIGHT_BRACKET
         {
-            JsonItem jitem;
-            jitem.set_string($3);
-            $$.append_array_item(jitem);
+            $$.append_array_item($3);
             $$.append_array_item($5);
             $$.append_array_item($7);
-            JsonItem jitem;
-            jitem.set_string($10);
-            $$.append_array_item(jitem);
+            $$.append_array_item($10);
             $$.append_array($12);
         }
     ;
