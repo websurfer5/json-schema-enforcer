@@ -14,6 +14,7 @@ namespace foo
 #include "stype-object-maxProperties.hh"
 #include "lexer-object-maxProperties.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
@@ -217,9 +218,9 @@ object_0:
         }
     | LEFT_BRACE object_items_0 RIGHT_BRACE
         {
-            if ($2.count() > 5)
+            if ($2.size() > 5)
             {
-                std::cerr << "Object must have at most 5 properties, but has " << $2.count() << std::endl;
+                std::cerr << "Object must have at most 5 properties, but has " << $2.size() << std::endl;
                 YYABORT;
             }
 

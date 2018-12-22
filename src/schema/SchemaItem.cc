@@ -600,6 +600,7 @@ namespace jsonschemaenforcer
                      true);        
         sd.add_lexer_rule("[[:space:]]", "ITEM_ARRAY", "", false, "");
         sd.add_lexer_rule(".", "ITEM_ARRAY", "ITEM_VALUE", false, "unput(*yytext);\n");
+        sd.add_empty_array_rule();
         sd.add_parser_rule("array",
                            "    empty_array\n"
                            "        {\n"
@@ -822,11 +823,6 @@ namespace jsonschemaenforcer
                            "\n",
                            false);
         sd.set_rule_type("number", "double", false);
-        sd.add_parser_rule("empty_array",
-                           "    LEFT_BRACKET RIGHT_BRACKET\n"
-                           "    ;\n"
-                           "\n",
-                           false);
         sd.add_parser_rule("empty_object",
                            "    LEFT_BRACE RIGHT_BRACE\n"
                            "    ;\n"
@@ -940,8 +936,6 @@ namespace jsonschemaenforcer
                                      sd.unput_string_func_name() + "(yyscanner, yytext);\n"
                                      "yy_push_state(" + key_validation_state + ", yyextra->scaninfo);\n");
         }
-
-        emit_default_rules(sd);
 
         if (get_array_properties().empty())
         {
@@ -1081,22 +1075,24 @@ namespace jsonschemaenforcer
 
         if (has_array_n_max_items())
         {
-            validation_rule_str += "            if ($$.get_array_size() > " + std::to_string(get_array_max_items()) + ")\n"
+            validation_rule_str += "            if ($$.array().size() > " + std::to_string(get_array_max_items()) + ")\n"
                                    "            {\n"
                                    "                std::cerr << \"validation error: array has more than " + std::to_string(get_array_max_items()) + " items\" << std::endl;\n"
                                    "                YYABORT;\n"
                                    "            }\n"
                                    "\n";
+            sd.add_parser_include("iostream", true);
         }
 
         if (has_array_n_min_items())
         {
-            validation_rule_str += "            if ($$.get_array_size() < " + std::to_string(get_array_min_items()) + ")\n"
+            validation_rule_str += "            if ($$.array().size() < " + std::to_string(get_array_min_items()) + ")\n"
                                    "            {\n"
                                    "                std::cerr << \"validation error: array has fewer than " + std::to_string(get_array_min_items()) + " items\" << std::endl;\n"
                                    "                YYABORT;\n"
                                    "            }\n"
                                    "\n";
+            sd.add_parser_include("iostream", true);
         }
 
         if (has_array_b_unique() && get_array_unique())
@@ -1110,6 +1106,7 @@ namespace jsonschemaenforcer
                                    "            }\n"
                                    "\n";
             sd.add_parser_include("set", true);
+            sd.add_parser_include("iostream", true);
         }
 
         if (!get_array_properties().empty()
@@ -1179,6 +1176,7 @@ namespace jsonschemaenforcer
             }
             else
             {
+                emit_default_rules(sd);
                 rule_tag = sd.add_parser_rule("array",
                                               rule_str +
                                               "    array_items RIGHT_BRACKET\n"
@@ -1219,6 +1217,7 @@ namespace jsonschemaenforcer
 
         if (!(has_array_n_min_items() && get_array_min_items() > 0))
         {
+            sd.add_empty_array_rule();
             rule_str = "    empty_array\n"
                        "        {\n"
                        "            $$.clear();\n"
@@ -1491,26 +1490,29 @@ namespace jsonschemaenforcer
                         "                YYABORT;\n"
                         "            }\n"
                         "\n";
+            sd.add_parser_include("iostream", true);
         }
 
         if (has_object_n_min_properties() && get_object_min_properties() > 0)
         {
-            rule_str += "            if (" + object_items_tag + ".count() < " + std::to_string(get_object_min_properties()) + ")\n"
+            rule_str += "            if (" + object_items_tag + ".size() < " + std::to_string(get_object_min_properties()) + ")\n"
                         "            {\n"
-                        "                std::cerr << \"Object must have at least " + std::to_string(get_object_min_properties()) + " properties, but only has \" << " + object_items_tag + ".count() << std::endl;\n"
+                        "                std::cerr << \"Object must have at least " + std::to_string(get_object_min_properties()) + " properties, but only has \" << " + object_items_tag + ".size() << std::endl;\n"
                         "                YYABORT;\n"
                         "            }\n"
                         "\n";
+            sd.add_parser_include("iostream", true);
         }
 
         if (has_object_n_max_properties() && get_object_max_properties() > 0)
         {
-            rule_str += "            if (" + object_items_tag + ".count() > " + std::to_string(get_object_max_properties()) + ")\n"
+            rule_str += "            if (" + object_items_tag + ".size() > " + std::to_string(get_object_max_properties()) + ")\n"
                         "            {\n"
-                        "                std::cerr << \"Object must have at most " + std::to_string(get_object_max_properties()) + " properties, but has \" << " + object_items_tag + ".count() << std::endl;\n"
+                        "                std::cerr << \"Object must have at most " + std::to_string(get_object_max_properties()) + " properties, but has \" << " + object_items_tag + ".size() << std::endl;\n"
                         "                YYABORT;\n"
                         "            }\n"
                         "\n";
+            sd.add_parser_include("iostream", true);
         }
 
         for (c_it = get_object_dependencies().begin(); c_it != get_object_dependencies().end(); c_it++)
@@ -1533,6 +1535,7 @@ namespace jsonschemaenforcer
                                 "                    std::cerr << \"Object missing dependency object property: \\\"" + *s_it + "\\\"\" << std::endl;\n"
                                 "                    YYABORT;\n"
                                 "                }\n";
+                    sd.add_parser_include("iostream", true);
                 }
 
                 rule_str += "            }\n"
@@ -1771,7 +1774,7 @@ namespace jsonschemaenforcer
                                                         : " QUOTED_STRING")
                                                    + " QUOTED_STRING\n"
                                 "        {\n"
-                                + (get_key().empty()
+                                + ((get_key().empty() && !is_additional_property())
                                         ? "            $$.set_string($2);\n"
                                         : "            $$.set_object_item($2, $3);\n") +
                                 "        }\n"
@@ -1818,14 +1821,6 @@ namespace jsonschemaenforcer
                             "\n",
                             false);
         sd.set_rule_type(int_tag, "long", false);
-        // int_tag = sd.add_parser_rule("integer",
-        //                     "    " + int_tag + "\n"
-        //                     "        {\n"
-        //                     "            $$.set_number($1);\n"
-        //                     "        }\n"
-        //                     "    ;\n"
-        //                     "\n");
-        // sd.set_rule_type(int_tag, sd.get_namespace() + "::JsonItem", true);
 
         has_validation_rule = has_int_multiple_of()
                               | has_int_maximum()
@@ -1886,52 +1881,70 @@ namespace jsonschemaenforcer
                           "\n";
 
             if (has_int_multiple_of())
+            {
                 helper_body += "if (((long)((value/" + multipleOf + ")) * " + multipleOf + ") != value)\n"
                                "    {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not a multiple of " + multipleOf + "\" << std::endl;\n"
                                "            return false;\n"
                                "        }\n"
                                "        \n";
+                sd.add_parser_include("iostream", true);
+            }
 
             if (has_int_maximum())
+            {
                 helper_body += "if (value > " + maximum + ")\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is greater than " + maximum + "\" << std::endl;\n"
                                "            return false;\n"
                                "        }\n"
                                "        \n";
+                sd.add_parser_include("iostream", true);
+            }
 
             if (has_int_minimum())
+            {
                 helper_body += "if (value < " + minimum + ")\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is less than " + minimum + "\" << std::endl;\n"
                                "            return false;\n"
                                "        }\n"
                                "        \n";
+                sd.add_parser_include("iostream", true);
+            }
 
             if (has_int_exclusive_maximum())
+            {
                 helper_body += "if (value >= " + exclusiveMaximum + ")\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not less than " + exclusiveMaximum + "\" << std::endl;\n"
                                "            return false;\n"
                                "        }\n"
                                "        \n";
+                sd.add_parser_include("iostream", true);
+            }
 
             if (has_int_exclusive_minimum())
+            {
                 helper_body += "if (value <= " + exclusiveMinimum + ")\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not greater than " + exclusiveMinimum + "\" << std::endl;\n"
                                "            return false;\n"
                                "        }\n"
                                "        \n";
+                sd.add_parser_include("iostream", true);
+            }
 
             if (!enum_if_str.empty())
+            {
                 helper_body += "if (!(" + enum_if_str + "))\n"
                                "        {\n"
                                "            std::cerr << \"validation error: \" << yytext << \" is not one of " + enum_str + "\" << std::endl;\n"
                                "            return false;\n"
                                "        }\n"
                                "        \n";
+                sd.add_parser_include("iostream", true);
+            }
 
             sd.add_lexer_include("iostream", true);
             helper_body += "return true;\n";
@@ -1965,9 +1978,9 @@ namespace jsonschemaenforcer
                                                       : " QUOTED_STRING COLON ") + int_tag
                                       + "\n"
                                "        {\n"
-                               "            $$.set_number($2, " + (has_validation_rule
-                                                                    ? "$3"
-                                                                    : "$4") + ");\n"
+                               "            " + (has_validation_rule
+                                                    ? "$$.set_object_item($2, $3);\n"
+                                                    : "$$.set_object_item($2, $4);\n") +
                                "        }\n"
                                "    ;\n"
                                "\n");
@@ -2100,48 +2113,70 @@ namespace jsonschemaenforcer
                           "\n";
 
             if (has_num_multiple_of())
+            {
                 helper_body += "if ((double)((long)(value/" + multipleOf + ")) != (value/" + multipleOf + "))\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is not a multiple of " + multipleOf + "\" << std::endl;\n"
                                "    return false;\n"
                                "}\n"
                                "\n";
+                sd.add_parser_include("iostream", true);
+            }
 
             if (has_num_maximum())
+            {
                 helper_body += "if (value > " + maximum + ")\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is greater than " + maximum + "\" << std::endl;\n"
                                "    return false;\n"
                                "}\n"
                                "\n";
+                sd.add_parser_include("iostream", true);
+            }
+
             if (has_num_minimum())
+            {
                 helper_body += "if (value < " + minimum + ")\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is less than " + minimum + "\" << std::endl;\n"
                                "    return false;\n"
                                "}\n"
                                "\n";
+                sd.add_parser_include("iostream", true);
+            }
+
             if (has_num_exclusive_maximum())
+            {
                 helper_body += "if (value >= " + exclusiveMaximum + ")\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is not less than " + exclusiveMaximum + "\" << std::endl;\n"
                                "    return false;\n"
                                "}\n"
                                "\n";
+                sd.add_parser_include("iostream", true);
+            }
+
             if (has_num_exclusive_minimum())
+            {
                 helper_body += "if (value <= " + exclusiveMinimum + ")\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is not greater than " + exclusiveMinimum + "\" << std::endl;\n"
                                "    return false;\n"
                                "}\n"
                                "\n";
+                sd.add_parser_include("iostream", true);
+            }
+
             if (!enum_if_str.empty())
+            {
                 helper_body += "if (!(" + enum_if_str + "))\n"
                                "{\n"
                                "    std::cerr << \"validation error: \" << yytext << \" is not one of " + enum_str + "\" << std::endl;\n"
                                "    return false;\n"
                                "}\n"
                                "\n";
+                sd.add_parser_include("iostream", true);
+            }
 
             sd.add_lexer_include("iostream", true);
             helper_body += "return true;\n";
@@ -2181,9 +2216,9 @@ namespace jsonschemaenforcer
                                                           : " COLON ") + num_tag
                                       + "\n"
                                "        {\n"
-                               "            $$.set_number($2, " + (has_validation_rule
-                                                                    ? "$3"
-                                                                    : "$4") + ");\n"
+                               "            " + (has_validation_rule
+                                                    ? "$$.set_object_item($2, $3);\n"
+                                                    : "$$.set_object_item($2, $4);\n") +
                                "        }\n"
                                "    ;\n"
                                "\n");

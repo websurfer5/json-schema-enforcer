@@ -672,4 +672,13 @@ namespace jsonschemaenforcer
                                 false,
                                 true);
     }
+
+    void SchemaData::add_empty_array_rule()
+    {
+        add_parser_rule("empty_array",
+                        "    LEFT_BRACKET RIGHT_BRACKET\n"
+                        "    ;\n"
+                        "\n",
+                        false);
+    }
 }

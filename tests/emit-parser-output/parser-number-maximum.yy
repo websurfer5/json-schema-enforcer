@@ -14,6 +14,7 @@ namespace foo
 #include "stype-number-maximum.hh"
 #include "lexer-number-maximum.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);

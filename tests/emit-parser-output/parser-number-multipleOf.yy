@@ -14,6 +14,7 @@ namespace foo
 #include "stype-number-multipleOf.hh"
 #include "lexer-number-multipleOf.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);

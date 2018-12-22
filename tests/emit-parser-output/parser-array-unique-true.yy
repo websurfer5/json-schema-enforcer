@@ -14,6 +14,7 @@ namespace foo
 #include "stype-array-unique-true.hh"
 #include "lexer-array-unique-true.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <set>
 #include <string>
 

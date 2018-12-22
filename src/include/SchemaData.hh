@@ -40,6 +40,7 @@ namespace jsonschemaenforcer
         yyscan_t scaninfo;
         void *input_bp;
 
+        void add_empty_array_rule();
         void add_lexer_rule(const std::string& pattern,
                             const std::string& start_state,
                             const std::string& new_start_state,

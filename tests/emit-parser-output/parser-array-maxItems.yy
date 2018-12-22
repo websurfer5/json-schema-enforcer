@@ -14,6 +14,7 @@ namespace foo
 #include "stype-array-maxItems.hh"
 #include "lexer-array-maxItems.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
@@ -109,7 +110,7 @@ array_0:
             $$.append_array_item($9);
             $$.append_array($11);
 
-            if ($$.get_array_size() > 10)
+            if ($$.array().size() > 10)
             {
                 std::cerr << "validation error: array has more than 10 items" << std::endl;
                 YYABORT;

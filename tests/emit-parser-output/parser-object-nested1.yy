@@ -14,6 +14,7 @@ namespace foo
 #include "stype-object-nested1.hh"
 #include "lexer-object-nested1.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
@@ -202,44 +203,44 @@ string_0:
 string_5:
     TOKEN_11 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2);
+            $$.set_object_item($2, $3);
         }
     ;
 
 number_1:
     TOKEN_12 QUOTED_STRING number
         {
-            $$.set_number($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 number_2:
     TOKEN_13 QUOTED_STRING COLON number
         {
-            $$.set_number($2, $4);
+            $$.set_object_item($2, $4);
         }
     ;
 
 integer_3:
     TOKEN_14 QUOTED_STRING integer
         {
-            $$.set_number($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 integer_4:
     TOKEN_15 QUOTED_STRING COLON integer
         {
-            $$.set_number($2, $4);
+            $$.set_object_item($2, $4);
         }
     ;
 
 object_1:
     TOKEN_16 QUOTED_STRING object_items_1 RIGHT_BRACE
         {
-            if ($3.count() < 2)
+            if ($3.size() < 2)
             {
-                std::cerr << "Object must have at least 2 properties, but only has " << $3.count() << std::endl;
+                std::cerr << "Object must have at least 2 properties, but only has " << $3.size() << std::endl;
                 YYABORT;
             }
 
@@ -271,28 +272,28 @@ string_2:
 number_0:
     TOKEN_4 QUOTED_STRING number
         {
-            $$.set_number($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 integer_0:
     TOKEN_5 QUOTED_STRING integer
         {
-            $$.set_number($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 integer_1:
     TOKEN_6 QUOTED_STRING integer
         {
-            $$.set_number($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 integer_2:
     TOKEN_7 QUOTED_STRING COLON integer
         {
-            $$.set_number($2, $4);
+            $$.set_object_item($2, $4);
         }
     ;
 
@@ -379,9 +380,9 @@ object_0:
         }
     | TOKEN_1 QUOTED_STRING object_items_0 RIGHT_BRACE
         {
-            if ($3.count() > 5)
+            if ($3.size() > 5)
             {
-                std::cerr << "Object must have at most 5 properties, but has " << $3.count() << std::endl;
+                std::cerr << "Object must have at most 5 properties, but has " << $3.size() << std::endl;
                 YYABORT;
             }
 

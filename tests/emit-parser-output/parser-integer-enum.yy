@@ -14,6 +14,7 @@ namespace foo
 #include "stype-integer-enum.hh"
 #include "lexer-integer-enum.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);

@@ -14,6 +14,7 @@ namespace foo
 #include "stype-object-required.hh"
 #include "lexer-object-required.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);

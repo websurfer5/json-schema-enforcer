@@ -14,6 +14,7 @@ namespace foo
 #include "stype-object-minProperties.hh"
 #include "lexer-object-minProperties.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
@@ -93,9 +94,9 @@ empty_object:
 object_0:
     LEFT_BRACE object_items_0 RIGHT_BRACE
         {
-            if ($2.count() < 20)
+            if ($2.size() < 20)
             {
-                std::cerr << "Object must have at least 20 properties, but only has " << $2.count() << std::endl;
+                std::cerr << "Object must have at least 20 properties, but only has " << $2.size() << std::endl;
                 YYABORT;
             }
 

@@ -14,6 +14,7 @@ namespace foo
 #include "stype-number-all.hh"
 #include "lexer-number-all.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);

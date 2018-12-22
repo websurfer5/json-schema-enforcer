@@ -14,6 +14,7 @@ namespace foo
 #include "stype-object-integer-all.hh"
 #include "lexer-object-integer-all.hh"
 #include "Bar.hh"
+#include <iostream>
 #include <string>
 
 extern void foo_foo_error(foo::Bar *sd, const char *s, ...);
@@ -138,7 +139,7 @@ object_item:
 integer_0:
     TOKEN_0 QUOTED_STRING integer
         {
-            $$.set_number($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
