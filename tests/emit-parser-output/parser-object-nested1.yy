@@ -168,43 +168,41 @@ integer:
 object_item:
     QUOTED_STRING COLON QUOTED_STRING
         {
-            $$.set_string($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON number
         {
-            $$.set_number($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON boolean
         {
-            $$.set_boolean($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON array
         {
-            $$ = $3;
-            $$.set_key($1);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON object
         {
-            $$ = $3;
-            $$.set_key($1);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON NULL_TOKEN
         {
-            $$.set_null($1);
+            $$.set_object_item($1);
         }
     ;
 
 string_0:
     TOKEN_0 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 string_5:
     TOKEN_11 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2, $3);
+            $$.set_string($2);
         }
     ;
 
@@ -252,21 +250,21 @@ object_1:
 string_6:
     TOKEN_17 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 string_1:
     TOKEN_2 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 string_2:
     TOKEN_3 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
@@ -301,14 +299,14 @@ integer_2:
 string_3:
     TOKEN_8 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
 string_4:
     TOKEN_9 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
@@ -395,51 +393,48 @@ object_items:
     object_item
         {
             $$.clear();
-            $$[$1.get_key()] = $1;
+            $$ = $1.object();
         }
     | object_items COMMA object_item
         {
             $$ = $1;
-            $$[$3.get_key()] = $3;
+            $$.insert($3.object().cbegin(), $3.object().cend());
         }
     ;
 
 object_items_0:
     object_item_0
          {
-             $$.clear();
-             $$[$1.get_key()] = $1;
+             $$ = $1.object();
          }
     | object_items_0 COMMA object_item_0
          {
              $$ = $1;
-             $$[$3.get_key()] = $3;
+             $$.insert($3.object().cbegin(), $3.object().cend());
          }
     ;
 
 object_items_1:
     object_item_1
          {
-             $$.clear();
-             $$[$1.get_key()] = $1;
+             $$ = $1.object();
          }
     | object_items_1 COMMA object_item_1
          {
              $$ = $1;
-             $$[$3.get_key()] = $3;
+             $$.insert($3.object().cbegin(), $3.object().cend());
          }
     ;
 
 object_items_2:
     object_item_2
          {
-             $$.clear();
-             $$[$1.get_key()] = $1;
+             $$ = $1.object();
          }
     | object_items_2 COMMA object_item_2
          {
              $$ = $1;
-             $$[$3.get_key()] = $3;
+             $$.insert($3.object().cbegin(), $3.object().cend());
          }
     ;
 
@@ -474,29 +469,27 @@ object_item_2:
         }
     | TOKEN_19 QUOTED_STRING COLON QUOTED_STRING
         {
-            $$.set_string($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_19 QUOTED_STRING COLON number
         {
-            $$.set_number($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_19 QUOTED_STRING COLON boolean
         {
-            $$.set_boolean($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_19 QUOTED_STRING COLON array
         {
-            $$ = $4;
-            $$.set_key($2);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_19 QUOTED_STRING COLON object
         {
-            $$ = $4;
-            $$.set_key($2);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_19 QUOTED_STRING COLON NULL_TOKEN
         {
-            $$.set_null($2);
+            $$.set_object_item($2);
         }
     ;
 
@@ -546,29 +539,27 @@ object_item_1:
         }
     | TOKEN_18 QUOTED_STRING COLON QUOTED_STRING
         {
-            $$.set_string($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_18 QUOTED_STRING COLON number
         {
-            $$.set_number($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_18 QUOTED_STRING COLON boolean
         {
-            $$.set_boolean($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_18 QUOTED_STRING COLON array
         {
-            $$ = $4;
-            $$.set_key($2);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_18 QUOTED_STRING COLON object
         {
-            $$ = $4;
-            $$.set_key($2);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_18 QUOTED_STRING COLON NULL_TOKEN
         {
-            $$.set_null($2);
+            $$.set_object_item($2);
         }
     ;
 

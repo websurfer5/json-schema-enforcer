@@ -115,29 +115,27 @@ integer:
 object_item:
     QUOTED_STRING COLON QUOTED_STRING
         {
-            $$.set_string($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON number
         {
-            $$.set_number($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON boolean
         {
-            $$.set_boolean($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON array
         {
-            $$ = $3;
-            $$.set_key($1);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON object
         {
-            $$ = $3;
-            $$.set_key($1);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON NULL_TOKEN
         {
-            $$.set_null($1);
+            $$.set_object_item($1);
         }
     ;
 
@@ -158,7 +156,7 @@ integer_0:
 string_0:
     TOKEN_2 QUOTED_STRING QUOTED_STRING
         {
-            $$.set_string($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
@@ -250,29 +248,27 @@ object_item_0:
         }
     | TOKEN_3 QUOTED_STRING COLON QUOTED_STRING
         {
-            $$.set_string($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_3 QUOTED_STRING COLON number
         {
-            $$.set_number($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_3 QUOTED_STRING COLON boolean
         {
-            $$.set_boolean($2, $4);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_3 QUOTED_STRING COLON array
         {
-            $$ = $4;
-            $$.set_key($2);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_3 QUOTED_STRING COLON object
         {
-            $$ = $4;
-            $$.set_key($2);
+            $$.set_object_item($2, $4);
         }
     | TOKEN_3 QUOTED_STRING COLON NULL_TOKEN
         {
-            $$.set_null($2);
+            $$.set_object_item($2);
         }
     ;
 
@@ -280,25 +276,24 @@ object_items:
     object_item
         {
             $$.clear();
-            $$[$1.get_key()] = $1;
+            $$ = $1.object();
         }
     | object_items COMMA object_item
         {
             $$ = $1;
-            $$[$3.get_key()] = $3;
+            $$.insert($3.object().cbegin(), $3.object().cend());
         }
     ;
 
 object_items_0:
     object_item_0
          {
-             $$.clear();
-             $$[$1.get_key()] = $1;
+             $$ = $1.object();
          }
     | object_items_0 COMMA object_item_0
          {
              $$ = $1;
-             $$[$3.get_key()] = $3;
+             $$.insert($3.object().cbegin(), $3.object().cend());
          }
     ;
 

@@ -507,7 +507,7 @@ BOOST_AUTO_TEST_CASE( test_Json_class_1 )
     BOOST_CHECK(jitem4["double"].is_number());
     BOOST_CHECK_EQUAL(jitem4["double"].number(), -10.25);
 
-    jitem4.set_object_item("null", foo::JsonItem());
+    jitem4.set_object_item("null");
     BOOST_CHECK_EQUAL(jitem4.object().size(), 9U);
     BOOST_CHECK_NO_THROW(jitem4["null"]);
     BOOST_CHECK(jitem4["null"].is_null());

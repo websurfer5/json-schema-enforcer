@@ -125,29 +125,27 @@ empty_array:
 object_item:
     QUOTED_STRING COLON QUOTED_STRING
         {
-            $$.set_string($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON number
         {
-            $$.set_number($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON boolean
         {
-            $$.set_boolean($1, $3);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON array
         {
-            $$ = $3;
-            $$.set_key($1);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON object
         {
-            $$ = $3;
-            $$.set_key($1);
+            $$.set_object_item($1, $3);
         }
     | QUOTED_STRING COLON NULL_TOKEN
         {
-            $$.set_null($1);
+            $$.set_object_item($1);
         }
     ;
 
@@ -233,12 +231,12 @@ object_items:
     object_item
         {
             $$.clear();
-            $$[$1.get_key()] = $1;
+            $$ = $1.object();
         }
     | object_items COMMA object_item
         {
             $$ = $1;
-            $$[$3.get_key()] = $3;
+            $$.insert($3.object().cbegin(), $3.object().cend());
         }
     ;
 
