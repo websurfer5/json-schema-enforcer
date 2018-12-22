@@ -26,6 +26,7 @@ namespace foo
 
         JsonItem();
         JsonItem(const JsonItem& jitem);
+        JsonItem(const JsonItemVector& jitem);
         JsonItem(bool b);
         JsonItem(double d);
         JsonItem(int n);
@@ -63,9 +64,12 @@ namespace foo
         bool is_object() const;
         bool is_string() const;
         double number() const;
+        JsonItemMap& object();
+        JsonItem& set_array(const JsonItemVector& jvect);
         JsonItem& set_boolean(bool b);
         JsonItem& set_null();
         JsonItem& set_number(double d);
+        JsonItem& set_object_item(const std::string& key, const JsonItem& jitem);
         JsonItem& set_string(const std::string& str);
         const std::string& string() const;
 

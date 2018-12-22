@@ -22,6 +22,12 @@ namespace foo
         this->operator =(jitem);
     }
 
+    JsonItem::JsonItem(const JsonItemVector& jvect)
+    {
+        clear();
+        set_array(jvect);
+    }
+
     JsonItem::JsonItem(bool b)
     {
         set_boolean(b);
@@ -267,6 +273,24 @@ namespace foo
         return num_value;
     }
 
+    JsonItemMap& JsonItem::object()
+    {
+        if (!is_object())
+            throw std::invalid_argument("cannot return object for JSON item type " + item_type_str[item_type]);
+
+        return child_map;
+    }
+
+    JsonItem& JsonItem::set_array(const JsonItemVector& jvect)
+    {
+        if (!is_array())
+            clear();
+
+        child_vector = jvect;
+        item_type = type_Array;
+       return *this;
+    }
+
     JsonItem& JsonItem::set_boolean(bool b)
     {
         if (!is_boolean())
@@ -290,6 +314,16 @@ namespace foo
 
         item_type = type_Number;
         num_value = d;
+        return *this;
+    }
+
+    JsonItem& JsonItem::set_object_item(const std::string& key, const JsonItem& jitem)
+    {
+        if (!is_object())
+            clear();
+
+        child_map[key] = jitem;
+        item_type = type_Object;
         return *this;
     }
 
