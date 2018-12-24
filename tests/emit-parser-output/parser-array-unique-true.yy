@@ -111,11 +111,11 @@ array_0:
             $$.append_array_item($9);
             $$.append_array($11);
 
-            std::set<JsonItem> iset($$.child_list.begin(), $$.child_list.end());
+            std::set<foo::JsonItem> iset($$.array().begin(), $$.array().end());
 
-            if (iset.size() != $$.child_list.size())
+            if (iset.size() != $$.array().size())
             {
-                std::cerr << "validation error: array items are not unique: " << $$.child_list.size() - iset.size() << " duplicate items found" << std::endl
+                std::cerr << "validation error: array items are not unique: " << $$.array().size() - iset.size() << " duplicate items found" << std::endl;
                 YYABORT;
             }
 

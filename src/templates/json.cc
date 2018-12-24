@@ -78,6 +78,37 @@ namespace foo
                 && str_value == jitem.str_value);
     }
 
+    bool JsonItem::operator <(const JsonItem& jitem) const
+    {
+        if (item_type < jitem.item_type)
+            return true;
+        else if (item_type > jitem.item_type)
+            return false;
+
+        switch (item_type)
+        {
+            case type_Array :
+                return (child_vector < jitem.child_vector);
+
+            case type_Boolean :
+                return (bool_value < jitem.bool_value);
+
+            case type_Null :
+                return false;
+
+            case type_Number :
+                return (num_value < jitem.num_value);
+
+            case type_Object :
+                return (child_map < jitem.child_map);
+
+            case type_String :
+                return (str_value < jitem.str_value);
+        }
+
+        return false;
+    }
+
     JsonItem& JsonItem::operator =(const JsonItem& jitem)
     {
         bool_value = jitem.bool_value;

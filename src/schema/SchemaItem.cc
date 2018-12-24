@@ -1098,11 +1098,11 @@ namespace jsonschemaenforcer
 
         if (has_array_b_unique() && get_array_unique())
         {
-            validation_rule_str += "            std::set<JsonItem> iset($$.child_list.begin(), $$.child_list.end());\n"
+            validation_rule_str += "            std::set<" + sd.get_namespace() + "::JsonItem> iset($$.array().begin(), $$.array().end());\n"
                                    "\n"
-                                   "            if (iset.size() != $$.child_list.size())\n"
+                                   "            if (iset.size() != $$.array().size())\n"
                                    "            {\n"
-                                   "                std::cerr << \"validation error: array items are not unique: \" << $$.child_list.size() - iset.size() << \" duplicate items found\" << std::endl\n"
+                                   "                std::cerr << \"validation error: array items are not unique: \" << $$.array().size() - iset.size() << \" duplicate items found\" << std::endl;\n"
                                    "                YYABORT;\n"
                                    "            }\n"
                                    "\n";

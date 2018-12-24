@@ -37,6 +37,7 @@ namespace foo
         JsonItem(const std::string& s);
 
         bool operator ==(const JsonItem& jitem) const;
+        bool operator <(const JsonItem& jitem) const;
         JsonItem& operator =(const JsonItem& jitem);
         JsonItem& operator =(bool b);
         JsonItem& operator =(const char *s);
