@@ -940,6 +940,7 @@ namespace jsonschemaenforcer
         if (get_array_properties().empty())
         {
             sd.add_lexer_rule(".", array_state, "ITEM_VALUE", false, "unput(*yytext);\n");
+            emit_default_rules(sd);
             return "array";
         }
 
