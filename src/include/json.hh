@@ -71,6 +71,7 @@ namespace foo
         JsonItem& set_number(double d);
         JsonItem& set_object(const JsonItemMap& jmap);
         JsonItem& set_object_item(const std::string& key, const JsonItem& jitem = JsonItem());
+        JsonItem& set_object_item(const std::string& key, const JsonItemMap& jmap);
         JsonItem& set_string(const std::string& str);
         const std::string& string() const;
 

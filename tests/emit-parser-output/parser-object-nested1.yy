@@ -244,7 +244,7 @@ object_1:
                 YYABORT;
             }
 
-            $$.set_object($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 
@@ -386,7 +386,7 @@ object_0:
                 YYABORT;
             }
 
-            $$.set_object($2, $3);
+            $$.set_object_item($2, $3);
         }
     ;
 

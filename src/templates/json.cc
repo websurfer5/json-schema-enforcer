@@ -337,6 +337,16 @@ namespace foo
         return *this;
     }
 
+    JsonItem& JsonItem::set_object_item(const std::string& key, const JsonItemMap& jmap)
+    {
+        if (!is_object())
+            clear();
+
+        child_map[key].set_object(jmap);
+        item_type = type_Object;
+        return *this;
+    }
+
     JsonItem& JsonItem::set_string(const std::string& str)
     {
         if (!is_string())

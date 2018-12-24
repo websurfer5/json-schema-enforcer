@@ -1543,10 +1543,9 @@ namespace jsonschemaenforcer
             }
         }
 
-        rule_str += "            $$.set_object(" + (obj_tag.empty()
-                                                        ? std::string("$2")
-                                                        : std::string("$2, $3"))
-                                                 + ");\n"
+        rule_str += std::string("            ") + (obj_tag.empty()
+                                                    ? "$$.set_object($2);\n"
+                                                    : "$$.set_object_item($2, $3);\n") +
                     "        }\n"
                     "    ;\n"
                     "\n";

@@ -619,6 +619,9 @@ BOOST_AUTO_TEST_CASE( test_Json_class_1 )
     BOOST_REQUIRE_NO_THROW(jitem2[16]["array2"][4]);
     BOOST_CHECK(jitem2[16]["array2"][4].is_number());
     BOOST_CHECK_EQUAL(jitem2[16]["array2"][4].number(), 7.5);
+
+    JsonItemMap jmap = jitem2[16].object();
+    BOOST_CHECK_EQUAL(jitem2[16].set_object_item("bar2", jmap));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
