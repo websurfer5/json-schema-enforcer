@@ -10,7 +10,8 @@ code (bison, flex, C++) and dynamically loadable compiled libraries
 with C and C++ APIs can be generated. Other language bindings will be
 added in the future.
 
-The supported JSON schema validation rules that are supported can be found here:
+The supported JSON schema validation rules that are supported can be
+ßfound here:
 
     http://json-schema.org/
 
