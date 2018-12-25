@@ -5,15 +5,19 @@
 ////////////////////////////
 
 The json-schema-enforcer is a library and utility that generates JSON
-parsers that adhere to JSON schema specifications. Both parser source code (bison, flex, C++) and dynamically loadable compiled libraries with C and C++ APIs can be generated. Other language bindings will be added in the future.
+parsers that adhere to JSON schema specifications. Both parser source
+code (bison, flex, C++) and dynamically loadable compiled libraries
+with C and C++ APIs can be generated. Other language bindings will be
+added in the future.
 
 The supported JSON schema validation rules that are supported can be found here:
 
     http://json-schema.org/
 
 For example, the following JSON object is a schema specification for
-a JSON array whose first element, if present, must be an integer, and all subsequent array
-elements, if any, must be date strings complying with the "full-date" specification in RFC 3339.
+a JSON array whose first element, if present, must be an integer, and
+all subsequent array elements, if any, must be date strings complying
+with the "full-date" specification in RFC 3339.
 
 {
   "type": "array",
