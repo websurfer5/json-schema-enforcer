@@ -43,7 +43,7 @@ This JSON object complies with the JSON schema above:
 
 json-schema-enforcer takes a schema specificaition, validates it, and
 then generates a parser that enforces the schema validation rules and
-C++ classes that encapuslate JSON objects matching the specification.
+C++ classes that encapsulate JSON objects matching the specification.
 The genreated parser source code is written in bison, flex, and C++.
 The generated code can be automatically compiled into a library that
 can be dynamically loaded by programs, allowing for on-the-fly code
