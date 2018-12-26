@@ -11,7 +11,7 @@ with C and C++ APIs can be generated. Other language bindings will be
 added in the future.
 
 The supported JSON schema validation rules that are supported can be
-ßfound here:
+found here:
 
     http://json-schema.org/
 
