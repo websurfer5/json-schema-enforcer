@@ -41,7 +41,7 @@ This JSON object complies with the JSON schema above:
     "2018-04-30"
 ]
 
-json-schema-emforcer takes a schema specificaition, validates it, and
+json-schema-enforcer takes a schema specificaition, validates it, and
 then generates a parser that enforces the schema validation rules and
 C++ classes that encapuslate JSON objects matching the specification.
 The genreated parser source code is written in bison, flex, and C++.
