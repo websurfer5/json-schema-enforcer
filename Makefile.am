@@ -256,61 +256,92 @@ tests_unittparsejson_SOURCES = \
 
 SED_IN_PLACE_FLAG='-i.sed_bak'
 
+cp_verbose = $(cp_verbose_@AM_V@)
+cp_verbose_ = $(cp_verbose_@AM_DEFAULT_V@)
+cp_verbose_0 = @echo "  COPY     $@" ;
+
+generate_verbose = $(generate_verbose_@AM_V@)
+generate_verbose_ = $(generate_verbose_@AM_DEFAULT_V@)
+generate_verbose_0 = @echo "  GENERATE $@" ;
+
+ln_verbose1 = $(ln_verbose1_@AM_V@)
+ln_verbose1_ = $(ln_verbose1_@AM_DEFAULT_V@)
+ln_verbose1_0 = echo "  LN       $@" ;
+
+ln_verbose2 = $(ln_verbose2_@AM_V@)
+ln_verbose2_ = $(ln_verbose2_@AM_DEFAULT_V@)
+ln_verbose2_0 = echo "  LN       $(dir $@)$(patsubst parser-%.cc,stype-%.hh,$(notdir $@))" ;
+
+ln_verbose3 = $(ln_verbose3_@AM_V@)
+ln_verbose3_ = $(ln_verbose3_@AM_DEFAULT_V@)
+ln_verbose3_0 = echo   "  LN       $(dir $@)$(patsubst lexer-%.cc,stype-%.hh,$(notdir $@))";
+
+yacc_verbose = $(yacc_verbose_@AM_V@)
+yacc_verbose_ = $(yacc_verbose_@AM_DEFAULT_V@)
+yacc_verbose_0 = @echo "  YACC     $@" ;
+
+lex_verbose = $(lex_verbose_@AM_V@)
+lex_verbose_ = $(lex_verbose_@AM_DEFAULT_V@)
+lex_verbose_0 = @echo  "  LEX      $@" ;
+
 src/schema/schema-parser.hh:	src/schema/schema-parser.cc Makefile
 
 %-parser.cc:	%-parser.yy %-lexer.ll
-	$(YACC) $(AM_YFLAGS) --defines=$(basename $@).hh -o $@ $<
+	$(yacc_verbose) $(YACC) $(AM_YFLAGS) --defines=$(basename $@).hh -o $@ $<
 
 src/schema/schema-lexer.hh:	src/schema/schema-lexer.cc Makefile
 
 src/schema/schema-lexer.cc:	src/schema/schema-lexer.ll
-	$(LEX) -o $@ --header-file=$(basename $@).hh --never-interactive $<
-	$(SED) -e 's/YYSTYPE/SCHEMA_PARSER_STYPE/g' $(SED_IN_PLACE_FLAG) $(basename $@).hh
-	$(SED) -e 's/YYSTYPE/SCHEMA_PARSER_STYPE/g' $(SED_IN_PLACE_FLAG) $@
+	$(lex_verbose) $(LEX) -o $@ --header-file=$(basename $@).hh --never-interactive $<
+	$(AM_V_at) $(SED) -e 's/YYSTYPE/SCHEMA_PARSER_STYPE/g' $(SED_IN_PLACE_FLAG) $(basename $@).hh
+	$(AM_V_at) $(SED) -e 's/YYSTYPE/SCHEMA_PARSER_STYPE/g' $(SED_IN_PLACE_FLAG) $@
 
 JSON_SCHEMA_INPUT_STRING_PREFIX = str_schema_input_json_
 JSON_PARSER_INPUT_STRING_PREFIX = str_parser_input_json_
 
 $(JSON_SCHEMA_INPUT_DIR)/%.cc:	$(JSON_SCHEMA_INPUT_DIR)/%.json Makefile
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "//" $(notdir $@) > $@
-	echo "//" >> $@
-	echo "// ** generated file - do not edit! **" >> $@
-	echo "#include <string>" >> $@
-	echo "extern const std::string $(JSON_SCHEMA_INPUT_STRING_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
-	$(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/"/' $< >> $@
-	echo "\"\";" >> $@
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "//" $(notdir $@) > $@
+	$(AM_V_at) echo "//" >> $@
+	$(AM_V_at) echo "// ** generated file - do not edit! **" >> $@
+	$(AM_V_at) echo "#include <string>" >> $@
+	$(AM_V_at) echo "extern const std::string $(JSON_SCHEMA_INPUT_STRING_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
+	$(AM_V_at) $(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/"/' $< >> $@
+	$(AM_V_at) echo "\"\";" >> $@
 
 $(JSON_PARSER_INPUT_DIR)/%.cc:	$(JSON_PARSER_INPUT_DIR)/%.json Makefile
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "//" $(notdir $@) > $@
-	echo "//" >> $@
-	echo "// ** generated file - do not edit! **" >> $@
-	echo "#include <string>" >> $@
-	echo "extern const std::string $(JSON_PARSER_INPUT_STRING_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
-	$(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/"/' $< >> $@
-	echo "\"\";" >> $@
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "//" $(notdir $@) > $@
+	$(AM_V_at) echo "//" >> $@
+	$(AM_V_at) echo "// ** generated file - do not edit! **" >> $@
+	$(AM_V_at) echo "#include <string>" >> $@
+	$(AM_V_at) echo "extern const std::string $(JSON_PARSER_INPUT_STRING_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
+	$(AM_V_at) $(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/"/' $< >> $@
+	$(AM_V_at) echo "\"\";" >> $@
 
 tests/include/json-strings.hh:	$(JSON_INPUT_FILES) $(JSON_INPUT_CC_FILES) Makefile
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "//" $(notdir $@) > $@
-	echo "//" >> $@
-	echo "// ** generated file - do not edit! **" >> $@
-	echo "#ifndef __JSONSCHEMAENFORCER_JSON_SCHEMA_INPUT_STRINGS_HH" >> $@
-	echo "#define __JSONSCHEMAENFORCER_JSON_SCHEMA_INPUT_STRINGS_HH" >> $@
-	echo "#include <string>" >> $@
-	for i in $(subst -,_,$(basename $(notdir $(JSON_SCHEMA_INPUT_FILES)))) ; do echo "extern const std::string $(JSON_SCHEMA_INPUT_STRING_PREFIX)$${i};" >> $@ ; done
-	for i in $(subst -,_,$(basename $(notdir $(JSON_PARSER_INPUT_FILES)))) ; do echo "extern const std::string $(JSON_PARSER_INPUT_STRING_PREFIX)$${i};" >> $@ ; done
-	echo "#endif   // __JSONSCHEMAENFORCER_JSON_SCHEMA_INPUT_STRINGS_HH" >> $@
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "//" $(notdir $@) > $@
+	$(AM_V_at) echo "//" >> $@
+	$(AM_V_at) echo "// ** generated file - do not edit! **" >> $@
+	$(AM_V_at) echo "#ifndef __JSONSCHEMAENFORCER_JSON_SCHEMA_INPUT_STRINGS_HH" >> $@
+	$(AM_V_at) echo "#define __JSONSCHEMAENFORCER_JSON_SCHEMA_INPUT_STRINGS_HH" >> $@
+	$(AM_V_at) echo "#include <string>" >> $@
+	$(AM_V_at) for i in $(subst -,_,$(basename $(notdir $(JSON_SCHEMA_INPUT_FILES)))) ; do echo "extern const std::string $(JSON_SCHEMA_INPUT_STRING_PREFIX)$${i};" >> $@ ; done
+	$(AM_V_at) for i in $(subst -,_,$(basename $(notdir $(JSON_PARSER_INPUT_FILES)))) ; do echo "extern const std::string $(JSON_PARSER_INPUT_STRING_PREFIX)$${i};" >> $@ ; done
+	$(AM_V_at) echo "#endif   // __JSONSCHEMAENFORCER_JSON_SCHEMA_INPUT_STRINGS_HH" >> $@
 
 src/progs/def-emit-parser-json-input.hh:	$(JSON_PARSER_INPUT_FILES) Makefile
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "//" $(notdir $@) > $@
-	echo "//" >> $@
-	echo "// ** generated file - do not edit! **" >> $@
-	echo "#include <string>" >> $@
-	for i in $(subst -,_,$(basename $(notdir $(JSON_PARSER_INPUT_FILES)))) ; do echo "DEF_TEXT_TEST($${i})" >> $@ ; done
-#	for i in $(basename $(notdir $(JSON_PARSER_INPUT_FILES))) ; do _NAME=$$(echo "$${i}" | sed 's/-/_/g') ; echo "DEF_TEXT_TEST($${i}, $${_NAME})" >> $@ ; done
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "//" $(notdir $@) > $@
+	$(AM_V_at) echo "//" >> $@
+	$(AM_V_at) echo "// ** generated file - do not edit! **" >> $@
+	$(AM_V_at) echo "#include <string>" >> $@
+	$(AM_V_at) for i in $(subst -,_,$(basename $(notdir $(JSON_PARSER_INPUT_FILES)))) ; do echo "DEF_TEXT_TEST($${i})" >> $@ ; done
 
 OUTPUT_TEXT_PREFIX = str_output_text_
 
@@ -319,71 +350,76 @@ $(top_builddir)/$(JSON_SCHEMA_INPUT_DIR) \
 $(JSON_PARSER_INPUT_DIR)/$(DEPDIR) \
 $(JSON_SCHEMA_INPUT_DIR)/$(DEPDIR) \
 tests/emit-parser-output/$(DEPDIR):
-	$(MKDIR_P) $@
+	$(AM_V_at) $(MKDIR_P) $@
 
 tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.yy Makefile #tests/include/emit-parser-output-strings.hh
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "// ** generated file - do not edit! **" > $@
-	echo "#include <string>" >> $@
-	echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
-	$(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/\"/' $< >> $@
-	echo "\"\";" >> $@
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "// ** generated file - do not edit! **" > $@
+	$(AM_V_at) echo "#include <string>" >> $@
+	$(AM_V_at) echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
+	$(AM_V_at) $(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/\"/' $< >> $@
+	$(AM_V_at) echo "\"\";" >> $@
 
 tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.ll Makefile #tests/include/emit-parser-output-strings.hh
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "// ** generated file - do not edit! **" > $@
-	echo "#include <string>" >> $@
-	echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
-	$(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/\"/' $< >> $@
-	echo "\"\";" >> $@
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "// ** generated file - do not edit! **" > $@
+	$(AM_V_at) echo "#include <string>" >> $@
+	$(AM_V_at) echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
+	$(AM_V_at) $(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/\"/' $< >> $@
+	$(AM_V_at) echo "\"\";" >> $@
 
 tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.hh Makefile #tests/include/emit-parser-output-strings.hh
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "// ** generated file - do not edit! **" > $@
-	echo "#include <string>" >> $@
-	echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
-	$(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/\"/' $< >> $@
-	echo "\"\";" >> $@
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "// ** generated file - do not edit! **" > $@
+	$(AM_V_at) echo "#include <string>" >> $@
+	$(AM_V_at) echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
+	$(AM_V_at) $(SED) -e 's/["\\]/\\&/g' -e 's/$$/\\n"/g' -e 's/^/\"/' $< >> $@
+	$(AM_V_at) echo "\"\";" >> $@
 
 tests/include/emit-parser-output-strings.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefile
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "//" $(notdir $@) > $@
-	echo "//" >> $@
-	echo "// ** generated file - do not edit! **" >> $@
-	echo "#ifndef __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
-	echo "#define __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
-	echo "#include <string>" >> $@
-	for i in $(subst -,_,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))) ; do echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$${i};" >> $@ ; done
-	for i in $(subst -,_,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))) ; do echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$${i};" >> $@ ; done
-	for i in $(subst -,_,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_STYPE)))) ; do echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$${i};" >> $@ ; done
-	echo "#endif   // __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "//" $(notdir $@) > $@
+	$(AM_V_at) echo "//" >> $@
+	$(AM_V_at) echo "// ** generated file - do not edit! **" >> $@
+	$(AM_V_at) echo "#ifndef __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
+	$(AM_V_at) echo "#define __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
+	$(AM_V_at) echo "#include <string>" >> $@
+	$(AM_V_at) for i in $(subst -,_,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))) ; do echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$${i};" >> $@ ; done
+	$(AM_V_at) for i in $(subst -,_,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))) ; do echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$${i};" >> $@ ; done
+	$(AM_V_at) for i in $(subst -,_,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_STYPE)))) ; do echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$${i};" >> $@ ; done
+	$(AM_V_at) echo "#endif   // __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
 
 tests/include/def-emit-parser-tests.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefile
-	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
-	echo "//" $(notdir $@) > $@
-	echo "//" >> $@
-	echo "// ** generated file - do not edit! **" >> $@
-	for i in $(subst lexer-,,$(filter lexer-%,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER))))) ; do _NAME=$$(echo "$${i}" | sed 's/-/_/g') ; echo "DEF_TEXT_TEST($${i}, $${_NAME})" >> $@ ; done
+	$(generate_verbose)
+	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
+	$(AM_V_at) echo "//" $(notdir $@) > $@
+	$(AM_V_at) echo "//" >> $@
+	$(AM_V_at) echo "// ** generated file - do not edit! **" >> $@
+	$(AM_V_at) for i in $(subst lexer-,,$(filter lexer-%,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER))))) ; do _NAME=$$(echo "$${i}" | sed 's/-/_/g') ; echo "DEF_TEXT_TEST($${i}, $${_NAME})" >> $@ ; done
 
 tests/emit-parser-output/build/parser/Bar.hh:	$(top_srcdir)/tests/include/Bar.hh
-	$(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
-	cp $< $@
+	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
+	$(cp_verbose) cp $< $@
 
 tests/emit-parser-output/build/parser/stype-%.hh:	$(top_srcdir)/tests/emit-parser-output/stype-%.hh
-	$(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
-	$(LN_S) $(realpath $<) $@
+	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
+	$(AM_V_at) if [[ ! -e $@ ]] ; then $(ln_verbose1) $(LN_S) $(realpath $<) $@ ; fi
 
 tests/emit-parser-output/build/parser/parser-%.cc tests/emit-parser-output/build/parser/parser-%.hh:	$(top_srcdir)/tests/emit-parser-output/parser-%.yy $(top_srcdir)/tests/emit-parser-output/lexer-%.ll $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
-	$(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
-	if [[ ! -e $(dir $@)$(patsubst parser-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(LN_S) $(dir $(realpath $<))$(patsubst parser-%.yy,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
-	$(YACC) $(AM_YFLAGS) --defines=$(basename $@).hh -o $(basename $@).cc $<
+	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
+	$(AM_V_at) if [[ ! -e $(dir $@)$(patsubst parser-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(ln_verbose2) $(LN_S) $(dir $(realpath $<))$(patsubst parser-%.yy,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
+	$(yacc_verbose) $(YACC) $(AM_YFLAGS) --defines=$(basename $@).hh -o $(basename $@).cc $<
 
 tests/emit-parser-output/build/parser/parser-%.$(OBJEXT):	$(top_builddir)/tests/emit-parser-output/build/parser/parser-%.cc $(top_builddir)/tests/emit-parser-output/build/parser/stype-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
 
 tests/emit-parser-output/build/parser/lexer-%.$(OBJEXT):	$(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.cc $(top_builddir)/tests/emit-parser-output/build/parser/stype-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/parser-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
 
 tests/emit-parser-output/build/parser/lexer-%.cc tests/emit-parser-output/build/parser/lexer-%.hh:	$(top_srcdir)/tests/emit-parser-output/lexer-%.ll $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
-	$(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
-	if [[ ! -e $(dir $@)$(patsubst lexer-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(LN_S) $(dir $(realpath $<))$(patsubst lexer-%.ll,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
-	$(LEX) -o $(basename $@).cc --header-file=$(basename $@).hh --never-interactive $<
+	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
+	$(AM_V_at) if [[ ! -e $(dir $@)$(patsubst lexer-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(ln_verbose3) $(LN_S) $(dir $(realpath $<))$(patsubst lexer-%.ll,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
+	$(lex_verbose) $(LEX) -o $(basename $@).cc --header-file=$(basename $@).hh --never-interactive $<
 
