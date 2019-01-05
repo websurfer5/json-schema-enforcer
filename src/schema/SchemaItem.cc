@@ -1014,7 +1014,7 @@ namespace jsonschemaenforcer
                                                                   "yy_push_state(" + format_state + ", yyextra->scaninfo);\n",
                                                                   true);
                             format_rule_str = "            " + format_start_state_func + "(sd->scaninfo);\n";
-                            sd.add_token("COMMA", "", false, "\",\"", "", format_state);
+                            sd.add_token("COMMA", "", false, "\",\"", "", format_state, "", false);
                             sd.add_lexer_rule("[[:space:]]", format_state, "", false, "");
 
                             if (p_sitem->is_additional_item())
@@ -1069,7 +1069,7 @@ namespace jsonschemaenforcer
         }
 
         sd.add_token("RIGHT_BRACKET", "", false, "\"]\"", "", array_state, "", true);
-        sd.add_token("COMMA", "", false, "\",\"", "", array_state);
+        sd.add_token("COMMA", "", false, "\",\"", "", array_state, "", false);
         sd.add_lexer_rule("[[:space:]]", array_state, "", false, "");
 
         validation_rule_str = "";
@@ -1440,7 +1440,7 @@ namespace jsonschemaenforcer
 
         sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
         sd.add_token("RIGHT_BRACE", "", false, "\"}\"", "", obj_state, "", true);
-        sd.add_token("COMMA", "", false, "\",\"", "", obj_state);
+        sd.add_token("COMMA", "", false, "\",\"", "", obj_state, "", false);
         sd.add_lexer_rule("[[:space:]]",obj_state, "", false, "");
 
         if (((get_object_properties().size() + get_object_pattern_properties().size()) > 1)

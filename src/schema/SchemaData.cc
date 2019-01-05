@@ -479,7 +479,7 @@ namespace jsonschemaenforcer
                                       const std::string& start_state,
                                       const std::string& new_start_state)
     {
-        return add_token(new_token_tag(), "", false, pattern, "", start_state, new_start_state);
+        return add_token(new_token_tag(), "", false, pattern, "", start_state, new_start_state, false);
     }
 
     std::string SchemaData::add_token(const std::string& token_name,
