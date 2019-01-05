@@ -36,11 +36,11 @@ GENERATED_FILES = \
 				src/progs/def-emit-parser-json-input.hh
 
 JSON_PARSER_INPUT_DIR = tests/json/emit-parser-inputs
-JSON_PARSER_INPUT_FILES = $(wildcard $(top_srcdir)/$(JSON_PARSER_INPUT_DIR)/*.json)
+JSON_PARSER_INPUT_FILES := $(wildcard $(top_srcdir)/$(JSON_PARSER_INPUT_DIR)/*.json)
 JSON_PARSER_INPUT_CC_FILES = $(patsubst %.json,$(top_builddir)/$(JSON_PARSER_INPUT_DIR)/%.cc,$(notdir $(JSON_PARSER_INPUT_FILES)))
 JSON_PARSER_INPUT_O_FILES = $(patsubst %.json,$(top_builddir)/$(JSON_PARSER_INPUT_DIR)/%.$(OBJEXT),$(notdir $(JSON_PARSER_INPUT_FILES)))
 JSON_SCHEMA_INPUT_DIR = tests/json/parse-schema-inputs
-JSON_SCHEMA_INPUT_FILES = $(wildcard $(top_srcdir)/$(JSON_SCHEMA_INPUT_DIR)/*.json)
+JSON_SCHEMA_INPUT_FILES := $(wildcard $(top_srcdir)/$(JSON_SCHEMA_INPUT_DIR)/*.json)
 JSON_SCHEMA_INPUT_CC_FILES = $(patsubst %.json,$(top_builddir)/$(JSON_SCHEMA_INPUT_DIR)/%.cc,$(notdir $(JSON_SCHEMA_INPUT_FILES)))
 JSON_SCHEMA_INPUT_O_FILES = $(patsubst %.json,$(top_builddir)/$(JSON_SCHEMA_INPUT_DIR)/%.$(OBJEXT),$(notdir $(JSON_SCHEMA_INPUT_FILES)))
 JSON_INPUT_FILES = \
@@ -52,9 +52,9 @@ JSON_INPUT_CC_FILES = \
 JSON_INPUT_O_FILES = \
 				$(JSON_PARSER_INPUT_O_FILES)	\
 				$(JSON_SCHEMA_INPUT_O_FILES)
-EMIT_PARSER_OUTPUT_FILES_PARSER = $(wildcard $(srcdir)/tests/emit-parser-output/parser-*.yy)
-EMIT_PARSER_OUTPUT_FILES_LEXER = $(wildcard $(srcdir)/tests/emit-parser-output/lexer-*.ll)
-EMIT_PARSER_OUTPUT_FILES_STYPE = $(wildcard $(srcdir)/tests/emit-parser-output/stype-*.hh)
+EMIT_PARSER_OUTPUT_FILES_PARSER := $(wildcard $(srcdir)/tests/emit-parser-output/parser-*.yy)
+EMIT_PARSER_OUTPUT_FILES_LEXER := $(wildcard $(srcdir)/tests/emit-parser-output/lexer-*.ll)
+EMIT_PARSER_OUTPUT_FILES_STYPE := $(wildcard $(srcdir)/tests/emit-parser-output/stype-*.hh)
 EMIT_PARSER_OUTPUT_FILES = \
 				$(EMIT_PARSER_OUTPUT_FILES_LEXER)  \
 				$(EMIT_PARSER_OUTPUT_FILES_PARSER) \
@@ -63,12 +63,25 @@ EMIT_PARSER_OUTPUT_FILES = \
 EMIT_PARSER_OUTPUT_CC_FILES = $(patsubst %.ll,$(top_builddir)/tests/emit-parser-output/build/lib/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))
 EMIT_PARSER_OUTPUT_CC_FILES += $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/lib/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
 EMIT_PARSER_OUTPUT_CC_FILES += $(patsubst %.hh,$(top_builddir)/tests/emit-parser-output/build/lib/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_STYPE)))
-EMIT_PARSER_OUTPUT_O_FILES = $(patsubst %.cc,$(top_builddir)/tests/emit-parser-output/build/lib/%.$(OBJEXT),$(notdir $(EMIT_PARSER_OUTPUT_CC_FILES)))
+EMIT_PARSER_OUTPUT_O_FILES := $(patsubst %.cc,$(top_builddir)/tests/emit-parser-output/build/lib/%.$(OBJEXT),$(notdir $(EMIT_PARSER_OUTPUT_CC_FILES)))
+EMIT_PARSER_OUTPUT_BUILD_CC_FILES_LEXER := $(patsubst %.ll,$(top_builddir)/tests/emit-parser-output/build/parser/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))
+EMIT_PARSER_OUTPUT_BUILD_HH_FILES_LEXER := $(patsubst %.ll,$(top_builddir)/tests/emit-parser-output/build/parser/%.hh,$(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))
+EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER := $(patsubst %.ll,$(top_builddir)/tests/emit-parser-output/build/parser/%.$(OBJEXT),$(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))
+EMIT_PARSER_OUTPUT_BUILD_CC_FILES_PARSER := $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/parser/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
+EMIT_PARSER_OUTPUT_BUILD_HH_FILES_PARSER := $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/parser/%.hh,$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
+EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER := $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/parser/%.$(OBJEXT),$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
+EMIT_PARSER_OUTPUT_BUILD_HH_FILES_STYPE := $(patsubst %.hh,$(top_builddir)/tests/emit-parser-output/build/parser/%.hh,$(notdir $(EMIT_PARSER_OUTPUT_FILES_STYPE)))
 GENERATED_TEST_FILES =	$(JSON_INPUT_CC_FILES) \
 						$(EMIT_PARSER_OUTPUT_CC_FILES) \
 						$(top_builddir)/tests/include/json-strings.hh \
 						$(top_builddir)/tests/include/emit-parser-output-strings.hh \
-						$(top_builddir)/tests/include/def-emit-parser-tests.hh
+						$(top_builddir)/tests/include/def-emit-parser-tests.hh \
+						$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_PARSER) \
+						$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_PARSER) \
+						$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_LEXER) \
+						$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_LEXER) \
+						$(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
+						
 
 BUILT_SOURCES =	\
 				$(GENERATED_FILES) \
@@ -113,33 +126,44 @@ libjson_schema_code_gen_la_SOURCES = 	$(SCHEMA_FILES)
 libjson_schema_code_gen_la_CPPFLAGS = 	$(AM_CPPFLAGS) $(FLEX_CPPFLAGS)
 
 CLEANFILES = $(GENERATED_FILES) \
-			 $(GENERATED_TEST_FILES) \
-			 $(JSON_INPUT_O_FILES) \
 			 $(EMIT_PARSER_OUTPUT_O_FILES) \
 			 src/schema/*.*_bak \
-			 src/schema/*.output
+			 src/schema/*.output \
+			 $(top_builddir)/tests/include/json-strings.hh \
+			 $(top_builddir)/tests/include/emit-parser-output-strings.hh \
+			 $(top_builddir)/tests/include/def-emit-parser-tests.hh \
+			 $(top_builddir)/tests/emit-parser-output/build/parser/*
 
 clean-local:	clean-local-check
 
 .PHONY:	clean-local-check
 
 clean-local-check:
-	rm -rf $(top_builddir)/$(JSON_PARSER_INPUT_DIR)/$(DEPDIR)
-	rm -rf $(top_builddir)/$(JSON_SCHEMA_INPUT_DIR)/$(DEPDIR)
-	rm -rf $(top_builddir)/tests/emit-parser-output/build/lib/$(DEPDIR)
-	rm -rf $(top_builddir)/tests/*.dSYM
+	$(RM) -r $(top_builddir)/$(JSON_PARSER_INPUT_DIR)/$(DEPDIR)
+	$(RM) -r $(top_builddir)/$(JSON_SCHEMA_INPUT_DIR)/$(DEPDIR)
+	$(RM) -r $(top_builddir)/tests/emit-parser-output/build/lib/$(DEPDIR)
+	$(RM) -r $(top_builddir)/tests/emit-parser-output/build/parser/$(DEPDIR)
+	$(RM) -r $(top_builddir)/tests/*.dSYM
+	$(RM) $(JSON_INPUT_CC_FILES)
+	$(RM) $(EMIT_PARSER_OUTPUT_CC_FILES)
+	$(RM) $(JSON_INPUT_O_FILES)
+	$(RM) $(EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER)
+	$(RM) $(EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER)
 
 TESTS = tests/unittclasses \
 		tests/unittemitparser \
-		tests/unittoutput \
-		tests/unittparseschema
+		tests/unittjson \
+		tests/unittparseschema \
+		tests/unittparsejson
 
 check_PROGRAMS = $(TESTS)
-noinst_LIBRARIES = \
+check_LIBRARIES = \
 				tests/json/libsamplejson.a \
-				tests/liboutputstrings.a
+				tests/liboutputstrings.a \
+				tests/liblexeroutput.a \
+				tests/libparseroutput.a
 
-TESTS_CPP_FLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/tests/include -I$(top_builddir)/tests/include
+TESTS_CPP_FLAGS := $(AM_CPPFLAGS) -I$(top_srcdir)/tests/include -I$(top_builddir)/tests/include
 
 tests_json_libsamplejson_a_LIBADD = $(JSON_INPUT_O_FILES)
 tests_json_libsamplejson_a_CPPFLAGS = $(TESTS_CPP_FLAGS)
@@ -149,12 +173,12 @@ tests_liboutputstrings_a_LIBADD = $(EMIT_PARSER_OUTPUT_O_FILES)
 tests_liboutputstrings_a_CPPFLAGS = $(TESTS_CPP_FLAGS)
 tests_liboutputstrings_a_SOURCES = $(EMIT_PARSER_OUTPUT_FILES)
 
-tests_unittoutput_LDFLAGS = $(AM_LDFLAGS) -static
-tests_unittoutput_CPPFLAGS = -I$(top_builddir)/src/templates -I$(top_srcdir)/src/templates $(TESTS_CPP_FLAGS)
-tests_unittoutput_CXXFLAGS = $(AM_CXXFLAGS)
-tests_unittoutput_SOURCES = \
+tests_unittjson_LDFLAGS = $(AM_LDFLAGS) -static
+tests_unittjson_CPPFLAGS = $(TESTS_CPP_FLAGS)
+tests_unittjson_CXXFLAGS = $(AM_CXXFLAGS)
+tests_unittjson_SOURCES = \
 					tests/unittest.cc \
-					src/templates/json.hh \
+					src/include/json.hh \
 					src/templates/json.cc \
 					tests/output/test-Json-class.cc
 
@@ -198,6 +222,38 @@ tests_unittemitparser_SOURCES = \
 					tests/include/emit-parser-output-strings.hh \
 					tests/parser-gen/test-emit-parser.cc
 
+tests_libparseroutput_a_LIBADD = \
+					$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER)
+tests_libparseroutput_a_CPPFLAGS = $(TESTS_CPP_FLAGS)
+tests_libparseroutput_a_SOURCES = \
+					$(EMIT_PARSER_OUTPUT_FILES_PARSER) \
+					$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_PARSER) \
+					$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_PARSER) \
+					$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_STYPE) \
+					tests/include/Bar.hh
+
+tests_liblexeroutput_a_LIBADD = \
+					$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER)
+tests_liblexeroutput_a_CPPFLAGS = $(TESTS_CPP_FLAGS)
+tests_liblexeroutput_a_SOURCES = \
+					$(EMIT_PARSER_OUTPUT_FILES_LEXER) \
+					$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_LEXER) \
+					$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_LEXER) \
+					$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_STYPE) \
+					tests/include/Bar.hh
+
+tests_unittparsejson_LDADD = \
+					tests/liblexeroutput.a \
+					tests/libparseroutput.a
+tests_unittparsejson_LDFLAGS = $(AM_LDFLAGS) -static
+tests_unittparsejson_CPPFLAGS = $(TESTS_CPP_FLAGS)
+tests_unittparsejson_CXXFLAGS = $(AM_CXXFLAGS) -Wno-parentheses -Wno-error=parentheses
+tests_unittparsejson_SOURCES = \
+					tests/unittest.cc \
+					tests/parser-gen/test-parse-json.cc \
+					src/templates/json.cc \
+					src/include/json.hh
+
 SED_IN_PLACE_FLAG='-i.sed_bak'
 
 src/schema/schema-parser.hh:	src/schema/schema-parser.cc Makefile
@@ -216,7 +272,7 @@ JSON_SCHEMA_INPUT_STRING_PREFIX = str_schema_input_json_
 JSON_PARSER_INPUT_STRING_PREFIX = str_parser_input_json_
 
 $(JSON_SCHEMA_INPUT_DIR)/%.cc:	$(JSON_SCHEMA_INPUT_DIR)/%.json Makefile
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "//" $(notdir $@) > $@
 	echo "//" >> $@
 	echo "// ** generated file - do not edit! **" >> $@
@@ -226,7 +282,7 @@ $(JSON_SCHEMA_INPUT_DIR)/%.cc:	$(JSON_SCHEMA_INPUT_DIR)/%.json Makefile
 	echo "\"\";" >> $@
 
 $(JSON_PARSER_INPUT_DIR)/%.cc:	$(JSON_PARSER_INPUT_DIR)/%.json Makefile
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "//" $(notdir $@) > $@
 	echo "//" >> $@
 	echo "// ** generated file - do not edit! **" >> $@
@@ -236,7 +292,7 @@ $(JSON_PARSER_INPUT_DIR)/%.cc:	$(JSON_PARSER_INPUT_DIR)/%.json Makefile
 	echo "\"\";" >> $@
 
 tests/include/json-strings.hh:	$(JSON_INPUT_FILES) $(JSON_INPUT_CC_FILES) Makefile
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "//" $(notdir $@) > $@
 	echo "//" >> $@
 	echo "// ** generated file - do not edit! **" >> $@
@@ -248,7 +304,7 @@ tests/include/json-strings.hh:	$(JSON_INPUT_FILES) $(JSON_INPUT_CC_FILES) Makefi
 	echo "#endif   // __JSONSCHEMAENFORCER_JSON_SCHEMA_INPUT_STRINGS_HH" >> $@
 
 src/progs/def-emit-parser-json-input.hh:	$(JSON_PARSER_INPUT_FILES) Makefile
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "//" $(notdir $@) > $@
 	echo "//" >> $@
 	echo "// ** generated file - do not edit! **" >> $@
@@ -263,16 +319,10 @@ $(top_builddir)/$(JSON_SCHEMA_INPUT_DIR) \
 $(JSON_PARSER_INPUT_DIR)/$(DEPDIR) \
 $(JSON_SCHEMA_INPUT_DIR)/$(DEPDIR) \
 tests/emit-parser-output/$(DEPDIR):
-	mkdir -p $@
-
-# $(JSON_SCHEMA_INPUT_DIR)/$(DEPDIR):
-# 	mkdir -p $@
-
-# tests/emit-parser-output/$(DEPDIR):
-# 	mkdir -p $@
+	$(MKDIR_P) $@
 
 tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.yy Makefile #tests/include/emit-parser-output-strings.hh
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "// ** generated file - do not edit! **" > $@
 	echo "#include <string>" >> $@
 	echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
@@ -280,7 +330,7 @@ tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.yy
 	echo "\"\";" >> $@
 
 tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.ll Makefile #tests/include/emit-parser-output-strings.hh
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "// ** generated file - do not edit! **" > $@
 	echo "#include <string>" >> $@
 	echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
@@ -288,7 +338,7 @@ tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.ll
 	echo "\"\";" >> $@
 
 tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.hh Makefile #tests/include/emit-parser-output-strings.hh
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "// ** generated file - do not edit! **" > $@
 	echo "#include <string>" >> $@
 	echo "extern const std::string $(OUTPUT_TEXT_PREFIX)$(subst -,_,$(basename $(notdir $@))) =" >> $@
@@ -296,7 +346,7 @@ tests/emit-parser-output/build/lib/%.cc:	$(srcdir)/tests/emit-parser-output/%.hh
 	echo "\"\";" >> $@
 
 tests/include/emit-parser-output-strings.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefile
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "//" $(notdir $@) > $@
 	echo "//" >> $@
 	echo "// ** generated file - do not edit! **" >> $@
@@ -309,8 +359,31 @@ tests/include/emit-parser-output-strings.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefil
 	echo "#endif   // __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
 
 tests/include/def-emit-parser-tests.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefile
-	mkdir -p $(dir $@) $(dir $@)/.deps
+	$(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	echo "//" $(notdir $@) > $@
 	echo "//" >> $@
 	echo "// ** generated file - do not edit! **" >> $@
 	for i in $(subst lexer-,,$(filter lexer-%,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER))))) ; do _NAME=$$(echo "$${i}" | sed 's/-/_/g') ; echo "DEF_TEXT_TEST($${i}, $${_NAME})" >> $@ ; done
+
+tests/emit-parser-output/build/parser/Bar.hh:	$(top_srcdir)/tests/include/Bar.hh
+	$(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
+	cp $< $@
+
+tests/emit-parser-output/build/parser/stype-%.hh:	$(top_srcdir)/tests/emit-parser-output/stype-%.hh
+	$(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
+	$(LN_S) $(realpath $<) $@
+
+tests/emit-parser-output/build/parser/parser-%.cc tests/emit-parser-output/build/parser/parser-%.hh:	$(top_srcdir)/tests/emit-parser-output/parser-%.yy $(top_srcdir)/tests/emit-parser-output/lexer-%.ll $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
+	$(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
+	if [[ ! -e $(dir $@)$(patsubst parser-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(LN_S) $(dir $(realpath $<))$(patsubst parser-%.yy,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
+	$(YACC) $(AM_YFLAGS) --defines=$(basename $@).hh -o $(basename $@).cc $<
+
+tests/emit-parser-output/build/parser/parser-%.$(OBJEXT):	$(top_builddir)/tests/emit-parser-output/build/parser/parser-%.cc $(top_builddir)/tests/emit-parser-output/build/parser/stype-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
+
+tests/emit-parser-output/build/parser/lexer-%.$(OBJEXT):	$(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.cc $(top_builddir)/tests/emit-parser-output/build/parser/stype-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/parser-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
+
+tests/emit-parser-output/build/parser/lexer-%.cc tests/emit-parser-output/build/parser/lexer-%.hh:	$(top_srcdir)/tests/emit-parser-output/lexer-%.ll $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
+	$(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
+	if [[ ! -e $(dir $@)$(patsubst lexer-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(LN_S) $(dir $(realpath $<))$(patsubst lexer-%.ll,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
+	$(LEX) -o $(basename $@).cc --header-file=$(basename $@).hh --never-interactive $<
+

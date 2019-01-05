@@ -34,6 +34,8 @@ FLEX=${LEX}
 AX_PROG_FLEX_VERSION([2.6.4], [flex_cppflags="-Wno-error=unused-function"], [flex_cppflags="-Wno-error=sign-compare -Wno-error=unused-function"])
 AC_SUBST([FLEX_CPPFLAGS], [${flex_cppflags}])
 AC_PROG_YACC
+AC_PROG_LN_S
+AC_PROG_MKDIR_P
 
 AX_BOOST_BASE([1.58.0], [], AC_MSG_ERROR(boost 1.58 or newer is required))
 AX_BOOST_UNIT_TEST_FRAMEWORK
