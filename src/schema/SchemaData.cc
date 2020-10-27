@@ -383,7 +383,7 @@ namespace jsonschemaenforcer
                               "%define api.prefix {" + func_prefix + "}\n"
                               "%define api.pure full\n"
                               "%define parse.lac full\n"
-                              "%error-verbose\n"
+                              "%define parse.error verbose\n"
                               "\n"
                               "%{\n");
 

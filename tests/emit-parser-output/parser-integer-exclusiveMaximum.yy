@@ -8,7 +8,7 @@ namespace foo
 %define api.prefix {foo_foo_}
 %define api.pure full
 %define parse.lac full
-%error-verbose
+%define parse.error verbose
 
 %{
 #include "stype-integer-exclusiveMaximum.hh"
