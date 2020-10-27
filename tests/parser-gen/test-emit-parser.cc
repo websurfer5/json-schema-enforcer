@@ -32,13 +32,17 @@ static bool check_output(jsonschemaenforcer::StdStringList& s_list, std::string 
     b_equal = (ref == os.str());
     BOOST_CHECK_EQUAL(ref.length(), os.str().length());
 
-    // if (!b_equal)
-    // {
-    //     size_t len = std::min(ref.length(), os.str().length());
+    if (!b_equal)
+    {
+        size_t len = std::min(ref.length(), os.str().length());
 
-    //     for (size_t i=0; i < len; i++)
-    //         BOOST_CHECK_EQUAL(ref[i], os.str()[i]);
-    // }
+        for (size_t i=0; i < len; i++)
+            if (ref[i] != os.str()[i])
+            {
+                BOOST_ERROR("Strings differ at position " + std::to_string(i) +  "\"" + ref + "\" != " + "\"" + os.str() +  "");
+                break;
+            }
+    }
 
     return b_equal;
 }
