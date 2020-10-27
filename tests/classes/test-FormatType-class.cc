@@ -23,11 +23,7 @@
 //
 
 #include <boost/version.hpp>
-
-#if BOOST_VERSION < 106800
-#   include <set>
-#endif
-
+#include <set>
 #include <boost/test/unit_test.hpp>
 #include "FormatType.hh"
 
