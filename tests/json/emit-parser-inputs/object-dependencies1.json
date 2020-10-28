@@ -12,7 +12,7 @@
         "type": "string"
     }
   },
-  "dependencies": {
+  "dependentRequired": {
     "foo" : ["foo", "bar"]
   }
 }

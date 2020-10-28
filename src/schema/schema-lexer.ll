@@ -94,13 +94,13 @@ bool schema_parser_set_input_buffer(jsonschemaenforcer::SchemaData& sd, const ch
 "\"contentEncoding\""       { std::cout << "token: CONTENT_ENCODING" << std::endl; yyextra->last_key = yytext; return CONTENT_ENCODING; }
 "\"contentMediaType\""      { std::cout << "token: CONTENT_MEDIA_TYPE" << std::endl; yyextra->last_key = yytext; return CONTENT_MEDIA_TYPE; }
 "\"default\""               { std::cout << "token: DEFAULT" << std::endl; yyextra->last_key = yytext; return DEFAULT; }
-"\"definitions\""[[:space:]]*":"[[:space:]]*"{"   {
+"\"$defs\""[[:space:]]*":"[[:space:]]*"{"   {
                                 std::cout << "token: DEFINITIONS_COLON_LBRACE" << std::endl << "new state: PROPS" << std::endl; 
                                 yyextra->last_key = yytext;
                                 yy_push_state(PROPS, yyextra->scaninfo);
                                 return DEFINITIONS_COLON_LBRACE;
                             }
-"\"dependencies\""[[:space:]]*":"[[:space:]]"{"   {
+"\"dependentRequired\""[[:space:]]*":"[[:space:]]"{"   {
                                 std::cout << "token: DEPENDENCIES_COLON_LBRACE" << std::endl << "new state: PROPS" << std::endl; 
                                 yyextra->last_key = yytext;
                                 yy_push_state(PROPS, yyextra->scaninfo);
