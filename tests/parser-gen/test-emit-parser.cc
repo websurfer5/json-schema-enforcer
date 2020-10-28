@@ -35,13 +35,25 @@ static bool check_output(jsonschemaenforcer::StdStringList& s_list, std::string 
     if (!b_equal)
     {
         size_t len = std::min(ref.length(), os.str().length());
+        unsigned int column = 0,
+                     line = 1;
 
         for (size_t i=0; i < len; i++)
+        {
+            if (ref[i] == '\n')
+            {
+                line += 1;
+                column = 0;
+            }
+
+            column += 1;
+
             if (ref[i] != os.str()[i])
             {
-                BOOST_ERROR("Strings differ at position " + std::to_string(i) +  "\"" + ref + "\" != " + "\"" + os.str() +  "");
+                BOOST_ERROR("Strings differ at line " + std::to_string(line) + ":" + std::to_string(column) + " '" + ref[i] + "' != '" + os.str()[i] + "' " +  "\"" + ref + "\" != " + "\"" + os.str() +  "");
                 break;
             }
+        }
     }
 
     return b_equal;
