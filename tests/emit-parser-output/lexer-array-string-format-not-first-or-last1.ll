@@ -54,6 +54,9 @@ namespace foo
      	    yy_pop_state(yyextra->scaninfo);
      	    return RIGHT_BRACKET;
      	}
+.  	{
+   	    unput(*yytext);
+   	}
 [[:space:]]  	{
              	}
 <ITEM_ARRAY>","  	{

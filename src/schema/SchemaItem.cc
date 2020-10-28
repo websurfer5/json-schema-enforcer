@@ -729,6 +729,7 @@ namespace jsonschemaenforcer
                            false);
         sd.set_rule_type("object_item", sd.get_namespace() + "::JsonItem", true);
         sd.add_lexer_rule("[[:space:]]", "INITIAL", "", false, "");
+        sd.add_lexer_rule(".", "INITIAL", "", false, "unput(*yytext);");
         sd.add_lexer_rule("[[:space:]]", "ITEM_VALUE", "", false, "");
         sd.add_lexer_rule("\"\\\"\"", "ITEM_VALUE", "QUOTED", true, "yyextra->quoted_str.clear();");
         sd.add_token("B_FALSE", "", false, "\"false\"", "", "ITEM_VALUE", "", true);
@@ -939,7 +940,7 @@ namespace jsonschemaenforcer
 
         if (get_array_properties().empty())
         {
-            sd.add_lexer_rule(".", array_state, "ITEM_VALUE", false, "unput(*yytext);\n");
+            sd.add_lexer_rule(".", array_state, "ITEM_VALUE", false, "    unput(*yytext);\n");
             emit_default_rules(sd);
             return "array";
         }
