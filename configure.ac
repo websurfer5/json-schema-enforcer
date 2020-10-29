@@ -31,8 +31,8 @@ AC_PROG_CXX_C_O
 AX_CXX_COMPILE_STDCXX_11
 AM_PROG_LEX
 FLEX=${LEX}
-AX_PROG_FLEX_VERSION([2.6.4], [flex_cppflags="-Wno-error=unused-function"], [flex_cppflags="-Wno-error=sign-compare -Wno-error=unused-function"])
-AC_SUBST([FLEX_CPPFLAGS], [${flex_cppflags}])
+AX_PROG_FLEX_VERSION([2.6.0], [flex_cxxflags="-Wno-error=unused-function"], [flex_cxxflags="-Wno-error=sign-compare -Wno-error=unused-function -Wno-deprecated-register"])
+AC_SUBST([FLEX_CXXFLAGS], [${flex_cxxflags}])
 AC_PATH_PROG([BISON],[bison])
 AX_PROG_BISON_VERSION([3.0.0], [AC_SUBST([YACC], [$BISON])], [AC_MSG_ERROR(bison 3.1.0 or newer is required)])
 AC_PROG_LN_S

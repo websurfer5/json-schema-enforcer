@@ -17,9 +17,9 @@
 ACLOCAL_AMFLAGS = -I m4
 YACC_ERROR = ${BISON_OPTS}
 AM_YFLAGS = ${YACC_ERROR} $(YFLAGS) --report=all 
-AC_CFLAGS = -ansi -pipe
-AC_CXXFLAGS = -ansi -pipe
-AM_CPPFLAGS = -I$(top_srcdir)/${LIB_INCLUDE} -I$(top_builddir)/${LIB_INCLUDE} -I$(top_srcdir)/src/include -I$(top_builddir)/src/include -I$(top_builddir)/src/schema -I$(top_srcdir)/src/schema ${BOOST_CPPFLAGS}
+AM_CFLAGS = -pipe $(CFLAGS)
+AM_CXXFLAGS = -pipe $(CXXFLAGS)
+AM_CPPFLAGS = $(CPPFLAGS) -I$(top_srcdir)/${LIB_INCLUDE} -I$(top_builddir)/${LIB_INCLUDE} -I$(top_srcdir)/src/include -I$(top_builddir)/src/include -I$(top_builddir)/src/schema -I$(top_srcdir)/src/schema ${BOOST_CPPFLAGS}
 AM_LDFLAGS = $(LDFLAGS) ${BOOST_LDFLAGS} ${BOOST_LIBS}
 
 EXTRA_DIST = src/schema/schema-lexer.ll \
@@ -123,7 +123,8 @@ json_schema_tool_SOURCES =  src/progs/json-schema-tool.cc \
 							$(top_builddir)/tests/include/json-strings.hh
 
 libjson_schema_code_gen_la_SOURCES = 	$(SCHEMA_FILES)
-libjson_schema_code_gen_la_CPPFLAGS = 	$(AM_CPPFLAGS) $(FLEX_CPPFLAGS)
+libjson_schema_code_gen_la_CPPFLAGS = 	$(AM_CPPFLAGS)
+libjson_schema_code_gen_la_CXXFLAGS = 	$(AM_CXXFLAGS) $(FLEX_CXXFLAGS)
 
 CLEANFILES = $(GENERATED_FILES) \
 			 $(EMIT_PARSER_OUTPUT_O_FILES) \
@@ -225,6 +226,7 @@ tests_unittemitparser_SOURCES = \
 tests_libparseroutput_a_LIBADD = \
 					$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER)
 tests_libparseroutput_a_CPPFLAGS = $(TESTS_CPP_FLAGS)
+tests_libparseroutput_a_CXXFLAGS = $(AM_CXXFLAGS) $(FLEX_CXXFLAGS)
 tests_libparseroutput_a_SOURCES = \
 					$(EMIT_PARSER_OUTPUT_FILES_PARSER) \
 					$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_PARSER) \
@@ -235,6 +237,7 @@ tests_libparseroutput_a_SOURCES = \
 tests_liblexeroutput_a_LIBADD = \
 					$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER)
 tests_liblexeroutput_a_CPPFLAGS = $(TESTS_CPP_FLAGS)
+tests_liblexeroutput_a_CXXFLAGS = $(AM_CXXFLAGS) $(FLEX_CXXFLAGS)
 tests_liblexeroutput_a_SOURCES = \
 					$(EMIT_PARSER_OUTPUT_FILES_LEXER) \
 					$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_LEXER) \
