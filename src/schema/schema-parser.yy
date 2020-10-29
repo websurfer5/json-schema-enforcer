@@ -26,7 +26,7 @@ namespace jsonschemaenforcer
 %define api.prefix {schema_parser_}
 %define api.pure full
 %define parse.lac full
-%error-verbose
+%define parse.error verbose
 
 %{
 #include "schema-stype.hh"

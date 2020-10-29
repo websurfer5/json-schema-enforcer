@@ -38,7 +38,7 @@ namespace foo
      	    return RIGHT_BRACKET;
      	}
 .  	{
-   	    unput(*yytext);
+   	    REJECT;
    	}
 [[:space:]]  	{
              	}

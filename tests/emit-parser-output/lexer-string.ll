@@ -23,6 +23,9 @@ namespace foo
       	    yy_push_state(QUOTED, yyextra->scaninfo);
       	    return TOKEN_0;
       	}
+.  	{
+   	    REJECT;
+   	}
 <QUOTED>"\""  	{
               	    yy_pop_state(yyextra->scaninfo);
               	    yylval->std__string_type = yyextra->quoted_str;

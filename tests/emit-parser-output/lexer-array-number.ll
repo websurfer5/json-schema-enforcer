@@ -43,6 +43,9 @@ namespace foo
      	    yy_pop_state(yyextra->scaninfo);
      	    return RIGHT_BRACKET;
      	}
+.  	{
+   	    REJECT;
+   	}
 <SSTATE_0>","  	{
                	    return COMMA;
                	}

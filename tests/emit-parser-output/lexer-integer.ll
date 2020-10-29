@@ -28,6 +28,9 @@ namespace foo
             	    yylval->long_type = std::stol(yytext);
             	    return NON_NEG_INTEGER;
             	}
+.  	{
+   	    REJECT;
+   	}
 
 %%
 

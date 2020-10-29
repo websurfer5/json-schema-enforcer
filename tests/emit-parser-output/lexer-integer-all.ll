@@ -22,6 +22,9 @@ namespace foo
 %x SSTATE_0
 
 %%
+.  	{
+   	    REJECT;
+   	}
 [-+]?[0-9]+[[:space:]]*:[[:space:]]*  	{
                                       	    yy_push_state(SSTATE_0, yyextra->scaninfo);
                                       	    foo_foo_unput_string(yyscanner, yytext);

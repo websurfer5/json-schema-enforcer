@@ -33,6 +33,9 @@ namespace foo
                      	    yylval->double_type = std::stod(yytext);
                      	    return FLOATING_POINT;
                      	}
+.  	{
+   	    REJECT;
+   	}
 
 %%
 

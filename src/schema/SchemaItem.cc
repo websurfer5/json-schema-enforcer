@@ -729,7 +729,7 @@ namespace jsonschemaenforcer
                            false);
         sd.set_rule_type("object_item", sd.get_namespace() + "::JsonItem", true);
         sd.add_lexer_rule("[[:space:]]", "INITIAL", "", false, "");
-        sd.add_lexer_rule(".", "INITIAL", "", false, "unput(*yytext);");
+        sd.add_lexer_rule(".", "INITIAL", "", false, "REJECT;");
         sd.add_lexer_rule("[[:space:]]", "ITEM_VALUE", "", false, "");
         sd.add_lexer_rule("\"\\\"\"", "ITEM_VALUE", "QUOTED", true, "yyextra->quoted_str.clear();");
         sd.add_token("B_FALSE", "", false, "\"false\"", "", "ITEM_VALUE", "", true);
@@ -922,6 +922,7 @@ namespace jsonschemaenforcer
                          "INITIAL",
                          "",
                          true);
+            sd.add_lexer_rule(".", "INITIAL", "", false, "REJECT;");
         }
 
         if (!get_key().empty())
@@ -1628,9 +1629,12 @@ namespace jsonschemaenforcer
                                 "\n");
             }
 
+            sd.add_lexer_rule(".", "INITIAL", "", false, "REJECT;");
             sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
             return rule_tag;
         }
+
+        sd.add_lexer_rule(".", "INITIAL", "", false, "REJECT;");
 
         if (has_format_type())
         {
@@ -1840,6 +1844,7 @@ namespace jsonschemaenforcer
                             "    ;\n"
                             "\n");
             sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
+            sd.add_lexer_rule(".", "INITIAL", "", false, "REJECT;");
             sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, "");
             sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, "");
             return rule_tag;
@@ -1956,6 +1961,7 @@ namespace jsonschemaenforcer
                           "\n";
         }
 
+        sd.add_lexer_rule(".", "INITIAL", "", false, "REJECT;");
         sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
         sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, lexer_body);
 
@@ -2073,6 +2079,7 @@ namespace jsonschemaenforcer
             sd.add_token("NEG_INTEGER", "long", false, "-[0-9]+", "std::stol(yytext)", new_start_state, "", true, "");
             sd.add_token("NON_NEG_INTEGER", "long", false, "[+]?[0-9]+", "std::stol(yytext)", new_start_state, "", true, "");
             sd.add_token("FLOATING_POINT", "double", false, "[-+]?[0-9]+\\.[0-9]*", "std::stod(yytext)", new_start_state, "", true, "");
+            sd.add_lexer_rule(".", "INITIAL", "", false, "REJECT;");
             return rule_tag;
         }
 
@@ -2249,6 +2256,7 @@ namespace jsonschemaenforcer
         }
 
         sd.set_rule_type(rule_tag, sd.get_namespace() + "::JsonItem", true);
+        sd.add_lexer_rule(".", "INITIAL", "", false, "REJECT;");
         return rule_tag;
     }
 

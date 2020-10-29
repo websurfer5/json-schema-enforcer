@@ -48,6 +48,9 @@ namespace foo
      	    yy_pop_state(yyextra->scaninfo);
      	    return RIGHT_BRACKET;
      	}
+.  	{
+   	    REJECT;
+   	}
 <QUOTED>"\""  	{
               	    yy_pop_state(yyextra->scaninfo);
               	    yylval->std__string_type = yyextra->quoted_str;
