@@ -13,7 +13,7 @@
 #    limitations under the License.
 
 AC_PREQ(2.69)
-AC_INIT([json-schema-enforcer], 0.1, [websurfer@surf2c.net])
+AC_INIT([json-schema-enforcer], 0.1-alpha, [websurfer@surf2c.net])
 AC_COPYRIGHT([Copyright 2018 Jeffrey Kintscher <websurfer@surf2c.net>])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
