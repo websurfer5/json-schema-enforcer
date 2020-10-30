@@ -66,7 +66,7 @@
 #endif
 
 {
-    static struct std::set<std::string> _used_test_params_set,
+    static std::set<std::string> _used_test_params_set,
                                         _unused_test_params_set;
 
 #ifdef TEST_ALL_VALUES
