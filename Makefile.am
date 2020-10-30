@@ -287,6 +287,10 @@ lex_verbose = $(lex_verbose_@AM_V@)
 lex_verbose_ = $(lex_verbose_@AM_DEFAULT_V@)
 lex_verbose_0 = @echo  "  LEX      $@" ;
 
+cxx_verbose = $(cxx_verbose_@AM_V@)
+cxx_verbose_ = $(cxx_verbose_@AM_DEFAULT_V@)
+cxx_verbose_0 = @echo  "  CXX      $@" ;
+
 src/schema/schema-parser.hh:	src/schema/schema-parser.cc Makefile
 
 %-parser.cc:	%-parser.yy %-lexer.ll
@@ -420,6 +424,7 @@ tests/emit-parser-output/build/parser/parser-%.cc tests/emit-parser-output/build
 tests/emit-parser-output/build/parser/parser-%.$(OBJEXT):	$(top_builddir)/tests/emit-parser-output/build/parser/parser-%.cc $(top_builddir)/tests/emit-parser-output/build/parser/stype-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
 
 tests/emit-parser-output/build/parser/lexer-%.$(OBJEXT):	$(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.cc $(top_builddir)/tests/emit-parser-output/build/parser/stype-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/parser-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
+	${cxx_verbose} $(CXX) -c $(AM_CXXFLAGS) $(FLEX_CXXFLAGS) $(AM_CPPFLAGS) $< -o $@
 
 tests/emit-parser-output/build/parser/lexer-%.cc tests/emit-parser-output/build/parser/lexer-%.hh:	$(top_srcdir)/tests/emit-parser-output/lexer-%.ll $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
 	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
