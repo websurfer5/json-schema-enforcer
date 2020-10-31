@@ -59,7 +59,6 @@ EMIT_PARSER_OUTPUT_FILES = \
 				$(EMIT_PARSER_OUTPUT_FILES_LEXER)  \
 				$(EMIT_PARSER_OUTPUT_FILES_PARSER) \
 				$(EMIT_PARSER_OUTPUT_FILES_STYPE)
-# EMIT_PARSER_OUTPUT_FILES = $(wildcard $(srcdir)/tests/emit-parser-output/*.txt)
 EMIT_PARSER_OUTPUT_CC_FILES = $(patsubst %.ll,$(top_builddir)/tests/emit-parser-output/build/lib/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))
 EMIT_PARSER_OUTPUT_CC_FILES += $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/lib/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
 EMIT_PARSER_OUTPUT_CC_FILES += $(patsubst %.hh,$(top_builddir)/tests/emit-parser-output/build/lib/%.cc,$(notdir $(EMIT_PARSER_OUTPUT_FILES_STYPE)))
