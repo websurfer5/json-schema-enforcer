@@ -3,11 +3,10 @@ on: [push]
 jobs:
   build-project:
     runs-on: ubuntu-latest
-    install:
-      - sudo apt update -qq
-      - sudo apt install -qq libboost-all-dev
     steps:
       - uses: actions/checkout@v2
+      - run: sudo apt update -qq
+      - run: sudo apt install -qq libboost-all-dev
       - run: autoreconf -v -f -i
       - run: ./configure
       - run: make
