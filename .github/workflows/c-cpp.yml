@@ -9,6 +9,6 @@ jobs:
       - run: sudo apt install -qq libboost-all-dev
       - run: autoreconf -v -f -i
       - run: ./configure
-      - run: make -j 8
-      - run: make -j 8 check
-      - run: make -j 8 distcheck
+      - run: make -j 12
+      - run: make -j 12 check
+      - run: make -j 12 distcheck
