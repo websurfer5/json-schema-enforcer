@@ -27,6 +27,7 @@ namespace jsonschemaenforcer
 #include <cctype>
 #include <cstring>
 #include <cerrno>
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -680,5 +681,41 @@ namespace jsonschemaenforcer
                         "    ;\n"
                         "\n",
                         false);
+    }
+
+    bool SchemaData::write_source_files(const StdStringList& lexer_list,
+                                        const StdStringList& parser_list,
+                                        const StdStringList& parser_type_list,
+                                        const std::string& lexer_fname,
+                                        const std::string& parser_fname,
+                                        const std::string& stype_header_fname)
+    {
+        bool success;
+
+        success = write_source_file(lexer_list, lexer_fname);
+        success &= write_source_file(parser_list, parser_fname);
+        success &= write_source_file(parser_type_list, stype_header_fname);
+        return success;
+    }
+
+    bool SchemaData::write_source_file(const StdStringList& line_list, const std::string& fname)
+    {
+        bool success = true;
+        std::ofstream f;
+        f.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+        try
+        {
+            f.open(fname);
+            f << line_list;
+            f.close();
+        }
+        catch (std::ofstream::failure& e)
+        {
+            std::cerr << "Error writing " << fname << ": " << strerror(errno) << std::endl;
+            success = false;
+        }
+
+        return success;
     }
 }

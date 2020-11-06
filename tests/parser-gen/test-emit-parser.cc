@@ -18,6 +18,7 @@
 #include "json-strings.hh"
 #include "emit-parser-output-strings.hh"
 #include "SchemaData.hh"
+#include "misc.hh"
 #include <sstream>
 #include <utility>
 
@@ -62,8 +63,8 @@ static bool check_output(jsonschemaenforcer::StdStringList& s_list, std::string 
 #define DEF_TEXT_TEST(fname, name)                                          \
 BOOST_AUTO_TEST_CASE( test_parser_gen_##name )                              \
 {                                                                           \
-    jsonschemaenforcer::SchemaData sd;                                            \
-    jsonschemaenforcer::StdStringList lexer_list,                                 \
+    jsonschemaenforcer::SchemaData sd;                                      \
+    jsonschemaenforcer::StdStringList lexer_list,                           \
                                 parser_list,                                \
                                 stype_list;                                 \
                                                                             \
@@ -80,6 +81,38 @@ BOOST_AUTO_TEST_CASE( test_parser_gen_##name )                              \
     BOOST_CHECK(check_output(lexer_list, str_output_text_lexer_##name));    \
     BOOST_CHECK(check_output(parser_list, str_output_text_parser_##name));  \
     BOOST_CHECK(check_output(stype_list, str_output_text_stype_##name));    \
+}
+
+#include "def-emit-parser-tests.hh"
+#undef DEF_TEXT_TEST
+
+#define DEF_TEXT_TEST(fname, name)                                          \
+BOOST_AUTO_TEST_CASE( test_parser_##name )                                  \
+{                                                                           \
+    jsonschemaenforcer::SchemaData sd;                                      \
+    jsonschemaenforcer::StdStringList lexer_list,                           \
+                                parser_list,                                \
+                                stype_list;                                 \
+                                                                            \
+    BOOST_REQUIRE(sd.parse_schema(str_parser_input_json_##name));           \
+    sd.emit_source_code(parser_list,                                        \
+                        lexer_list,                                         \
+                        stype_list,                                         \
+                        "foo",                                              \
+                        "Bar",                                              \
+                        "foo_foo_",                                         \
+                        "lexer-" #fname ".hh",                              \
+                        "parser-" #fname ".hh",                             \
+                        "stype-" #fname ".hh");                             \
+    BOOST_REQUIRE(!parser_list.empty());                                    \
+    BOOST_REQUIRE(!lexer_list.empty());                                     \
+    BOOST_REQUIRE(!stype_list.empty());                                     \
+    BOOST_REQUIRE(sd.write_source_files(lexer_list,                         \
+                                        parser_list,                        \
+                                        stype_list,                         \
+                                        OUTPUT_LIB_DIR "/" #fname "/lexer-" #fname ".ll",     \
+                                        OUTPUT_LIB_DIR "/" #fname "/parser-" #fname ".yy",    \
+                                        OUTPUT_LIB_DIR "/" #fname "/stype-" #fname ".hh"));   \
 }
 
 #include "def-emit-parser-tests.hh"

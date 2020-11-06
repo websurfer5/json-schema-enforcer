@@ -19,7 +19,7 @@ YACC_ERROR = ${BISON_OPTS}
 AM_YFLAGS = ${YACC_ERROR} $(YFLAGS) --report=all 
 AM_CFLAGS = -pipe $(CFLAGS)
 AM_CXXFLAGS = -pipe $(CXXFLAGS)
-AM_CPPFLAGS = $(CPPFLAGS) -I$(top_srcdir)/${LIB_INCLUDE} -I$(top_builddir)/${LIB_INCLUDE} -I$(top_srcdir)/src/include -I$(top_builddir)/src/include -I$(top_builddir)/src/schema -I$(top_srcdir)/src/schema ${BOOST_CPPFLAGS}
+AM_CPPFLAGS = $(CPPFLAGS) -I$(top_srcdir)/include -I$(top_srcdir)/${LIB_INCLUDE} -I$(top_builddir)/${LIB_INCLUDE} -I$(top_srcdir)/src/include -I$(top_builddir)/src/include -I$(top_builddir)/src/schema -I$(top_srcdir)/src/schema ${BOOST_CPPFLAGS}
 AM_LDFLAGS = $(LDFLAGS) ${BOOST_LDFLAGS} ${BOOST_LIBS}
 
 EXTRA_DIST = src/schema/schema-lexer.ll \
@@ -70,6 +70,8 @@ EMIT_PARSER_OUTPUT_BUILD_CC_FILES_PARSER := $(patsubst %.yy,$(top_builddir)/test
 EMIT_PARSER_OUTPUT_BUILD_HH_FILES_PARSER := $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/parser/%.hh,$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
 EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER := $(patsubst %.yy,$(top_builddir)/tests/emit-parser-output/build/parser/%.$(OBJEXT),$(notdir $(EMIT_PARSER_OUTPUT_FILES_PARSER)))
 EMIT_PARSER_OUTPUT_BUILD_HH_FILES_STYPE := $(patsubst %.hh,$(top_builddir)/tests/emit-parser-output/build/parser/%.hh,$(notdir $(EMIT_PARSER_OUTPUT_FILES_STYPE)))
+EMIT_PARSER_OUTPUT_NAMES := $(subst lexer-,,$(filter lexer-%,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER)))))
+TESTS_OUTPUT_LIB_DIR := $(top_builddir)/tests/output/lib
 GENERATED_TEST_FILES =	$(JSON_INPUT_CC_FILES) \
 						$(EMIT_PARSER_OUTPUT_CC_FILES) \
 						$(top_builddir)/tests/include/json-strings.hh \
@@ -79,14 +81,16 @@ GENERATED_TEST_FILES =	$(JSON_INPUT_CC_FILES) \
 						$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_PARSER) \
 						$(EMIT_PARSER_OUTPUT_BUILD_CC_FILES_LEXER) \
 						$(EMIT_PARSER_OUTPUT_BUILD_HH_FILES_LEXER) \
-						$(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
+						$(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh \
+						$(top_builddir)/tests/include/misc.hh
 						
 
 BUILT_SOURCES =	\
 				$(GENERATED_FILES) \
 				$(GENERATED_TEST_FILES)
 
-SCHEMA_FILES = src/include/FormatType.hh \
+SCHEMA_FILES = include/JsonSchemaEnforcer.hh \
+               src/include/FormatType.hh \
 			   src/include/FormatType-vars.hh \
 			   src/include/ItemType.hh \
 			   src/include/ItemType-vars.hh \
@@ -112,7 +116,7 @@ SCHEMA_FILES = src/include/FormatType.hh \
 			   src/schema/Token.cc \
 			   $(GENERATED_FILES)
 
-bin_PROGRAMS = json-schema-tool
+#bin_PROGRAMS = json-schema-tool
 lib_LTLIBRARIES = libjson-schema-code-gen.la
 
 json_schema_tool_LDADD = ${lib_LTLIBRARIES} ${top_builddir}/tests/json/libsamplejson.a
@@ -144,11 +148,13 @@ clean-local-check:
 	$(RM) -r $(top_builddir)/tests/emit-parser-output/build/lib/$(DEPDIR)
 	$(RM) -r $(top_builddir)/tests/emit-parser-output/build/parser/$(DEPDIR)
 	$(RM) -r $(top_builddir)/tests/*.dSYM
+	$(RM) -r $(TESTS_OUTPUT_LIB_DIR)
 	$(RM) $(JSON_INPUT_CC_FILES)
 	$(RM) $(EMIT_PARSER_OUTPUT_CC_FILES)
 	$(RM) $(JSON_INPUT_O_FILES)
 	$(RM) $(EMIT_PARSER_OUTPUT_BUILD_O_FILES_LEXER)
 	$(RM) $(EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER)
+	$(RM) $(top_builddir)/tests/include/misc.hh
 
 TESTS = tests/unittclasses \
 		tests/unittemitparser \
@@ -156,7 +162,7 @@ TESTS = tests/unittclasses \
 		tests/unittparseschema \
 		tests/unittparsejson
 
-check_PROGRAMS = $(TESTS)
+check_PROGRAMS = $(TESTS) json-schema-tool
 check_LIBRARIES = \
 				tests/json/libsamplejson.a \
 				tests/liboutputstrings.a \
@@ -220,7 +226,8 @@ tests_unittemitparser_SOURCES = \
 					tests/unittest.cc \
 					tests/include/def-emit-parser-tests.hh \
 					tests/include/emit-parser-output-strings.hh \
-					tests/parser-gen/test-emit-parser.cc
+					tests/parser-gen/test-emit-parser.cc \
+					$(top_builddir)/tests/include/misc.hh
 
 tests_libparseroutput_a_LIBADD = \
 					$(EMIT_PARSER_OUTPUT_BUILD_O_FILES_PARSER)
@@ -245,8 +252,8 @@ tests_liblexeroutput_a_SOURCES = \
 					tests/include/Bar.hh
 
 tests_unittparsejson_LDADD = \
-					tests/liblexeroutput.a \
-					tests/libparseroutput.a
+					libjson-schema-code-gen.la \
+					tests/json/libsamplejson.a
 tests_unittparsejson_LDFLAGS = $(AM_LDFLAGS) -static
 tests_unittparsejson_CPPFLAGS = $(TESTS_CPP_FLAGS)
 tests_unittparsejson_CXXFLAGS = $(AM_CXXFLAGS) -Wno-parentheses -Wno-error=parentheses
@@ -400,12 +407,14 @@ tests/include/emit-parser-output-strings.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefil
 	$(AM_V_at) echo "#endif   // __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
 
 tests/include/def-emit-parser-tests.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefile
+	if [[ -e $(TESTS_OUTPUT_LIB_DIR) ]] ; then $(RM) -r $(TESTS_OUTPUT_LIB_DIR) ; fi
+	for i in $(EMIT_PARSER_OUTPUT_NAMES) ; do $(MKDIR_P) $(TESTS_OUTPUT_LIB_DIR)/$${i} ; done
 	$(generate_verbose)
 	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	$(AM_V_at) echo "//" $(notdir $@) > $@
 	$(AM_V_at) echo "//" >> $@
 	$(AM_V_at) echo "// ** generated file - do not edit! **" >> $@
-	$(AM_V_at) for i in $(subst lexer-,,$(filter lexer-%,$(basename $(notdir $(EMIT_PARSER_OUTPUT_FILES_LEXER))))) ; do _NAME=$$(echo "$${i}" | sed 's/-/_/g') ; echo "DEF_TEXT_TEST($${i}, $${_NAME})" >> $@ ; done
+	$(AM_V_at) for i in $(EMIT_PARSER_OUTPUT_NAMES) ; do _NAME=$$(echo "$${i}" | sed 's/-/_/g') ; echo "DEF_TEXT_TEST($${i}, $${_NAME})" >> $@ ; done
 
 tests/emit-parser-output/build/parser/Bar.hh:	$(top_srcdir)/tests/include/Bar.hh
 	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
@@ -413,20 +422,27 @@ tests/emit-parser-output/build/parser/Bar.hh:	$(top_srcdir)/tests/include/Bar.hh
 
 tests/emit-parser-output/build/parser/stype-%.hh:	$(top_srcdir)/tests/emit-parser-output/stype-%.hh
 	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
-	$(AM_V_at) if [[ ! -e $@ ]] ; then $(ln_verbose1) $(LN_S) $(realpath $<) $@ ; fi
+	$(AM_V_at) if [[ ! -e $@ ]] ; then $(ln_verbose1) $(LN_S) -f $(realpath $<) $@ ; fi
 
 tests/emit-parser-output/build/parser/parser-%.cc tests/emit-parser-output/build/parser/parser-%.hh:	$(top_srcdir)/tests/emit-parser-output/parser-%.yy $(top_srcdir)/tests/emit-parser-output/lexer-%.ll $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
 	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
-	$(AM_V_at) if [[ ! -e $(dir $@)$(patsubst parser-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(ln_verbose2) $(LN_S) $(dir $(realpath $<))$(patsubst parser-%.yy,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
+	$(AM_V_at) if [[ ! -e $(dir $@)$(patsubst parser-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(ln_verbose2) $(LN_S) -f $(dir $(realpath $<))$(patsubst parser-%.yy,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
 	$(yacc_verbose) $(YACC) $(AM_YFLAGS) --defines=$(basename $@).hh -o $(basename $@).cc $<
 
 tests/emit-parser-output/build/parser/parser-%.$(OBJEXT):	$(top_builddir)/tests/emit-parser-output/build/parser/parser-%.cc $(top_builddir)/tests/emit-parser-output/build/parser/stype-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
 
 tests/emit-parser-output/build/parser/lexer-%.$(OBJEXT):	$(top_builddir)/tests/emit-parser-output/build/parser/lexer-%.cc $(top_builddir)/tests/emit-parser-output/build/parser/stype-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/parser-%.hh $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
-	${cxx_verbose} $(CXX) -c $(AM_CXXFLAGS) $(FLEX_CXXFLAGS) $(AM_CPPFLAGS) $< -o $@
+	$(cxx_verbose) $(CXX) -c $(AM_CXXFLAGS) $(FLEX_CXXFLAGS) $(AM_CPPFLAGS) $< -o $@
 
 tests/emit-parser-output/build/parser/lexer-%.cc tests/emit-parser-output/build/parser/lexer-%.hh:	$(top_srcdir)/tests/emit-parser-output/lexer-%.ll $(top_builddir)/tests/emit-parser-output/build/parser/Bar.hh
 	$(AM_V_at) $(MKDIR_P) $(top_builddir)/tests/emit-parser-output/build/parser/.deps
-	$(AM_V_at) if [[ ! -e $(dir $@)$(patsubst lexer-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(ln_verbose3) $(LN_S) $(dir $(realpath $<))$(patsubst lexer-%.ll,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
+	$(AM_V_at) if [[ ! -e $(dir $@)$(patsubst lexer-%.cc,stype-%.hh,$(notdir $@)) ]] ; then $(ln_verbose3) $(LN_S) -f $(dir $(realpath $<))$(patsubst lexer-%.ll,stype-%.hh,$(notdir $<)) $(top_builddir)/tests/emit-parser-output/build/parser/ ; fi
 	$(lex_verbose) $(LEX) -o $(basename $@).cc --header-file=$(basename $@).hh --never-interactive $<
 
+tests/include/misc.hh:	Makefile
+	$(generate_verbose)
+	$(AM_V_at) echo "//" $(notdir $@) > $@
+	$(AM_V_at) echo "//" >> $@
+	$(AM_V_at) echo "// ** generated file - do not edit! **" >> $@
+	$(AM_V_at) echo "" >> $@
+	$(AM_V_at) echo "#define OUTPUT_LIB_DIR \"$(TESTS_OUTPUT_LIB_DIR)\"" >> $@
