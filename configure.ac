@@ -34,13 +34,18 @@ FLEX=${LEX}
 AX_PROG_FLEX_VERSION([2.6.0], [flex_cxxflags="-Wno-error=unused-function"], [flex_cxxflags="-Wno-error=sign-compare -Wno-error=unused-function -Wno-deprecated-register"])
 AC_SUBST([FLEX_CXXFLAGS], [${flex_cxxflags}])
 AC_PATH_PROG([BISON],[bison])
-AX_PROG_BISON_VERSION([3.0.0], [AC_SUBST([YACC], [$BISON])], [AC_MSG_ERROR(bison 3.1.0 or newer is required)])
+AX_PROG_BISON_VERSION([3.0.0], [AC_SUBST([YACC], [$BISON])], [AC_MSG_ERROR(bison 3.0.0 or newer is required)])
 AC_PROG_LN_S
 AC_PROG_MKDIR_P
 
 AX_BOOST_BASE([1.58.0], [], AC_MSG_ERROR(boost 1.58 or newer is required))
 AX_BOOST_UNIT_TEST_FRAMEWORK
 
+AC_SUBST([BISON])
+AC_SUBST([CXX])
+AC_SUBST([CXXFLAGS])
+AC_SUBST([FLEX])
+
 AM_SILENT_RULES([yes])
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile json-schema-enforcer.conf])
 AC_OUTPUT

@@ -1,0 +1,13 @@
+{
+    "C++ compiler": {
+        "command": "@CXX@",
+        "flags": "@CXXFLAGS@"
+    },
+    "flex": {
+        "command": "@FLEX@",
+        "C++ compiler flags": "@FLEX_CXXFLAGS@"
+    },
+    "bison": {
+        "command": "@BISON@"
+    }
+}

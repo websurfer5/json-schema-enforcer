@@ -26,7 +26,9 @@ EXTRA_DIST = src/schema/schema-lexer.ll \
              src/schema/schema-parser.yy \
              $(JSON_INPUT_FILES) \
              $(EMIT_PARSER_OUTPUT_FILES) \
-             LICENSE
+             LICENSE \
+             json-schema-enforcer.conf.in \
+             json-schema-enforcer.conf
 
 GENERATED_FILES = \
 				src/schema/schema-lexer.cc \
@@ -128,6 +130,8 @@ json_schema_tool_SOURCES =  src/progs/json-schema-tool.cc \
 libjson_schema_code_gen_la_SOURCES = 	$(SCHEMA_FILES)
 libjson_schema_code_gen_la_CPPFLAGS = 	$(AM_CPPFLAGS)
 libjson_schema_code_gen_la_CXXFLAGS = 	$(AM_CXXFLAGS) $(FLEX_CXXFLAGS)
+
+sysconf_data = json-schema-enforcer.conf
 
 CLEANFILES = $(GENERATED_FILES) \
 			 $(EMIT_PARSER_OUTPUT_O_FILES) \
