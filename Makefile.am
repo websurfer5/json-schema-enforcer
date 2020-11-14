@@ -301,6 +301,10 @@ cxx_verbose = $(cxx_verbose_@AM_V@)
 cxx_verbose_ = $(cxx_verbose_@AM_DEFAULT_V@)
 cxx_verbose_0 = @echo  "  CXX      $@" ;
 
+mkdir_p_i_verbose = $(mkdir_p_i_verbose_@AM_V@)
+mkdir_p_i_verbose_ = $(mkdir_p_i_verbose_@AM_DEFAULT_V@)
+mkdir_p_i_verbose_0 = echo  "  MKDIR_P  $(TESTS_OUTPUT_LIB_DIR)/$${i}" ;
+
 src/schema/schema-parser.hh:	src/schema/schema-parser.cc Makefile
 
 %-parser.cc:	%-parser.yy %-lexer.ll
@@ -411,8 +415,8 @@ tests/include/emit-parser-output-strings.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefil
 	$(AM_V_at) echo "#endif   // __JSONSCHEMAENFORCER_EMIT_PARSER_OUTPUT_STRINGS_HH" >> $@
 
 tests/include/def-emit-parser-tests.hh:	$(EMIT_PARSER_OUTPUT_FILES) Makefile
-	if [[ -e $(TESTS_OUTPUT_LIB_DIR) ]] ; then $(RM) -r $(TESTS_OUTPUT_LIB_DIR) ; fi
-	for i in $(EMIT_PARSER_OUTPUT_NAMES) ; do $(MKDIR_P) $(TESTS_OUTPUT_LIB_DIR)/$${i} ; done
+	$(AM_V_at) if [[ -e $(TESTS_OUTPUT_LIB_DIR) ]] ; then $(RM) -r $(TESTS_OUTPUT_LIB_DIR) ; fi
+	$(AM_V_at) for i in $(EMIT_PARSER_OUTPUT_NAMES) ; do $(mkdir_p_i_verbose) $(MKDIR_P) $(TESTS_OUTPUT_LIB_DIR)/$${i} ; done
 	$(generate_verbose)
 	$(AM_V_at) $(MKDIR_P) $(dir $@) $(dir $@)/.deps
 	$(AM_V_at) echo "//" $(notdir $@) > $@
