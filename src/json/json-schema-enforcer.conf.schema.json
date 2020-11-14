@@ -1,0 +1,35 @@
+{
+    "type": "object",
+    "properties": {
+        "C++ compiler": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string"
+                },
+                "flags": {
+                    "type": "string"
+                }
+            }
+        },
+        "flex": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string"
+                },
+                "C++ compiler flags": {
+                    "type": "string"
+                }
+            }
+        },
+        "bison": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
